@@ -34,6 +34,8 @@ ul#menu {
 ul#menu li {
 	display: block;
 	float: right;
+	padding: 0px;
+	background-image: none;
 }
 ul#menu li a {
 	background-repeat: no-repeat;
@@ -89,8 +91,33 @@ a#download_button {
 	color: #212C00;
 }
 
+div#main {
+	padding-top: 25px;
+}
+
 a#download_button:hover {
 	background-position: 0px -52px;
+}
+
+h2 {
+	color: #BADA55;
+	font-size: 1.2em;
+}
+
+ul {
+	padding-left: 5px;
+	list-style: none;
+}
+
+li {
+	padding-left: 15px;
+	background: url('../img/bullet.png') no-repeat 0px 8px;
+}
+
+div.text_block {
+	background: url('../img/block_border2.png') no-repeat -10px -10px;
+	padding: 5px 10px;
+	margin-bottom: 15px;
 }
 
 /* IE7 Clearfix */
