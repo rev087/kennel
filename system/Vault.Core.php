@@ -1,4 +1,9 @@
 <?php
+	function __autoload($resource) {
+		if(is_file(Vault::getPath('system') . "/Vault.{$resource}.php"))
+			require_once Vault::getPath('system') . "/Vault.{$resource}.php";
+	}
+	
 	class Vault {
 		
 		static $app_settings;
@@ -36,7 +41,9 @@
 		static function onShutdown() {
 			//finish the benchmark
 			self::$time_final = microtime(true);
-			print "<p>Finished in " . (self::$time_final - self::$time_init) . " seconds</p>";
+			print '<br /><small style="color: #666"><p>Finished in <strong>' . (self::$time_final - self::$time_init) . '</strong> seconds</p>';
+			print '<p>Using <strong>' . (memory_get_usage() / 1024) . '</strong> kbs</p></small>';
+			
 		}
 		
 		/*
@@ -71,7 +78,20 @@
 					require_once(self::getPath('controllers') . "/class.$resource_name.php");
 					break;
 				case 'view':
+					require_once(self::getPath('views') . "/$resource_name.php");
 					break;
+				case 'template':
+					break;
+			}
+		}
+		
+		static function getResourcePath($resource_type, $resource_name) {
+			switch($resource_type) {
+				case 'controller':
+					$resource_name = ucfirst($resource_name);
+					return self::getPath('controllers') . "/class.$resource_name.php";
+				case 'view':
+					return self::getPath('views') . "/$resource_name.php";
 				case 'template':
 					break;
 			}
@@ -81,9 +101,6 @@
 		* Vault::processRequest()
 		*/
 		static function processRequest() {
-			//open the buffer
-			ob_start();
-			
 			//instancialize the main controller
 			self::requireSystemFile('controller');
 			self::requireResource('controller', 'Main');
@@ -129,11 +146,17 @@
 					call_user_func(array(&self::$app_main_controller, 'index'));
 				}
 			}
-			
-			//close the buffer and send the rendering
-			ob_end_flush();
+			/*
+			//handle the default teplate for the Main controller, if specified
+			self::requireSystemFile('view');
+			if(self::$app_main_controller->default_template) {
+				$template = new View(self::$app_main_controller->default_template);
+				if(self::$app_main_controller->auto_render == TRUE) {
+					$template->render();
+				}
+			}
+			*/
 		}
-		
 		
 		/*
 		* Vault::debugRequest();

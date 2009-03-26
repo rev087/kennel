@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head profile="http://gmpg.org/xfn/11">
 	<title>Vault Framework</title>
-	<link rel="stylesheet" type="text/css" href="assets/css/vault.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/default.css" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<? Vault::head(); ?>
+	<?php print $head; ?>
 </head>
 <body>
 
@@ -25,8 +25,9 @@
 		</div>
 		
 		<div id="main">	
-			<? Vault::view(); ?>
+			<?php print $content; ?>
 			<div id="footer">
+				<?php print $footer; ?>
 			</div>
 		</div>
 	</div>
