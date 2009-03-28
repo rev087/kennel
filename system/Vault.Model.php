@@ -1,7 +1,6 @@
 <?php
-	require_once('controller.MySQL.php');
-	require_once('controller.Settings.php');
-	require_once('controller.Debug.php');
+	require_once('Vault.MySQL.php');
+	require_once('Vault.Debug.php');
 	
 	class Model {
 		private static $structure_cache = array();
@@ -18,16 +17,30 @@
 			$this->fields = self::$db->getTableStructure($model_name);
 		}
 		
+		/*
+		* Model::getFields()
+		* Returns the complete field structure as an associative array.
+		* Each field has: field name, type, required, default value and current instance value.
+		*/
 		function getFields() {
 			return $this->fields;
 		}
 		
+		/*
+		* Model::dump()
+		* Prints a report of all model's fields and their properties. See Model::getFields() for a list of properties.
+		*/
 		function dump() {
 			foreach($this->fields as $key=>$value) {
 				print "<p><strong>{$key}: </strong>".print_r($value, true)."</p>";
 			}
 		}
 		
+		/*
+		* Model::getInstance(string $model_name)
+		* Returns an instance of the Model class.
+		* If an extended Model class exists in the models directory, returns an instance of that class instead.
+		*/
 		static function getInstance($model_name) {
 			$filename = ucwords($model_name);
 			$filepath = "models/model.{$filename}.php";
@@ -40,6 +53,10 @@
 			else return new Model($model_name);
 		}
 		
+		/*
+		* Model::get()
+		* This static method returns one or more Model instancies.
+		*/
 		static function get($model_name, $where=null) {
 			if(!self::$db) self::$db = new MySQL();
 			if($where) {

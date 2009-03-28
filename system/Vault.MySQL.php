@@ -2,7 +2,7 @@
 	
 	//version 1.0
 	//requires settings.php
-	require_once('controllers/controller.XML.php');
+	require_once('system/Vault.XML.php');
 	
 	class MySQL {
 		public static $host;
@@ -18,12 +18,11 @@
 		//constructor/destructor functions
 		//////////////////////////////////
 		function __construct($host=null, $user=null, $pass=null, $database=null) {
-			require_once("controllers/controller.Settings.php");
 			if(!self::$conn) {
-				self::$host = Settings::get("host");
-				self::$user = Settings::get("user");
-				self::$pass = Settings::get("pass");
-				self::$database = Settings::get("database");
+				self::$host = Vault::getSetting('database','host');
+				self::$user = Vault::getSetting('database','user');
+				self::$pass = Vault::getSetting('database','pass');
+				self::$database = Vault::getSetting('database','database');
 				self::$conn = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
 				mysql_set_charset('utf-8', self::$conn);
 				mysql_select_db(($database?$database:self::$database), self::$conn);

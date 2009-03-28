@@ -39,11 +39,17 @@
 		* Vault::onShutdown()
 		*/
 		static function onShutdown() {
+			if(self::getSetting('application', 'show_benchmark')) self::printBenchmark();
+		}
+		
+		/*
+		* Vault::printBenchmark();
+		*/
+		static function printBenchmark() {
 			//finish the benchmark
 			self::$time_final = microtime(true);
 			print '<br /><small style="color: #666"><p>Finished in <strong>' . (self::$time_final - self::$time_init) . '</strong> seconds</p>';
 			print '<p>Using <strong>' . (memory_get_usage() / 1024) . '</strong> kbs</p></small>';
-			
 		}
 		
 		/*
@@ -75,7 +81,7 @@
 			switch($resource_type) {
 				case 'controller':
 					$resource_name = ucfirst($resource_name);
-					require_once(self::getPath('controllers') . "/class.$resource_name.php");
+					require_once(self::getPath('controllers') . "/controller.$resource_name.php");
 					break;
 				case 'view':
 					require_once(self::getPath('views') . "/$resource_name.php");
@@ -85,11 +91,14 @@
 			}
 		}
 		
+		/*
+		* Vault::getResourcePath(string $resource_type, string $resource_name);
+		*/
 		static function getResourcePath($resource_type, $resource_name) {
 			switch($resource_type) {
 				case 'controller':
 					$resource_name = ucfirst($resource_name);
-					return self::getPath('controllers') . "/class.$resource_name.php";
+					return self::getPath('controllers') . "/controller.$resource_name.php";
 				case 'view':
 					return self::getPath('views') . "/$resource_name.php";
 				case 'template':
@@ -126,7 +135,7 @@
 				call_user_func_array(array(&self::$app_main_controller, array_shift($request_args)), $request_args);
 				
 			//second check: controller...
-			} elseif(is_file(self::getPath('controllers') . "/class.{$request_args[0]}.php")) {
+			} elseif(is_file(self::getPath('controllers') . "/controller.{$request_args[0]}.php")) {
 				self::requireResource('controller', $request_args[0]);
 				$controller = new $request_args[0]();
 				
@@ -146,20 +155,10 @@
 					call_user_func(array(&self::$app_main_controller, 'index'));
 				}
 			}
-			/*
-			//handle the default teplate for the Main controller, if specified
-			self::requireSystemFile('view');
-			if(self::$app_main_controller->default_template) {
-				$template = new View(self::$app_main_controller->default_template);
-				if(self::$app_main_controller->auto_render == TRUE) {
-					$template->render();
-				}
-			}
-			*/
 		}
 		
 		/*
-		* Vault::debugRequest();
+		* Vault::debugRequest()
 		*/
 		static function debugRequest() {
 			print '<table><tr><td>APP_INDEX_PATH:</td><td>';
@@ -175,5 +174,15 @@
 			var_dump($_SERVER['DOCUMENT_ROOT']);
 			print '</td></tr></table>';
 		}
+		
+		/*
+		* Vault::dump($variable)
+		*/
+		static function dump($variable, $return=false) {
+			$dump = '<pre>'.var_export($variable, true).'</pre>';
+			if($return) return $dump;
+			else print $dump;
+		}
+		
 	}
 ?>

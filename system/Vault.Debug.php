@@ -1,7 +1,4 @@
 <?php
-	require_once('controllers/controller.Settings.php');
-	require_once('controllers/controller.XML.php');
-	//set_error_handler(array("Debug", "error"));
 	
 	class Debug {
 		
@@ -9,28 +6,6 @@
 		static $notice = E_USER_NOTICE;
 		static $warning = E_USER_WARNING;
 		static $error = E_USER_ERROR;
-		
-		/*
-		static function backtrace() {
-			self::$backtrace = debug_backtrace();
-			
-			foreach(self::$backtrace as $step) {
-				if($step['class'] != "Debug") {
-					print '<br /><table border="1">';
-					foreach($step as $key=>$val) {
-						if($key != "object") {
-							print '<tr>';
-							print "<td><strong>{$key}</strong></td>";
-							print '<td>'.print_r($val, true).'</td>';
-							print '</tr>';
-						}
-					}
-					print '</table><br />';
-				}
-			}
-			
-		}
-		*/
 		
 		function dumpError($error) {
 			$table = new XMLElement('table', null, array('border'=>'1'));
