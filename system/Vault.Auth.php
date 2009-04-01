@@ -1,28 +1,48 @@
 <?php
-	require_once('controllers/controller.Model.php');
-	
 	class Auth {
 		static $user;
 		static $error;
 		static $message;
 		
-		function login($login, $pass) {
-			$auth = Model::get('usuario', array('login'=>$login, 'senha'=>$pass));
-			if($auth) {
-				self::$user = $auth[0];
+		/*
+		* Auth::login(string $username, string $password, boolean $remember_me);
+		* Attempt to login the user, with th given 
+		* 
+		* $username - the username
+		* $password - the password, not cryptographed
+		* $remember_me - if true, will set a cookie with the user authentication
+		*/
+		function login($username, $password, $remember_me)
+		{
+			$model_name = Vault::getSetting('auth', 'model_name');
+			$username_field = Vault::getSetting('auth', 'username_field');
+			$password_field = Vault::getSetting('auth', 'password_field');
+			
+			$user = Model::getOne(
+				$model_name,
+				array($username_field=>$username, $password_field=>$password)
+			);
+			
+			if ($user)
+			{
+				self::$user = $user;
 				if(!session_id()) session_start();
-				$_SESSION['user_id'] = self::$user->id;
+				$_SESSION['auth'] = $user->getInstanceValues();
+				
 				return true;
-			} else {
-				self::$error = "Usuário ou senha inválidos";
+			}
+			else {
 				return false;
 			}
 		}
 		
+		/*
+		* Auth::logout()
+		*/
 		function logout() {
 			if(!session_id()) session_start();
-			unset($_SESSION['user_id']);
-			Auth::$message = "Logout efetuado";
+			unset($_SESSION['auth']);
+			return true;
 		}
 		
 		function gtfo() {
@@ -33,26 +53,36 @@
 		
 		function check() {
 			if(!session_id()) session_start();
-			if(!$_SESSION['user_id']) return false;
+			if(!$_SESSION['auth']) return false;
 			
 			$args = func_get_args();
-			$user = self::getUser();
-			foreach($args as $arg) {
-				if($arg == $user->nivel) return true;
+			if(count($args) > 0)
+			{
+				$user = self::getUser();
+				$userlevel_field = Vault::getSetting('auth', 'userlevel_field');
+				foreach($args as $arg) {
+					if($arg == $user->$userlevel_field) return true;
+				}
+			} else {
+				return true;
 			}
 			
 			return false;
 		}
 		
 		function getUser() {
-			if(self::$user) {
+			if (self::$user)
+			{
 				return self::$user;
-			} elseif($_SESSION['user_id']) {
-				$user = Model::get('usuario', array('id'=>$_SESSION['user_id']));
-				return self::$user = $user[0];
-			} else {
-				return false;
 			}
+			elseif ($_SESSION['auth'])
+			{
+				self::$user = new Model(Vault::getSetting('auth', 'model_name'));
+				self::$user->feed($_SESSION['auth']);
+				return self::$user;
+			}
+			else
+				return false;
 		}
 		
 	}
