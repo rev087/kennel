@@ -1,7 +1,16 @@
 <?php
 	function __autoload($resource) {
-		if(is_file(Vault::getPath('system') . "/Vault.{$resource}.php"))
+		//controller
+		if (substr($resource, -11) == '_controller')
+		{
+			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
+			if (is_file(Vault::getPath('controllers') . "/{$controller_name}.php"))
+				require_once Vault::getPath('controllers') . "/{$controller_name}.php";
+		}
+		elseif (is_file(Vault::getPath('system') . "/Vault.{$resource}.php"))
+		{
 			require_once Vault::getPath('system') . "/Vault.{$resource}.php";
+		}
 	}
 	
 	class Vault {
@@ -81,7 +90,7 @@
 			switch($resource_type) {
 				case 'controller':
 					$resource_name = ucfirst($resource_name);
-					require_once(self::getPath('controllers') . "/controller.$resource_name.php");
+					require_once(self::getPath('controllers') . "/$resource_name.php");
 					break;
 				case 'view':
 					require_once(self::getPath('views') . "/$resource_name.php");
@@ -113,7 +122,7 @@
 			//instancialize the main controller
 			self::requireSystemFile('controller');
 			self::requireResource('controller', 'Main');
-			self::$app_main_controller = new Main();
+			self::$app_main_controller = new Main_controller();
 			
 			//get the request args
 			if(self::getSetting('application', 'use_mod_rewrite')) {
@@ -123,6 +132,11 @@
 			} else {
 				self::$request_uri = $_SERVER['QUERY_STRING'];
 				$request_args = array_filter(explode('/', self::$request_uri));
+			}
+			
+			//convert $request_args to lowercase
+			foreach($request_args as $key=>$value) {
+				$request_args[$key] = strtolower($value);
 			}
 			
 			//display the Home page if no request_args are suplied
@@ -135,9 +149,10 @@
 				call_user_func_array(array(&self::$app_main_controller, array_shift($request_args)), $request_args);
 				
 			//second check: controller...
-			} elseif(is_file(self::getPath('controllers') . "/controller.{$request_args[0]}.php")) {
+			} elseif(is_file(self::getPath('controllers') . "/{$request_args[0]}.php")) {
 				self::requireResource('controller', $request_args[0]);
-				$controller = new $request_args[0]();
+				$controller_name = "{$request_args[0]}_controller";
+				$controller = new $controller_name();
 				
 				//...index...
 				if(count($request_args1) == 1 || !method_exists(&$controller, $request_args[1])) {

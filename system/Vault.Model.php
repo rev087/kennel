@@ -42,8 +42,8 @@
 		* If an extended Model class exists in the models directory, returns an instance of that class instead.
 		*/
 		static function getInstance($model_name) {
-			$filename = ucwords($model_name);
-			$filepath = "models/model.{$filename}.php";
+			$filename = strtolower($model_name);
+			$filepath = Vault::getPath('models') . "/{$filename}.php";
 			if(is_file($filepath)) {
 				require_once($filepath);
 				$extendedModel = $filename;
@@ -54,7 +54,7 @@
 		}
 		
 		/*
-		* Model::get()
+		* misc Model::get()
 		* This static method returns one or more Model instancies.
 		*/
 		static function get($model_name, $where=null) {
@@ -66,9 +66,9 @@
 					else $arr[] = $value;
 				}
 				$where_string = join(" AND ", $arr);
-				$rs = self::$db->query("SELECT * FROM {$model_name} WHERE {$where_string}");
+				$rs = self::$db->query("SELECT * FROM `{$model_name}` WHERE {$where_string}");
 			} else {
-				$rs = self::$db->query("SELECT * FROM {$model_name}");
+				$rs = self::$db->query("SELECT * FROM `{$model_name}`");
 			}
 			
 			$ret = array();
@@ -85,23 +85,54 @@
 			
 		}
 		
+		/*
+		* array Model::getAll(string $model_name, misc $where)
+		* Get all results in an array.
+		* Same as Model::get(), but always returns an array, even with a single instance.
+		*/
 		static function getAll($model_name) {
 			$ret = self::get($model_name);
 			if(is_array($ret)) return $ret;
 			else return array($ret);
 		}
 		
+		/*
+		* object Model::getOne(string $model_name, misc $where)
+		* Get the first result.
+		*/
 		static function getOne($model_name, $where) {
 			$rows = self::get($model_name, $where);
 			return $rows[0];
 		}
 		
+		/*
+		* void Model::feed(array $array)
+		* Feed the given arrey as values to the model
+		*/
 		function feed($array) {
 			foreach($array as $key=>$value) {
 				$this->__set($key, $value);
 			}
 		}
 		
+		/*
+		* array Model::getInstanceValues()
+		* 
+		*/
+		function getInstanceValues() {
+			$ret = array();
+			foreach($this->fields as $key=>$props) {
+				$ret[$key] = $props['value'];
+			}
+			return $ret;
+		}
+		
+		/*
+		* Model::save(void)
+		* Save the model.
+		* If the model was loaded from the database, this method updates the database record.
+		* If it's a new model, this method creates a new database record.
+		*/
 		function save() {
 			$values = array();
 			if($this->sync_values) {
@@ -129,6 +160,10 @@
 			else return false;
 		}
 		
+		/*
+		* Model::delete()
+		* Deletes the database record. The model must have been loaded from the database.
+		*/
 		function delete() {
 			if(self::$db->query("DELETE FROM {$this->model_name} WHERE " . join(" AND ", $this->sync_values))) {
 				return true;
