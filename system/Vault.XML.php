@@ -1,5 +1,15 @@
 <?php
 	
+	class XML {
+		static function element($tagname, $parent=null, $properties=null, $text=null) {
+			return new XMLElement($tagname, $parent, $properties, $text);
+		}
+		
+		static function text($text, $parent=null) {
+			return new XMLText($text, $parent);
+		}
+	}
+	
 	class XMLElement {
 		
 		var $parent;
