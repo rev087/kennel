@@ -2,7 +2,6 @@
 	
 	//version 1.0
 	//requires settings.php
-	require_once('system/Vault.XML.php');
 	
 	class MySQL {
 		public static $host;
