@@ -75,7 +75,6 @@
 		*/
 		static function onShutdown() {
 			if(self::getSetting('application', 'show_benchmark')) self::printBenchmark();
-			Vault::dump(debug_backtrace());
 		}
 		
 		/*
@@ -182,8 +181,8 @@
 			{
 				call_user_func_array(array(&self::$app_main_controller, array_shift($action_args)), $action_args);
 				
-			//2. Second check: user defined controller...
 			}
+			//2. Second check: user defined controller...
 			elseif(is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
 			{
 				self::requireResource('controller', $action_args[0]);
@@ -201,16 +200,15 @@
 			//3. Third check: system controller
 			elseif(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
 			{
-				//todo
 				require self::getPath('system')."/controllers/{$action_args[0]}.php";
 				$controller_name = "{$action_args[0]}_controller";
 				$controller = new $controller_name();
 				
-				//...index...
+				//...index... (no second request arg or doesn't match any methods)
 				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
 					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
 				
-				//...or specified method (a second request arg is present and exists as method)
+				//...or specified method (a second request arg is present and matches a method)
 				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
 					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
 			}
