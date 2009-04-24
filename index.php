@@ -1,4 +1,4 @@
 <?php
-	require_once('system/Vault.Core.php');
+	require_once('system/core/Vault.Core.php');
 	Vault::init();
 ?>
