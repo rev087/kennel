@@ -193,12 +193,12 @@
 				$controller = new $controller_name();
 				
 				//...index...
-				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
+				if(count($action_args) == 1 || !method_exists($controller, $action_args[1]))
+					call_user_func_array(array($controller, 'index'), array_slice($action_args, 2));
 				
 				//...or specified method (a second request arg is present and exists as method)
-				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
+				elseif(count($action_args) > 1 && method_exists($controller, $action_args[1]))
+					call_user_func_array(array($controller, $action_args[1]), array_slice($action_args, 2));
 			}
 			//3. Third check: system controller
 			elseif(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
@@ -208,12 +208,12 @@
 				$controller = new $controller_name();
 				
 				//...index... (no second request arg or doesn't match any methods)
-				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
+				if(count($action_args) == 1 || !method_exists($controller, $action_args[1]))
+					call_user_func_array(array($controller, 'index'), array_slice($action_args, 2));
 				
 				//...or specified method (a second request arg is present and matches a method)
-				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
+				elseif(count($action_args) > 1 && method_exists($controller, $action_args[1]))
+					call_user_func_array(array($controller, $action_args[1]), array_slice($action_args, 2));
 			}
 			//if the first request argument is not a method of the main controller nor a controller, send 404
 			else
