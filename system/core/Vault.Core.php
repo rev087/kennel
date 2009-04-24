@@ -47,6 +47,9 @@
 		static $request_query_string;
 		static $request_uri;
 		
+		static $controller;
+		static $action;
+		
 		static $time_init;
 		static $time_final;
 		
