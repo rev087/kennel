@@ -218,10 +218,10 @@
 			//if the first request argument is not a method of the main controller nor a controller, send 404
 			else
 			{
-				if(method_exists(&self::$app_main_controller, 'notfound'))
-					call_user_func(array(&self::$app_main_controller, 'notfound'));
+				if(method_exists(self::$app_main_controller, 'notfound'))
+					call_user_func(array(self::$app_main_controller, 'notfound'));
 				else
-					call_user_func(array(&self::$app_main_controller, 'index'));
+					call_user_func(array(self::$app_main_controller, 'index'));
 			}
 		}
 		
