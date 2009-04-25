@@ -1,23 +1,31 @@
 <?php
-	class Main_controller extends Controller {
+	class Main_controller extends Controller
+	{
 		
-		var $default_template = "template";
-		var $auto_render = TRUE;
+		var $autoRender = TRUE;
 		
-		function __construct() {
+		function __construct()
+		{
 			$this->template = new View('template');
 		}
 		
-		function index($page="") {
+		function __destruct()
+		{
+			if ($this->autoRender)
+				$this->template->render();
+		}
+		
+		function index($page="")
+		{
 			$this->template->content = new View('home');
-			$this->template->render();
-			
 		}
 		
-		function about() {
+		function about()
+		{
 		}
 		
-		function notfound() {
+		function notfound()
+		{
 			$this->template->content = "404 - Not found!";
 			$this->template->render();
 		}
