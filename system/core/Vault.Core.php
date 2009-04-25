@@ -9,13 +9,12 @@
 		if (substr($resource, -11) == '_controller')
 		{
 			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
-			//User Controller
+			// User Controller
 			if (is_file(Vault::getPath('controllers') . "/{$controller_name}.php"))
 				require_once Vault::getPath('controllers') . "/{$controller_name}.php";
+			// System Controller
 			elseif(is_file(Vault::getPath('system') . "/controllers/{$controller_name}.php"))
-			{
 				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php";
-			}
 		}
 		// System Core Resource
 		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
@@ -42,11 +41,12 @@
 		static $app_settings;
 		static $app_root_path;
 		static $app_root_uri;
-		static $app_main_controller;
 		
 		static $request_query_string;
 		static $request_uri;
 		
+		static $app_main_controller;
+		static $controller_instance;
 		static $controller;
 		static $action;
 		
@@ -145,6 +145,31 @@
 		}
 		
 		/*
+		*
+		*/
+		static function controllerAction($controller, $action, $args=null)
+		{
+			// Make controller/action names available to API
+			self::$controller = strtolower($controller);
+			self::$action = strtolower($action);
+			
+			// Format the controller name
+			$controller = ucfirst($controller) . "_controller";
+			
+			// Makes sure only one instace of the main controller is instantiated
+			if($controller == 'main')
+				self::$controller_instance = self::$app_main_controller;
+			else
+				self::$controller_instance = new $controller;
+			
+			// Call the action with args, if any
+			if(is_array($args))
+				call_user_func_array(array(self::$controller_instance, $action), $args);
+			else
+				self::$controller_instance->$action();
+		}
+		
+		/*
 		* Vault::processRequest()
 		*/
 		static function processRequest() {
@@ -176,13 +201,12 @@
 			
 			// Display the Home page if no action_args are suplied
 			if(count($action_args) == 0)
-			{
-				self::$app_main_controller->index();
-			}
+				self::controllerAction('main', 'index');
+			
 			// 1. First check: method in the main controller
 			elseif(method_exists(self::$app_main_controller, $action_args[0]))
 			{
-				call_user_func_array(array(&self::$app_main_controller, array_shift($action_args)), $action_args);
+				self::controllerAction('main', array_shift($action_args), $action_args);
 				
 			}
 			//2. Second check: user defined controller...
@@ -193,12 +217,12 @@
 				$controller = new $controller_name();
 				
 				//...index...
-				if(count($action_args) == 1 || !method_exists($controller, $action_args[1]))
-					call_user_func_array(array($controller, 'index'), array_slice($action_args, 2));
+				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
+					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
 				
 				//...or specified method (a second request arg is present and exists as method)
-				elseif(count($action_args) > 1 && method_exists($controller, $action_args[1]))
-					call_user_func_array(array($controller, $action_args[1]), array_slice($action_args, 2));
+				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
+					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
 			}
 			//3. Third check: system controller
 			elseif(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
@@ -208,20 +232,20 @@
 				$controller = new $controller_name();
 				
 				//...index... (no second request arg or doesn't match any methods)
-				if(count($action_args) == 1 || !method_exists($controller, $action_args[1]))
-					call_user_func_array(array($controller, 'index'), array_slice($action_args, 2));
+				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
+					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
 				
 				//...or specified method (a second request arg is present and matches a method)
-				elseif(count($action_args) > 1 && method_exists($controller, $action_args[1]))
-					call_user_func_array(array($controller, $action_args[1]), array_slice($action_args, 2));
+				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
+					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
 			}
 			//if the first request argument is not a method of the main controller nor a controller, send 404
 			else
 			{
-				if(method_exists(self::$app_main_controller, 'notfound'))
-					call_user_func(array(self::$app_main_controller, 'notfound'));
+				if(method_exists(&self::$app_main_controller, 'notfound'))
+					call_user_func(array(&self::$app_main_controller, 'notfound'));
 				else
-					call_user_func(array(self::$app_main_controller, 'index'));
+					call_user_func(array(&self::$app_main_controller, 'index'));
 			}
 		}
 		
