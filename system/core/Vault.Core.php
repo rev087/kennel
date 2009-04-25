@@ -233,7 +233,7 @@
 				
 				//...index... (no second request arg or doesn't match any methods)
 				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
+					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 1));
 				
 				//...or specified method (a second request arg is present and matches a method)
 				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
