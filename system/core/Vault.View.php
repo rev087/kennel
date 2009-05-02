@@ -26,7 +26,7 @@
 			}
 			
 			//require the view
-			require_once(Vault::getResourcePath('view', $this->view));
+			require_once(Vault::getPath('views') . '/' . $this->view . '.php');
 			
 			//unset all template variables
 			foreach($this->vars as $var =>$val) {

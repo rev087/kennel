@@ -9,14 +9,16 @@
 		if (substr($resource, -11) == '_controller')
 		{
 			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
+			
 			// User Controller
 			if (is_file(Vault::getPath('controllers') . "/{$controller_name}.php"))
 				require_once Vault::getPath('controllers') . "/{$controller_name}.php";
+			
 			// System Controller
 			elseif(is_file(Vault::getPath('system') . "/controllers/{$controller_name}.php"))
 				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php";
 		}
-		// System Core Resource
+		// System Core Resources
 		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
 		{
 			require_once Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php";
@@ -28,12 +30,14 @@
 	* Returns a Vault formated url.
 	* @action - the controller and actions. An example could be "blog/post".
 	*/
-	function url($action) {
-		if(Vault::getSetting('application', 'use_mod_rewrite')) {
-			return Vault::$app_root_uri . "/{$action}";
-		} else {
-			return Vault::$app_root_uri . '/index.php/' . action;
-		}
+	function url($action, $return=false) {
+		if(Vault::getSetting('application', 'use_mod_rewrite'))
+			$url= Vault::$app_root_uri . "/{$action}";
+		else
+			$url= Vault::$app_root_uri . '/index.php/' . action;
+		
+		if($return) return $url;
+		else print $url;
 	}
 	
 	class Vault {
@@ -105,68 +109,65 @@
 		}
 		
 		/*
-		* Vault::requireSystemFile(str $file)
+		* Vault::controllerAction(misc $controller, string $action, array $args);
 		*/
-		static function requireSystemFile($file) {
-			$file = ucfirst($file);
-			require_once(self::getPath('system') . "/core/Vault.$file.php");
-		}
-		
-		/*
-		* Vault::requireResource(str $file)
-		*/
-		static function requireResource($resource_type, $resource_name) {
-			switch($resource_type) {
-				case 'controller':
-					$resource_name = strtolower($resource_name);
-					require_once(self::getPath('controllers') . "/$resource_name.php");
-					break;
-				case 'view':
-					require_once(self::getPath('views') . "/$resource_name.php");
-					break;
-				case 'template':
-					break;
-			}
-		}
-		
-		/*
-		* Vault::getResourcePath(string $resource_type, string $resource_name);
-		*/
-		static function getResourcePath($resource_type, $resource_name) {
-			switch($resource_type) {
-				case 'controller':
-					$resource_name = strtolower($resource_name);
-					return self::getPath('controllers') . "/$resource_name.php";
-				case 'view':
-					return self::getPath('views') . "/$resource_name.php";
-				case 'template':
-					break;
-			}
-		}
-		
-		/*
-		*
-		*/
-		static function controllerAction($controller, $action, $args=null)
+		static function controllerAction($controller, $action='index', $args=null)
 		{
-			// Make controller/action names available to API
-			self::$controller = strtolower($controller);
+			// Accepts both strings and objects
+			if(is_string($controller))
+			{
+				// Format the controller class name
+				$controller_class = ucfirst($controller) . "_controller";
+				
+				// Make the controller name available to the API
+				self::$controller = strtolower($controller);
+				
+				// Makes sure only one instace of the main controller is instantiated
+				if($controller == 'main')
+					self::$controller_instance = self::$app_main_controller;
+				else
+					self::$controller_instance = new $controller_class;
+			} else {
+				// Set the controller as the current controller instance
+				self::$controller_instance = $controller;
+				
+				// Make the controller name available to the API
+				$controller_class = get_class($controller);
+				self::$controller = strtolower(substr($controller_class, -11));
+			}
+			
+			// Make sure $action is defined
+			if(!$action) $action = 'index';
+			
+			// Makes the action name available to the API
 			self::$action = strtolower($action);
 			
-			// Format the controller name
-			$controller = ucfirst($controller) . "_controller";
-			
-			// Makes sure only one instace of the main controller is instantiated
-			if($controller == 'main')
-				self::$controller_instance = self::$app_main_controller;
+			// Check for the existance of the action as a method in the controller class
+			if(method_exists(self::$controller_instance, self::$action))
+			{
+				// Call the method
+				if(is_array($args)) 
+					call_user_func_array(array(self::$controller_instance, self::$action), $args);
+				else 
+					call_user_func(array(self::$controller_instance, self::$action));
+			}
+			// Workaround in case the action does not exist
 			else
-				self::$controller_instance = new $controller;
-			
-			// Call the action with args, if any
-			if(is_array($args))
-				call_user_func_array(array(self::$controller_instance, $action), $args);
-			else
-				self::$controller_instance->$action();
+			{
+				$args = array_merge(array(self::$action), $args);
+				
+				// Select the 'notfound' method if present, or the 'index' method if not
+				if(method_exists(self::$controller_instance, 'notfound'))
+					self::$action = 'notfound';
+				else
+					self::$action = 'index';
+				
+				// Call the workaround method
+				if(is_array($args))
+					call_user_func_array(array(self::$controller_instance, self::$action), $args);
+				else
+					call_user_func(array(self::$controller_instance, self::$action));
+			}
 		}
 		
 		/*
@@ -174,8 +175,6 @@
 		*/
 		static function processRequest() {
 			// Instantialize the main controller
-			self::requireSystemFile('controller');
-			self::requireResource('controller', 'main');
 			self::$app_main_controller = new Main_controller();
 			
 			// Get the request args
@@ -196,7 +195,7 @@
 			// Reasign action keys and convert to lowercase
 			foreach($action_array as $key=>$value) {
 				if($value)
-				$action_args[] = strtolower($value);
+					$action_args[] = strtolower($value);
 			}
 			
 			// Display the Home page if no action_args are suplied
@@ -205,66 +204,21 @@
 			
 			// 1. First check: method in the main controller
 			elseif(method_exists(self::$app_main_controller, $action_args[0]))
-			{
 				self::controllerAction('main', array_shift($action_args), $action_args);
 				
-			}
 			//2. Second check: user defined controller...
 			elseif(is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
-			{
-				self::requireResource('controller', $action_args[0]);
-				$controller_name = "{$action_args[0]}_controller";
-				$controller = new $controller_name();
+				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
 				
-				//...index...
-				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 2));
-				
-				//...or specified method (a second request arg is present and exists as method)
-				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
-			}
 			//3. Third check: system controller
 			elseif(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
 			{
-				require self::getPath('system')."/controllers/{$action_args[0]}.php";
-				$controller_name = "{$action_args[0]}_controller";
-				$controller = new $controller_name();
-				
-				//...index... (no second request arg or doesn't match any methods)
-				if(count($action_args) == 1 || !method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, 'index'), array_slice($action_args, 1));
-				
-				//...or specified method (a second request arg is present and matches a method)
-				elseif(count($action_args) > 1 && method_exists(&$controller, $action_args[1]))
-					call_user_func_array(array(&$controller, $action_args[1]), array_slice($action_args, 2));
+				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
 			}
+				
 			//if the first request argument is not a method of the main controller nor a controller, send 404
 			else
-			{
-				if(method_exists(&self::$app_main_controller, 'notfound'))
-					call_user_func(array(&self::$app_main_controller, 'notfound'));
-				else
-					call_user_func(array(&self::$app_main_controller, 'index'));
-			}
-		}
-		
-		/*
-		* Vault::debugRequest()
-		*/
-		static function debugRequest() {
-			print '<table><tr><td>APP_ROOT_PATH:</td><td>';
-			var_dump(self::$app_root_path);
-			print '</td></tr>';
-			print '<tr><td>REQUEST_URI:</td><td>';
-			var_dump(self::$request_uri);
-			print '</td></tr>';
-			print '<tr><td>HTTP_HOST:</td><td>';
-			var_dump($_SERVER['HTTP_HOST']);
-			print '</td></tr>';
-			print '<tr><td>DOCUMENT_ROOT:</td><td>';
-			var_dump($_SERVER['DOCUMENT_ROOT']);
-			print '</td></tr></table>';
+				self::controllerAction(self::$app_main_controller, 'notfound');
 		}
 		
 		/*
