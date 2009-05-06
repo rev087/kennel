@@ -8,15 +8,30 @@
 		// Controllers
 		if (substr($resource, -11) == '_controller')
 		{
+			// Clear the controller name
 			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
 			
 			// User Controller
 			if (is_file(Vault::getPath('controllers') . "/{$controller_name}.php"))
-				require_once Vault::getPath('controllers') . "/{$controller_name}.php";
+			{
+				require_once Vault::getPath('controllers') . "/{$controller_name}.php"; return;
+			}
+			
+			// Model Controller
+			if(!Vault::$modules) self::fetchModules();
+			foreach(Vault::$modules as $module)
+			{
+				if(is_file(Vault::getPath('modules') . "/{$module}/{$controller_name}"))
+				{
+					require_once Vault::getPath('modules') . "/{$module}/{$controller_name}"; return;
+				}
+			}
 			
 			// System Controller
-			elseif(is_file(Vault::getPath('system') . "/controllers/{$controller_name}.php"))
-				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php";
+			if(is_file(Vault::getPath('system') . "/controllers/{$controller_name}.php"))
+			{
+				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php"; return;
+			}
 		}
 		// System Core Resources
 		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
@@ -45,6 +60,8 @@
 		static $app_settings;
 		static $app_root_path;
 		static $app_root_uri;
+		
+		static $modules;
 		
 		static $request_query_string;
 		static $request_uri;
@@ -171,6 +188,25 @@
 		}
 		
 		/*
+		* Vault::isModuleController(string $controller)
+		*/
+		private static function fetchModules()
+		{
+			// Initialize the variable
+			self::$modules = array();
+			
+			// Get through the file list in the modules directory
+			$files = scandir(self::getPath('modules'));
+			foreach($files as $file)
+			{
+				// Get only valid directories
+				if(is_dir(Vault::getPath('modules') . '/' . $file) &&
+					$file != '.' && $file != '..' && $file != '.svn')
+					self::$modules[] = $file;
+			}
+		}
+		
+		/*
 		* Vault::processRequest()
 		*/
 		static function processRequest() {
@@ -200,25 +236,41 @@
 			
 			// Display the Home page if no action_args are suplied
 			if(count($action_args) == 0)
-				self::controllerAction('main', 'index');
+			{
+				self::controllerAction('main', 'index'); return;
+			}
 			
 			// 1. First check: method in the main controller
-			elseif(method_exists(self::$app_main_controller, $action_args[0]))
-				self::controllerAction('main', array_shift($action_args), $action_args);
+			if(method_exists(self::$app_main_controller, $action_args[0]))
+			{
+				self::controllerAction('main', array_shift($action_args), $action_args); return;
+			}
 				
-			//2. Second check: user defined controller...
-			elseif(is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
-				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
-				
-			//3. Third check: system controller
-			elseif(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
+			// 2. Second check: user defined controller...
+			if(is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
+			{
+				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2)); return;
+			}
+			
+			// 3. Third check: model controller
+			if(!self::$modules) self::fetchModules();
+			$controller_class = ucfirst(strtolower($action_args[0])) . '_controller.php';
+			foreach(self::$modules as $module)
+			{
+				if(is_file(self::getPath('modules') . "/{$module}/{$controller_class}"))
+				{
+					self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2)); return;
+				}
+			}
+			
+			// 4. Third check: system controller
+			if(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
 			{
 				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
 			}
 				
-			//if the first request argument is not a method of the main controller nor a controller, send 404
-			else
-				self::controllerAction(self::$app_main_controller, 'notfound');
+			// If the first request argument is not a method of the main controller nor a controller, send 404
+			self::controllerAction(self::$app_main_controller, 'notfound');
 		}
 		
 		/*
