@@ -18,7 +18,7 @@
 			}
 			
 			// Model Controller
-			if(!Vault::$modules) self::fetchModules();
+			if(!Vault::$modules) Vault::fetchModules();
 			foreach(Vault::$modules as $module)
 			{
 				if(is_file(Vault::getPath('modules') . "/{$module}/{$controller_name}"))
@@ -163,7 +163,7 @@
 			if(method_exists(self::$controller_instance, self::$action))
 			{
 				// Call the method
-				if(is_array($args)) 
+				if(is_array($args))
 					call_user_func_array(array(self::$controller_instance, self::$action), $args);
 				else 
 					call_user_func(array(self::$controller_instance, self::$action));
@@ -171,7 +171,8 @@
 			// Workaround in case the action does not exist
 			else
 			{
-				$args = array_merge(array(self::$action), $args);
+				if(is_array($args))
+					$args = array_merge(array(self::$action), $args);
 				
 				// Select the 'notfound' method if present, or the 'index' method if not
 				if(method_exists(self::$controller_instance, 'notfound'))
@@ -190,17 +191,17 @@
 		/*
 		* Vault::isModuleController(string $controller)
 		*/
-		private static function fetchModules()
+		static function fetchModules()
 		{
 			// Initialize the variable
 			self::$modules = array();
 			
 			// Get through the file list in the modules directory
 			$files = scandir(self::getPath('modules'));
-			foreach($files as $file)
+			foreach ($files as $file)
 			{
 				// Get only valid directories
-				if(is_dir(Vault::getPath('modules') . '/' . $file) &&
+				if (is_dir(Vault::getPath('modules') . '/' . $file) &&
 					$file != '.' && $file != '..' && $file != '.svn')
 					self::$modules[] = $file;
 			}
@@ -229,6 +230,7 @@
 			}
 
 			// Reasign action keys and convert to lowercase
+			$action_args = array();
 			foreach($action_array as $key=>$value) {
 				if($value)
 					$action_args[] = strtolower($value);
@@ -263,7 +265,7 @@
 				}
 			}
 			
-			// 4. Third check: system controller
+			// 4. Forth check: system controller
 			if(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
 			{
 				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
