@@ -37,7 +37,7 @@
 		
 		function abandon($element) {
 			foreach($this->children as $child) {
-				//if($element = $child) print "<p></p>{$this} abandoning {$element}</p>";
+				//if($element == $child) print "<p></p>{$this} abandoning {$element}</p>";
 			}
 		}
 		
@@ -46,7 +46,7 @@
 		}
 		
 		function output() {
-			$properties = $this->__propertiesToString();
+			$properties = $this->_propertiesToString();
 			if(count($this->children) >= 1) {
 				$ret = "<{$this->tagname}{$properties}>";
 				foreach($this->children as $child) {
@@ -75,7 +75,7 @@
 			return $this->__set($property, $value);
 		}
 		
-		private function __propertiesToString() {
+		private function _propertiesToString() {
 			if(count($this->properties) > 0) {
 				$props = array();
 				foreach($this->properties as $key=>$value) {

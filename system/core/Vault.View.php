@@ -1,18 +1,22 @@
-<?php
+ <?php
 	
-	class View {
+	class View
+	{
 		private $view;
 		private $vars = array();
 		
-		function __construct($view) {
+		function __construct($view)
+		{
 			$this->view = $view;
 		}
 		
-		function __tostring() {
+		function __tostring()
+		{
 			return $this->_getOutput();
 		}
 		
-		function __set($var, $value) {
+		function __set($var, $value)
+		{
 			$this->vars[$var] = $value;
 		}
 		
@@ -21,15 +25,33 @@
 			ob_start();
 			
 			//set all template variables
-			foreach($this->vars as $var =>$val) {
+			foreach ($this->vars as $var =>$val) {
 				$$var = $val;
 			}
 			
-			//require the view
-			require_once(Vault::getPath('views') . '/' . $this->view . '.php');
+			//View cascading
+			
+			//1. User view
+			if (is_file(Vault::getPath('views') . "/{$this->view}.php"))
+				require_once(Vault::getPath('views') . "/{$this->view}.php");
+			
+			//2. Model view
+			if (!Vault::$modules) Vault::fetchModules();
+			foreach (Vault::$modules as $module)
+			{
+				if (is_file(Vault::getPath('modules') . "/{$module}/views/{$this->view}.php"))
+				{
+					require_once Vault::getPath('modules') . "/{$module}/views/{$this->view}.php"; return;
+				}
+			}
+			
+			//3. System view
+			if (is_file(Vault::getPath('system') . "/views/{$this->view}.php"))
+				require_once(Vault::getPath('system') . "/views/{$this->view}.php");
+			
 			
 			//unset all template variables
-			foreach($this->vars as $var =>$val) {
+			foreach ($this->vars as $var =>$val) {
 				unset($$var);
 			}
 			
@@ -37,7 +59,8 @@
 			return ob_get_clean();
 		}
 		
-		function render() {
+		function render()
+		{
 			print $this->_getOutput();
 		}
 	}
