@@ -21,9 +21,9 @@
 			if(!Vault::$modules) Vault::fetchModules();
 			foreach(Vault::$modules as $module)
 			{
-				if(is_file(Vault::getPath('modules') . "/{$module}/{$controller_name}"))
+				if(is_file(Vault::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"))
 				{
-					require_once Vault::getPath('modules') . "/{$module}/{$controller_name}"; return;
+					require_once Vault::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"; return;
 				}
 			}
 			
@@ -45,11 +45,18 @@
 	* Returns a Vault formated url.
 	* @action - the controller and actions. An example could be "blog/post".
 	*/
-	function url($action, $return=false) {
-		if(Vault::getSetting('application', 'use_mod_rewrite'))
-			$url= Vault::$app_root_uri . "/{$action}";
-		else
-			$url= Vault::$app_root_uri . '/index.php/' . action;
+	function url($action=null, $return=false) {
+		if(isset($action))
+		{
+			if(Vault::getSetting('application', 'use_mod_rewrite'))
+				$url= Vault::$app_root_uri . "/{$action}";
+			else
+				$url= Vault::$app_root_uri . '/index.php/' . action;
+		}
+		else 
+		{
+			$url = Vault::$app_root_uri;
+		}
 		
 		if($return) return $url;
 		else print $url;
@@ -68,8 +75,6 @@
 		
 		static $app_main_controller;
 		static $controller_instance;
-		static $controller;
-		static $action;
 		
 		static $time_init;
 		static $time_final;
@@ -137,7 +142,7 @@
 				$controller_class = ucfirst($controller) . "_controller";
 				
 				// Make the controller name available to the API
-				self::$controller = strtolower($controller);
+				Request::$controller = strtolower($controller);
 				
 				// Makes sure only one instace of the main controller is instantiated
 				if($controller == 'main')
@@ -150,41 +155,41 @@
 				
 				// Make the controller name available to the API
 				$controller_class = get_class($controller);
-				self::$controller = strtolower(substr($controller_class, -11));
+				Request::$controller = strtolower(substr($controller_class, -11));
 			}
 			
 			// Make sure $action is defined
 			if(!$action) $action = 'index';
 			
 			// Makes the action name available to the API
-			self::$action = strtolower($action);
+			Request::$action = strtolower($action);
 			
 			// Check for the existance of the action as a method in the controller class
-			if(method_exists(self::$controller_instance, self::$action))
+			if(method_exists(self::$controller_instance, Request::$action))
 			{
 				// Call the method
 				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, self::$action), $args);
+					call_user_func_array(array(self::$controller_instance, Request::$action), $args);
 				else 
-					call_user_func(array(self::$controller_instance, self::$action));
+					call_user_func(array(self::$controller_instance, Request::$action));
 			}
 			// Workaround in case the action does not exist
 			else
 			{
 				if(is_array($args))
-					$args = array_merge(array(self::$action), $args);
+					$args = array_merge(array(Request::$action), $args);
 				
 				// Select the 'notfound' method if present, or the 'index' method if not
 				if(method_exists(self::$controller_instance, 'notfound'))
-					self::$action = 'notfound';
+					Request::$action = 'notfound';
 				else
-					self::$action = 'index';
+					Request::$action = 'index';
 				
 				// Call the workaround method
 				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, self::$action), $args);
+					call_user_func_array(array(self::$controller_instance, Request::$action), $args);
 				else
-					call_user_func(array(self::$controller_instance, self::$action));
+					call_user_func(array(self::$controller_instance, Request::$action));
 			}
 		}
 		
@@ -210,7 +215,8 @@
 		/*
 		* Vault::processRequest()
 		*/
-		static function processRequest() {
+		static function processRequest()
+		{
 			// Instantialize the main controller
 			self::$app_main_controller = new Main_controller();
 			
@@ -222,14 +228,15 @@
 				$action_string = str_replace(strstr($request_string, '?'), '', $request_string);
 				
 				$action_array = array_filter(explode('/', $action_string));
-				
-			} else
+			}
+			else
 			{
+				//todo: check this
 				self::$request_uri = $_SERVER['QUERY_STRING'];
 				$action_array = array_filter(explode('/', self::$request_uri));
 			}
 
-			// Reasign action keys and convert to lowercase
+			// Reasign action keys (to avoid empty entries due to double slashes) and convert to lowercase
 			$action_args = array();
 			foreach($action_array as $key=>$value) {
 				if($value)
@@ -240,6 +247,7 @@
 			if(count($action_args) == 0)
 			{
 				self::controllerAction('main', 'index'); return;
+				return;
 			}
 			
 			// 1. First check: method in the main controller
@@ -256,32 +264,27 @@
 			
 			// 3. Third check: model controller
 			if(!self::$modules) self::fetchModules();
-			$controller_class = ucfirst(strtolower($action_args[0])) . '_controller.php';
+			$controller_filename = strtolower($action_args[0]) . '.php';
 			foreach(self::$modules as $module)
 			{
-				if(is_file(self::getPath('modules') . "/{$module}/{$controller_class}"))
+				if(is_file(self::getPath('modules') . "/{$module}/controllers/{$controller_filename}"))
 				{
-					self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2)); return;
+					if(count($action_args)==1) self::controllerAction($action_args[0]);
+					else self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
+					return;
 				}
 			}
 			
 			// 4. Forth check: system controller
 			if(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
 			{
-				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
+				if (count($action_args)==1) self::controllerAction($action_args[0]);
+				else self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
+				return;
 			}
 				
 			// If the first request argument is not a method of the main controller nor a controller, send 404
 			self::controllerAction(self::$app_main_controller, 'notfound');
-		}
-		
-		/*
-		* Vault::dump($variable)
-		*/
-		static function dump($variable, $return=false) {
-			$dump = '<pre>'.var_export($variable, true).'</pre>';
-			if($return) return $dump;
-			else print $dump;
 		}
 		
 	}

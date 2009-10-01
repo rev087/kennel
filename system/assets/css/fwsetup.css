@@ -1,0 +1,100 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+a img {
+	border: 0px;
+}
+
+body {
+	background-color: #092E20;
+	color: #1E9C6D;
+	text-align: center;
+	font-family: Helvetica, "Liberation Sans", "Trebuchet MS", Arial, sans-serif;
+}
+
+div#wrapper {
+	margin: 75px auto;
+	width: 1006px;
+}
+
+div#header {
+	margin-bottom: 50px;
+}
+
+ul#menu {
+	width: 161px;
+	float: left;
+	list-style: none;
+	margin-right: 5px;
+	padding-top: 15px;
+}
+
+	ul#menu li {
+		display: block;
+		width: 161px;
+		height: 30px;
+		text-align: right;
+		background-image: url('../img/fw_menu_item.png');
+		margin-bottom: 3px;
+	}
+	
+	ul#menu a {
+		color: #1E9C6D;
+		text-decoration: none;
+		margin-right: 10px;
+		width: 140px;
+		display: block;
+		background-position: 10px center;
+		line-height: 30px;
+		background-repeat: no-repeat;
+	}
+	
+	ul#menu a:hover {
+		text-decoration: underline;
+	}
+	
+	ul#menu li.selected {
+		background-image: url('../img/fw_menu_sel.png');
+		width: 175px;
+		z-index: 0;
+		position: relative;
+	}
+	
+	a#modules { background-image: url('../img/fw_modules_ico.png'); }
+	a#database { background-image: url('../img/fw_database_ico.png'); }
+	a#settings { background-image: url('../img/fw_settings_ico.png'); }
+	
+	ul#menu li.selected a {
+		margin-right: 20px;
+	}
+
+div#content {
+	background-color: #0B3928;
+	width: 840px;
+	float: left;
+	background-image: url('../img/fw_bg_mid.png');
+	background-repeat: repeat-y;
+	text-align: left;
+}
+	
+	div#content ul, form, p {
+		margin: 0px 30px;
+	}
+	
+	h1 {
+		background-image: url('../img/fw_bg_top.png');
+		background-repeat: no-repeat;
+		text-align: left;
+		padding: 10px 10px 5px 10px;
+		font-size: 18pt;
+		text-shadow: #062016 1px 1px 0px;
+	}
+
+div#footer {
+	background-image: url('../img/fw_bg_bot.png');
+	background-repeat: no-repeat;
+	width: 840px;
+	height: 10px;
+}
