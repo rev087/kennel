@@ -33,6 +33,31 @@
 				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php"; return;
 			}
 		}
+		// Helpers
+		if ($resource == strtolower($resource))
+		{
+			// User Helper
+			if (is_file(Vault::getPath('helpers') . "/{$resource}.php"))
+			{
+				require_once Vault::getPath('helpers') . "/{$resource}.php"; return;
+			}
+			
+			// Model Helper
+			if(!Vault::$modules) Vault::fetchModules();
+			foreach(Vault::$modules as $module)
+			{
+				if(is_file(Vault::getPath('modules') . "/{$module}/helpers/{$resource}.php"))
+				{
+					require_once Vault::getPath('modules') . "/{$module}/helpers/{$resource}.php"; return;
+				}
+			}
+			
+			// System Helper
+			if(is_file(Vault::getPath('system') . "/helpers/{$resource}.php"))
+			{
+				require_once Vault::getPath('system') . "/helpers/{$resource}.php"; return;
+			}
+		}
 		// System Core Resources
 		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
 		{
@@ -89,7 +114,7 @@
 			
 			//get the application path and root uri
 			self::$app_root_path = dirname($_SERVER["SCRIPT_FILENAME"]);
-			self::$app_root_uri = "http://{$_SERVER['HTTP_HOST']}/" . substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT']));
+			self::$app_root_uri = trim("http://{$_SERVER['HTTP_HOST']}", '/') . '/' . trim(substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT'])), '/');
 			
 			//get the application settings
 			require_once('settings.php');
