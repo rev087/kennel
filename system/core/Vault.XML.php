@@ -45,6 +45,12 @@
 			return $this->output();
 		}
 		
+		function setText($text)
+		{
+			$txtEl = new XMLText($text, $this);
+			return $this;
+		}
+		
 		function output() {
 			$properties = $this->_propertiesToString();
 			if(count($this->children) >= 1) {
