@@ -87,6 +87,9 @@
 		else print $url;
 	}
 	
+	/*
+	 * The magic starts here.
+	 */
 	class Vault {
 		
 		static $app_settings;
