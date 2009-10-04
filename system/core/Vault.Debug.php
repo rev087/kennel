@@ -2,8 +2,6 @@
 	
 	class Debug
 	{
-		
-		static $backtrace;
 		static $notice = E_USER_NOTICE;
 		static $warning = E_USER_WARNING;
 		static $error = E_USER_ERROR;
@@ -21,7 +19,7 @@
 		/*
 		* Debug::backtrace();
 		*/
-		static function backtrace($level=0, $limit = null, $return=false)
+		static function backtrace($depth=0, $limit = null, $return=false)
 		{
 			$full_backtrace = debug_backtrace();
 			
@@ -36,7 +34,7 @@
 			$th = XML::element('th', $tr, null, 'file');
 			$th = XML::element('th', $tr, null, 'line');
 
-			for($n=0; $n<count($full_backtrace); $n++)
+			for($n=$depth; $n<count($full_backtrace); $n++)
 			{
 				if($limit === $n) break;
 				$backtrace = $full_backtrace[$n];
@@ -62,7 +60,7 @@
 		/*
 		* Debug::dumpError($error)
 		*/
-		static function dumpError($error)
+		static function dumpError($error, $backtrace_depth=0)
 		{
 			$table = XML::element('table', null, array('border'=>'1'));
 			
@@ -73,10 +71,8 @@
 			$th = XML::element('th', $tr, null, 'error');
 			$td = XML::element('td', $tr, null, $error);
 			
-			if(Settings::get('application', 'debug_mode')) self::backtrace(3, 1);
-			
 			print $table;
-			die();
+			if(Vault::getSetting('application', 'debug_mode')) self::backtrace(3 + $backtrace_depth);
 		}
 		
 		static function error_handler($errno = E_USER_WARNING, $errstr)
@@ -98,12 +94,11 @@
 			
 		}
 		
-		static function error($errstr, $backtrace=false)
+		static function error($errstr, $backtrace_level=0)
 		{
-			if(Settings::get('debug_mode'))
+			if(Vault::getSetting('application', 'debug_mode'))
 			{
-				self::dumpError($errstr);
-				die();
+				self::dumpError($errstr, $backtrace_level);
 			}
 		}
 		

@@ -1,4 +1,4 @@
- <?php
+<?php
 	
 	class View
 	{
@@ -10,9 +10,9 @@
 			$this->view = $view;
 		}
 		
-		function __tostring()
+		function __toString()
 		{
-			return $this->_getOutput();
+			return strval($this->_getOutput());
 		}
 		
 		function __set($var, $value)
@@ -21,6 +21,7 @@
 		}
 		
 		private function _getOutput() {
+			
 			//begin intercepting the output buffer the buffer
 			ob_start();
 			
@@ -37,7 +38,7 @@
 			
 			//2. Model view
 			if (!Vault::$modules) Vault::fetchModules();
-			foreach (Vault::$modules as $module)
+			foreach (Vault::$modules as $module=>$info)
 			{
 				if (is_file(Vault::getPath('modules') . "/{$module}/views/{$this->view}.php"))
 				{
