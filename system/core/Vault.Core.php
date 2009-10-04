@@ -17,9 +17,9 @@
 				require_once Vault::getPath('controllers') . "/{$controller_name}.php"; return;
 			}
 			
-			// Model Controller
+			// Module Controller
 			if(!Vault::$modules) Vault::fetchModules();
-			foreach(Vault::$modules as $module)
+			foreach(Vault::$modules as $module=>$info)
 			{
 				if(is_file(Vault::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"))
 				{
@@ -42,9 +42,9 @@
 				require_once Vault::getPath('helpers') . "/{$resource}.php"; return;
 			}
 			
-			// Model Helper
+			// Module Helper
 			if(!Vault::$modules) Vault::fetchModules();
-			foreach(Vault::$modules as $module)
+			foreach(Vault::$modules as $module=>$info)
 			{
 				if(is_file(Vault::getPath('modules') . "/{$module}/helpers/{$resource}.php"))
 				{
@@ -236,7 +236,10 @@
 				// Get only valid directories
 				if (is_dir(Vault::getPath('modules') . '/' . $file) &&
 					$file != '.' && $file != '..' && $file != '.svn')
-					self::$modules[] = $file;
+					{
+						include Vault::getPath('modules') . "/{$file}/info.php";
+						self::$modules[$file] = $info[$file];
+					}
 			}
 		}
 		
@@ -293,7 +296,7 @@
 			// 3. Third check: model controller
 			if(!self::$modules) self::fetchModules();
 			$controller_filename = strtolower($action_args[0]) . '.php';
-			foreach(self::$modules as $module)
+			foreach(self::$modules as $module=>$info)
 			{
 				if(is_file(self::getPath('modules') . "/{$module}/controllers/{$controller_filename}"))
 				{

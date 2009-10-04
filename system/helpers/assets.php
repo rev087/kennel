@@ -24,7 +24,7 @@
 			
 			//2. Module asset
 			if (!Vault::$modules) Vault::fetchModules();
-			foreach (Vault::$modules as $module)
+			foreach (Vault::$modules as $module=>$info)
 			{
 				if (is_file(Vault::$app_root_path . Vault::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}"))
 					return Vault::$app_root_uri . Vault::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}";
@@ -33,6 +33,9 @@
 			//3. System asset
 			if (is_file(Vault::$app_root_path . Vault::getSetting('path', 'system') . "/assets/{$type}/{$filename}"))
 				return Vault::$app_root_uri . Vault::getSetting('path', 'system') . "/assets/{$type}/{$filename}";
+				
+			//Throw a error if not found
+			Debug::error("assets helper: <b>{$filename}</b> not found.", 1);
 		}
 		
 	}
