@@ -1,6 +1,4 @@
 <?php
-	require_once('Vault.MySQL.php');
-	require_once('Vault.Debug.php');
 	
 	class Model {
 		private static $structure_cache = array();
@@ -49,7 +47,7 @@
 				$extendedModel = $filename;
 			}
 			
-			if($extendedModel) return new $extendedModel($model_name);
+			if(isset($extendedModel)) return new $extendedModel($model_name);
 			else return new Model($model_name);
 		}
 		

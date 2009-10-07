@@ -4,14 +4,14 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Natural Framework Setup</title>
 		<meta name="description" content="Materiais para construção." />
-		<link rel="stylesheet" type="text/css" href="<?php print url('assets/css/fwsetup.css') ?>" />
-		<script type="text/javascript" src="<?php print url('assets/js/mootools-1.2.3-core-yc.js') ?>"></script>
+		<link rel="stylesheet" type="text/css" href="<?php print assets::css('fwsetup.css') ?>" />
+		<script type="text/javascript" src="<?php print assets::js('mootools-1.2.3-core-yc.js') ?>"></script>
 	</head>
 	<body>
 		
 		<div id="wrapper">
 			<div id="header">
-				<img src="<?php print url('assets/img/fw_logo.png'); ?>" alt="Natural Framework" />
+				<img src="<?php print assets::img('fw_logo.png'); ?>" alt="Natural Framework" />
 			</div>
 			
 			<ul id="menu">
@@ -35,14 +35,7 @@
 			<div id="content">
 				<h1><?php print ucfirst($action); ?></h1>
 				
-				<ul>
-					<li>Administration</li>
-					<li>Advanced Search</li>
-					<li>Administration</li>
-					<li>Administration</li>
-					<li>Administration</li>
-					<li>Administration</li>
-				</ul>
+				<?php print $content ?>
 				
 				<div id="footer" ></div>
 			</div>
