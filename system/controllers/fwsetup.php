@@ -10,6 +10,7 @@
 		{
 			$this->template = new View('fwsetup_login');
 			$this->template->action = 'modules';
+			$this->template->content = Debug::dump(Vault::$modules, true);
 			$this->template->render();
 		}
 		
@@ -17,6 +18,7 @@
 		{
 			$this->template = new View('fwsetup_login');
 			$this->template->action = 'database';
+			$this->template->content = '';
 			$this->template->render();
 		}
 		
@@ -24,6 +26,7 @@
 		{
 			$this->template = new View('fwsetup_login');
 			$this->template->action = 'settings';
+			$this->template->content = '';
 			$this->template->render();
 		}
 	}

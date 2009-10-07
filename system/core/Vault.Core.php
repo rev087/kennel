@@ -4,7 +4,8 @@
 	* __autoload(string $resource)
 	* Automatically requires Controllers and Vault System files
 	*/
-	function __autoload($resource) {
+	function __autoload($resource)
+	{
 		// Controllers
 		if (substr($resource, -11) == '_controller')
 		{
@@ -176,7 +177,7 @@
 				if($controller == 'main')
 					self::$controller_instance = self::$app_main_controller;
 				else
-					self::$controller_instance = new $controller_class;
+					self::$controller_instance = Controller::getInstance($controller_class);
 			} else {
 				// Set the controller as the current controller instance
 				self::$controller_instance = $controller;
@@ -249,7 +250,7 @@
 		static function processRequest()
 		{
 			// Instantialize the main controller
-			self::$app_main_controller = new Main_controller();
+			self::$app_main_controller = Controller::getInstance('Main_controller');
 			
 			// Get the request args
 			if(self::getSetting('application', 'use_mod_rewrite'))
@@ -293,7 +294,7 @@
 				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2)); return;
 			}
 			
-			// 3. Third check: model controller
+			// 3. Third check: module controller
 			if(!self::$modules) self::fetchModules();
 			$controller_filename = strtolower($action_args[0]) . '.php';
 			foreach(self::$modules as $module=>$info)

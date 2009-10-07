@@ -15,13 +15,17 @@
 			return strval($this->_getOutput());
 		}
 		
+		function __get($var)
+		{
+			return $this->vars[$var];
+		}
+		
 		function __set($var, $value)
 		{
 			$this->vars[$var] = $value;
 		}
 		
 		private function _getOutput() {
-			
 			//begin intercepting the output buffer the buffer
 			ob_start();
 			
@@ -42,6 +46,7 @@
 			{
 				if (is_file(Vault::getPath('modules') . "/{$module}/views/{$this->view}.php"))
 				{
+					//var_dump($editor);
 					require_once Vault::getPath('modules') . "/{$module}/views/{$this->view}.php"; return;
 				}
 			}

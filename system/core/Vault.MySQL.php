@@ -167,7 +167,7 @@
 		}
 		
 		function getTableStructure($table) {
-			if(self::$structure_cache[$model_name]) return self::$structure_cache[$model_name];
+			if(array_key_exists($table, self::$structure_cache)) return self::$structure_cache[$table];
 			
 			$structure = array();
 			$rs = self::query("DESC {$table}");
