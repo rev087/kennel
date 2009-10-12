@@ -33,8 +33,6 @@
 			</ul>
 			
 			<div id="content">
-				<h1><?php print ucfirst($action); ?></h1>
-				
 				<?php print $content ?>
 				
 				<div id="footer" ></div>

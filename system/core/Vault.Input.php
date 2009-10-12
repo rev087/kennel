@@ -12,12 +12,18 @@
 		
 		function get($var)
 		{
-			return self::clean($this->_get[$var]);
+			if(isset($this->_get[$var]))
+				return self::clean($this->_get[$var]);
+			else
+				return null;
 		}
 		
 		function post($var)
 		{
-			return self::clean($this->_post[$var]);
+			if(isset($this->_post[$var]))
+				return self::clean($this->_post[$var]);
+			else
+				return null;
 		}
 		
 		function __toString()
@@ -25,9 +31,10 @@
 			return $this->dump(true);
 		}
 		
-		function dump($return)
+		function dump()
 		{
-			return Vault::dump(array('GET'=>$this->_get, 'POST'=>$this->_post), $return);
+			Debug::dump($_GET);
+			Debug::dump($_POST);
 		}
 		
 		/*

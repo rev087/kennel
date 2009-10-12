@@ -71,7 +71,7 @@
 	* Returns a Vault formated url.
 	* @action - the controller and actions. An example could be "blog/post".
 	*/
-	function url($action=null, $return=false) {
+	function url($action=null) {
 		if(isset($action))
 		{
 			if(Vault::getSetting('application', 'use_mod_rewrite'))
@@ -84,8 +84,7 @@
 			$url = Vault::$app_root_uri;
 		}
 		
-		if($return) return $url;
-		else print $url;
+		return $url;
 	}
 	
 	/*

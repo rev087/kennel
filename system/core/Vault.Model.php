@@ -60,7 +60,7 @@
 			if($where) {
 				$arr = array();
 				foreach($where as $key=>$value) {
-					if($key) $arr[] = "`{$key}` = '{$value}'";
+					if(!is_numeric($key)) $arr[] = "`{$key}` = '{$value}'";
 					else $arr[] = $value;
 				}
 				$where_string = join(" AND ", $arr);
@@ -100,7 +100,8 @@
 		*/
 		static function getOne($model_name, $where) {
 			$rows = self::get($model_name, $where);
-			return $rows[0];
+			if(count($rows) > 0) return $rows[0];
+			else return NULL;
 		}
 		
 		/*
@@ -151,7 +152,7 @@
 			
 			//register the new syncronized values
 			foreach($this->fields as $field) {
-				$this->sync_values = "`{$field->name}` = '{$field->value}'";
+				$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
 			}
 			//execute the query
 			if(self::$db->query($sql)) return $this;
