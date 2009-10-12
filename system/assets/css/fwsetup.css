@@ -1,7 +1,10 @@
+/* Stylesheet Reset */
 * {
 	margin: 0px;
 	padding: 0px;
 }
+
+/* Layout */
 
 a img {
 	border: 0px;
@@ -70,7 +73,7 @@ ul#menu {
 		margin-right: 20px;
 	}
 
-div#content {
+#content {
 	background-color: #0B3928;
 	width: 840px;
 	float: left;
@@ -79,7 +82,7 @@ div#content {
 	text-align: left;
 }
 	
-	div#content ul, form, p {
+	#content ul, form, p {
 		margin: 0px 30px;
 	}
 	
@@ -91,10 +94,54 @@ div#content {
 		font-size: 18pt;
 		text-shadow: #062016 1px 1px 0px;
 	}
+	
+	#content a {
+		color: #1E9C6D;
+		text-decoration: none;
+	}
+	#content a:hover {
+		text-decoration: underline;
+	}
 
-div#footer {
+#footer {
 	background-image: url('../img/fw_bg_bot.png');
 	background-repeat: no-repeat;
 	width: 840px;
 	height: 10px;
+}
+
+/* Elements */
+
+/* Tables */
+
+table {
+	border-spacing: 0px;
+	margin: 15px 30px;
+	border-right: 1px solid #092E20;
+	border-bottom: 1px solid #092E20;
+}
+
+th {
+	background-color: #092E20;
+	border-top: 1px solid #156546;
+	border-right: 1px solid #062016;
+	border-bottom: 1px solid #062016;
+	border-left: 1px solid #156546;
+}
+
+td, th {
+	padding: 2px 5px;
+}
+
+td {
+	background-color: #0A3525;
+	border-left: 1px solid #092E20;
+}
+
+/* Messages */
+
+.msg {
+	background-color: #1E9C6D;
+	padding: 5px 15px;
+	color: #0B3928;
 }

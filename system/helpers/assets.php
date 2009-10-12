@@ -16,6 +16,11 @@
 			return self::_cascade($filename, 'js');
 		}
 		
+		static function flash($filename)
+		{
+			return self::_cascade($filename, 'flash');
+		}
+		
 		private function _cascade($filename, $type)
 		{
 			//1. User asset

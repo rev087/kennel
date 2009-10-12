@@ -1,5 +1,5 @@
 <?php	
-	class ModelList {
+	class model_list {
 		
 		private $model_name;
 		private $fields = array();
@@ -29,10 +29,7 @@
 			$this->actions[] = $action;
 		}
 		
-		function output($return=false) {
-			require_once('controllers/controller.Model.php');
-			require_once('controllers/controller.MySQL.php');
-			require_once('controllers/controller.HTML.php');
+		function output() {
 			$model = Model::getInstance($this->model_name);
 			$struc = self::$db->getTableStructure($this->model_name);
 			
@@ -82,10 +79,14 @@
 				
 			}
 			
-			if($return) return $table;
-			else print $table;
+			return $table;
 			
 			//bottom pagination (todo)
+		}
+		
+		function render()
+		{
+			print $this->output();
 		}
 		
 	}

@@ -11,6 +11,11 @@
 				print $type;
 		}
 		
+		function flash($file)
+		{
+			
+		}
+		
 		function css($file)
 		{
 			header("Content-type: text/css");

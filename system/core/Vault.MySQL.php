@@ -42,40 +42,40 @@
 		}
 		
 		function dumpError($sql) {
-			$table = new XMLElement('table', null, array('border'=>'1'));
+			$table = XML::element('table', null, array('border'=>'1'));
 			
-			$tr = new XMLElement('tr', $table);
-			$th = new XMLElement('th', $tr, array('colspan'=>'2'), "SQL query returned an error");
+			$tr = XML::element('tr', $table);
+			$th = XML::element('th', $tr, array('colspan'=>'2'), "SQL query returned an error");
 			
-			$tr = new XMLElement('tr', $table);
-			$th = new XMLElement('th', $tr, null, 'query');
-			$td = new XMLElement('td', $tr, null, $sql);
+			$tr = XML::element('tr', $table);
+			$th = XML::element('th', $tr, null, 'query');
+			$td = XML::element('td', $tr, null, $sql);
 			
-			$tr = new XMLElement('tr', $table);
-			$th = new XMLElement('th', $tr, null, 'error');
-			$td = new XMLElement('td', $tr, null, mysql_error(self::$conn));
+			$tr = XML::element('tr', $table);
+			$th = XML::element('th', $tr, null, 'error');
+			$td = XML::element('td', $tr, null, mysql_error(self::$conn));
 			
 			$full_backtrace = debug_backtrace();
 			$backtrace = $full_backtrace[2];
 			
-			$tr = new XMLElement('tr', $table);
-			$th = new XMLElement('th', $tr, null, 'file');
-			$td = new XMLElement('td', $tr, null, $backtrace['file']);
+			$tr = XML::element('tr', $table);
+			$th = XML::element('th', $tr, null, 'file');
+			$td = XML::element('td', $tr, null, $backtrace['file']);
 			
-			$tr = new XMLElement('tr', $table);
-			$th = new XMLElement('th', $tr, null, 'line');
-			$td = new XMLElement('td', $tr, null, $backtrace['line']);
+			$tr = XML::element('tr', $table);
+			$th = XML::element('th', $tr, null, 'line');
+			$td = XML::element('td', $tr, null, $backtrace['line']);
 			
 			if($backtrace['class']) {
-				$tr = new XMLElement('tr', $table);
-				$th = new XMLElement('th', $tr, null, 'class');
-				$td = new XMLElement('td', $tr, null, $backtrace['class']);
+				$tr = XML::element('tr', $table);
+				$th = XML::element('th', $tr, null, 'class');
+				$td = XML::element('td', $tr, null, $backtrace['class']);
 			}
 			
 			if($backtrace['function']) {
-				$tr = new XMLElement('tr', $table);
-				$th = new XMLElement('th', $tr, null, 'function');
-				$td = new XMLElement('td', $tr, null, $backtrace['function']);
+				$tr = XML::element('tr', $table);
+				$th = XML::element('th', $tr, null, 'function');
+				$td = XML::element('td', $tr, null, $backtrace['function']);
 			}
 			
 			print $table;
