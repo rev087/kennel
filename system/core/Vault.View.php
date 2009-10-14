@@ -3,6 +3,7 @@
 	class View
 	{
 		private $view;
+		private $parent_view;
 		private $vars = array();
 		
 		function __construct($view)
@@ -22,7 +23,15 @@
 		
 		function __set($var, $value)
 		{
+			if (is_object($value) && get_class($value) == 'View')
+				$value->parent_view = $this;
+				
 			$this->vars[$var] = $value;
+		}
+		
+		function getTemplateVars()
+		{
+			return $this->vars;
 		}
 		
 		private function _getOutput() {
@@ -30,9 +39,11 @@
 			ob_start();
 			
 			//set all template variables
-			foreach ($this->vars as $var =>$val) {
+			foreach ($this->vars as $var =>$val)
 				$$var = $val;
-			}
+			if($this->parent_view)
+				foreach ($this->parent_view->vars as $var =>$val)
+					$$var = $val;
 			
 			//View cascading
 			
