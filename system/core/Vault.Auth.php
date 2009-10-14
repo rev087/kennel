@@ -1,5 +1,6 @@
 <?php
-	class Auth {
+	class Auth
+	{
 		static $user;
 		static $error;
 		static $message;
@@ -12,7 +13,7 @@
 		* $password - the password, not cryptographed
 		* $remember_me - if true, will set a cookie with the user authentication
 		*/
-		function login($username, $password, $remember_me)
+		function login($username, $password, $remember_me=false)
 		{
 			$model_name = Vault::getSetting('auth', 'model_name');
 			$username_field = Vault::getSetting('auth', 'username_field');
@@ -27,7 +28,7 @@
 			{
 				self::$user = $user;
 				if(!session_id()) session_start();
-				$_SESSION['auth'] = $user->getInstanceValues();
+				$_SESSION['auth'] = $user->toArray();
 				
 				return true;
 			}
@@ -39,21 +40,24 @@
 		/*
 		* Auth::logout()
 		*/
-		function logout() {
+		function logout()
+		{
 			if(!session_id()) session_start();
 			unset($_SESSION['auth']);
 			return true;
 		}
 		
-		function gtfo() {
+		function gtfo()
+		{
 			Auth::$error = "Você não tem acesso à esta área ou sua sessão expirou";
 			die(Auth::$error);
 			exit;
 		}
 		
-		function check() {
+		function check()
+		{
 			if(!session_id()) session_start();
-			if(!$_SESSION['auth']) return false;
+			if(!array_key_exists('auth', $_SESSION)) return false;
 			
 			$args = func_get_args();
 			if(count($args) > 0)
@@ -70,7 +74,8 @@
 			return false;
 		}
 		
-		function getUser() {
+		function getUser() 
+		{
 			if (self::$user)
 			{
 				return self::$user;
@@ -83,6 +88,13 @@
 			}
 			else
 				return false;
+		}
+		
+		function updateUser($user)
+		{
+			if(!session_id()) session_start();
+			$_SESSION['auth'] = $user->toArray();
+			self::$user = $user;
 		}
 		
 	}

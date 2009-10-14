@@ -75,7 +75,10 @@
 				$inst->sync_values = array();
 				foreach($row as $key=>$val) {
 					$inst->__set($key, $val);
-					$inst->sync_values[] = "`{$key}` = '{$val}'";
+					if ($val==NULL)
+						$inst->sync_values[] = "`{$key}` IS NULL";
+					else
+						$inst->sync_values[] = "`{$key}` = '{$val}'";
 				}
 				$ret[] = $inst;
 			}
@@ -115,15 +118,15 @@
 		}
 		
 		/*
-		* array Model::getInstanceValues()
-		* 
+		* void Model::feed(array $array)
+		* The exact oposite of feed
 		*/
-		function getInstanceValues() {
-			$ret = array();
-			foreach($this->fields as $key=>$props) {
-				$ret[$key] = $props['value'];
+		function toArray() {
+			$arr = array();
+			foreach($this->fields as $key=>$field) {
+				$arr[$field['name']] = $field['value'];
 			}
-			return $ret;
+			return $arr;
 		}
 		
 		/*
@@ -138,12 +141,13 @@
 				//save a database row that already exists
 				foreach($this->fields as $field) {
 					if($field['value']) $values[] = "`{$field['name']}` = '{$field['value']}'";
-					else "`{$field->name}` IS NULL";
+					else "`{$field['name']}` IS NULL";
 				}
 				$sql = "UPDATE {$this->model_name} SET " . join(", ", $values) . " WHERE " . join(" AND ", $this->sync_values);
 			} else {
 				//insert a new database row
-				foreach($this->fields as $field) {
+				foreach ($this->fields as $field)
+				{
 					if($field['value']) $values[] = "'{$field['value']}'";
 					else $values[] = "null";
 				}
@@ -152,7 +156,10 @@
 			
 			//register the new syncronized values
 			foreach($this->fields as $field) {
-				$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
+				if ($field['value'] == NULL)
+					$this->sync_values = "`{$field['name']}` IS NULL";
+				else
+					$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
 			}
 			//execute the query
 			if(self::$db->query($sql)) return $this;
