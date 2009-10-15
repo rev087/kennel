@@ -300,8 +300,15 @@
 			{
 				if(is_file(self::getPath('modules') . "/{$module}/controllers/{$controller_filename}"))
 				{
-					if(count($action_args)==1) self::controllerAction($action_args[0]);
-					else self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
+					if (count($action_args)==1)
+						self::controllerAction($action_args[0]);
+					else
+					{
+						if (method_exists($action_args[0], $action_args[1]))
+							self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
+						else
+							self::controllerAction($action_args[0], 'index', array_slice($action_args, 1));
+					}
 					return;
 				}
 			}

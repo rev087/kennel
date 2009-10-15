@@ -140,7 +140,7 @@
 			if($this->sync_values) {
 				//save a database row that already exists
 				foreach($this->fields as $field) {
-					if($field['value']) $values[] = "`{$field['name']}` = '{$field['value']}'";
+					if($field['value'] !== NULL) $values[] = "`{$field['name']}` = '{$field['value']}'";
 					else "`{$field['name']}` IS NULL";
 				}
 				$sql = "UPDATE {$this->model_name} SET " . join(", ", $values) . " WHERE " . join(" AND ", $this->sync_values);

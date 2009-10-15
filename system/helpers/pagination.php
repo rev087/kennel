@@ -1,6 +1,6 @@
 <?php
 	
-	class Pagination {
+	class pagination {
 		
 		private $shebang;
 		private $pages = array();

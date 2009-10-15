@@ -30,6 +30,15 @@
 			return $script;
 		}
 		
+		function img($filename, $alt=NULL)
+		{
+			if ($alt === NULL) $alt = $filename;
+			$img = XML::element('img');
+			$img->src = assets::img($filename);
+			$img->alt = $alt;
+			return $img;
+		}
+		
 	}
 	
 ?>
