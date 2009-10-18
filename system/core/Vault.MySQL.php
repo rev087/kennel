@@ -10,6 +10,7 @@
 		public static $database;
 		static $conn;
 		
+		public static $last_query;
 		public static $num_queries = 0;
 		private static $structure_cache = array();
 		//paging
@@ -37,6 +38,7 @@
 		function query($sql) {
 			self::$num_queries++;
 			$rs = mysql_query($sql, self::$conn);
+			self::$last_query = $sql;
 			if(mysql_error()) self::dumpError($sql);
 			else return $rs;
 		}

@@ -75,7 +75,7 @@
 				$inst->sync_values = array();
 				foreach($row as $key=>$val) {
 					$inst->__set($key, $val);
-					if ($val==NULL)
+					if ($val===NULL)
 						$inst->sync_values[] = "`{$key}` IS NULL";
 					else
 						$inst->sync_values[] = "`{$key}` = '{$val}'";
@@ -156,7 +156,7 @@
 			
 			//register the new syncronized values
 			foreach($this->fields as $field) {
-				if ($field['value'] == NULL)
+				if ($field['value'] === NULL)
 					$this->sync_values = "`{$field['name']}` IS NULL";
 				else
 					$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
@@ -179,6 +179,9 @@
 			}
 		}
 		
+		/*
+		* Magic!
+		*/
 		function __get($key) {
 			foreach($this->fields as $k=>$field) {
 				if($k == $key) return $field['value'];
@@ -186,6 +189,9 @@
 			Debug::error("Model::__get() - Field '{$key}' not found");
 		}
 		
+		/*
+		* Magic!
+		*/
 		function __set($key, $value) {
 			foreach($this->fields as $k=>$field) {
 				if($k == $key) {
