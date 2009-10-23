@@ -31,10 +31,15 @@
 			return $this->dump(true);
 		}
 		
-		function dump()
+		function dump($return=false)
 		{
-			Debug::dump($_GET);
-			Debug::dump($_POST);
+			$dump = '<h1>GET</h1>';
+			$dump .= Debug::dump($_GET, true);
+			$dump .= '<h1>POST</h1>';
+			$dump .= Debug::dump($_POST, true);
+			
+			if($return) return $dump;
+			else print $dump;
 		}
 		
 		/*

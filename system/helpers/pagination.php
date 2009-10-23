@@ -31,8 +31,20 @@
 			foreach($this->pages as $page => $item) {
 				$page++; //user-readable page is aways +1 relative to the array index
 				
-				if($page == $this->page_number) $links .= '<span>'.$page.'</span>';
-				else $links .= '<a href="'.str_replace('{page}', $page, $this->urlformat).'">'.$page.'</a>';
+				if ($page == $this->page_number)
+					$links .= '<span>'.$page.'</span>';
+				else
+				{
+					if (is_object($this->urlformat) && get_class($this->urlformat))
+					{
+						$anchor = clone $this->urlformat;
+						$anchor->href = str_replace('{page}', $page, $anchor->href);
+						$anchor->setText($page);
+						$links .= $anchor;
+					}
+					else
+						$links .= '<a href="'.str_replace('{page}', $page, $this->urlformat).'">'.$page.'</a>';
+				}
 			}
 			if($return) return $links;
 			else print $links;
