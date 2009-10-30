@@ -59,6 +59,34 @@
 				require_once Vault::getPath('system') . "/helpers/{$resource}.php"; return;
 			}
 		}
+		// Models
+		if (substr($resource, -6) == '_model')
+		{
+			// Clear the model name
+			$model_name = strtolower(substr($resource, 0, (strlen($resource) - 6)));
+			
+			// User Model
+			if (is_file(Vault::getPath('models') . "/{$model_name}.php"))
+			{
+				require_once Vault::getPath('models') . "/{$model_name}.php"; return;
+			}
+			
+			// Module Model
+			if(!Vault::$modules) Vault::fetchModules();
+			foreach(Vault::$modules as $module=>$info)
+			{
+				if(is_file(Vault::getPath('modules') . "/{$module}/models/{$model_name}.php"))
+				{
+					require_once Vault::getPath('modules') . "/{$module}/models/{$model_name}.php"; return;
+				}
+			}
+			
+			// System Model
+			if(is_file(Vault::getPath('system') . "/models/{$model_name}.php"))
+			{
+				require_once Vault::getPath('system') . "/models/{$model_name}.php"; return;
+			}
+		}
 		// System Core Resources
 		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
 		{
@@ -269,34 +297,35 @@
 
 			// Reasign action keys (to avoid empty entries due to double slashes) and convert to lowercase
 			$action_args = array();
-			foreach($action_array as $key=>$value) {
-				if($value)
-					$action_args[] = strtolower($value);
+			foreach ($action_array as $key=>$value)
+			{
+				if($value) $action_args[] = strtolower($value);
 			}
 			
 			// Display the Home page if no action_args are suplied
-			if(count($action_args) == 0)
+			if (count($action_args) == 0)
 			{
 				self::controllerAction('main', 'index'); return;
 				return;
 			}
 			
 			// 1. First check: method in the main controller
-			if(method_exists(self::$app_main_controller, $action_args[0]))
+			if (method_exists(self::$app_main_controller, $action_args[0]))
 			{
 				self::controllerAction('main', array_shift($action_args), $action_args); return;
 			}
 				
 			// 2. Second check: user defined controller...
-			if(is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
+			if (is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
 			{
-				self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2)); return;
+				$action = isset($action_args[1])?$action_args[1]:null;
+				self::controllerAction($action_args[0], $action, array_slice($action_args, 2)); return;
 			}
 			
 			// 3. Third check: module controller
-			if(!self::$modules) self::fetchModules();
+			if (!self::$modules) self::fetchModules();
 			$controller_filename = strtolower($action_args[0]) . '.php';
-			foreach(self::$modules as $module=>$info)
+			foreach (self::$modules as $module=>$info)
 			{
 				if(is_file(self::getPath('modules') . "/{$module}/controllers/{$controller_filename}"))
 				{

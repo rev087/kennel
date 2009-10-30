@@ -18,7 +18,8 @@
 		
 		function __get($var)
 		{
-			return $this->vars[$var];
+			if(isset($this->vars[$var])) return $this->vars[$var];
+			else return null;
 		}
 		
 		function __set($var, $value)

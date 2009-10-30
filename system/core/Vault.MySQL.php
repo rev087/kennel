@@ -60,13 +60,21 @@
 			$full_backtrace = debug_backtrace();
 			$backtrace = $full_backtrace[2];
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, null, 'file');
-			$td = XML::element('td', $tr, null, $backtrace['file']);
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, null, 'line');
-			$td = XML::element('td', $tr, null, $backtrace['line']);
+			if (isset($backtrace['file']))
+			{
+				$tr = XML::element('tr', $table);
+				$th = XML::element('th', $tr, null, 'file');
+				$td = XML::element('td', $tr, null, $backtrace['file']);
+			}
+			
+			if (isset($backtrace['line']))
+			{
+				
+				$tr = XML::element('tr', $table);
+				$th = XML::element('th', $tr, null, 'line');
+				$td = XML::element('td', $tr, null, $backtrace['line']);
+			}
 			
 			if($backtrace['class']) {
 				$tr = XML::element('tr', $table);
