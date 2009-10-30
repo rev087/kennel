@@ -8,11 +8,20 @@
 		var $model_name;
 		var $CRUDFieldDefs = array();
 		
-		function __construct($model_name) {
-			if(!self::$db) self::$db = new MySQL();
+		function __construct($model_name=null) {
+			$called_class = get_called_class();
+			if ($called_class != get_class())
+			{
+				$extended_model = strtolower(substr($called_class, 0, (strlen($called_class) - 6)));
+				$this->model_name = $extended_model;
+			}
+			else
+			{
+				$this->model_name = $model_name;
+			}
 			
-			$this->model_name = $model_name;
-			$this->fields = self::$db->getTableStructure($model_name);
+			if(!self::$db) self::$db = new MySQL();
+			$this->fields = self::$db->getTableStructure($this->model_name);
 		}
 		
 		/*
@@ -40,34 +49,42 @@
 		* If an extended Model class exists in the models directory, returns an instance of that class instead.
 		*/
 		static function getInstance($model_name) {
-			$filename = strtolower($model_name);
-			$filepath = Vault::getPath('models') . "/{$filename}.php";
-			if(is_file($filepath)) {
-				require_once($filepath);
-				$extendedModel = $filename;
-			}
+			$called_class = get_called_class();
+			$model = strtolower(substr($called_class, 0, (strlen($called_class) - 6)));
 			
-			if(isset($extendedModel)) return new $extendedModel($model_name);
-			else return new Model($model_name);
+			if ($called_class == 'Model') return new Model($model_name);
+			else return new $called_class($model);
 		}
 		
 		/*
 		* misc Model::get()
 		* This static method returns one or more Model instancies.
 		*/
-		static function get($model_name, $where=null) {
+		static function get($model_name, $where=null, $order=null) {
 			if(!self::$db) self::$db = new MySQL();
+			
+			$sql = "SELECT * FROM `{$model_name}`";
+			
 			if($where) {
 				$arr = array();
 				foreach($where as $key=>$value) {
 					if(!is_numeric($key)) $arr[] = "`{$key}` = '{$value}'";
 					else $arr[] = $value;
 				}
-				$where_string = join(" AND ", $arr);
-				$rs = self::$db->query("SELECT * FROM `{$model_name}` WHERE {$where_string}");
-			} else {
-				$rs = self::$db->query("SELECT * FROM `{$model_name}`");
+				$sql .=' WHERE ' . join(" AND ", $arr);
 			}
+			
+			if($order) {
+				if(!is_array($order)) $order = array($order);
+				$arr = array();
+				foreach($order as $key=>$value) {
+					if(!is_numeric($key)) $arr[] = "{$key} {$value}";
+					else $arr[] = "{$value} ASC";
+				}
+				$sql .= ' ORDER BY ' . join(", ", $arr);
+			}
+			
+			$rs = self::$db->query($sql);
 			
 			$ret = array();
 			while($row = self::$db->fetch_assoc($rs)) {
@@ -91,8 +108,8 @@
 		* Get all results in an array.
 		* Same as Model::get(), but always returns an array, even with a single instance.
 		*/
-		static function getAll($model_name) {
-			$ret = self::get($model_name);
+		static function getAll($model_name, $order=null) {
+			$ret = self::get($model_name, null, $order);
 			if(is_array($ret)) return $ret;
 			else return array($ret);
 		}
@@ -161,9 +178,12 @@
 				else
 					$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
 			}
+			
 			//execute the query
-			if(self::$db->query($sql)) return $this;
-			else return false;
+			self::$db->query($sql);
+			
+			//upadte the id
+			$this->id = self::$db->insert_id();
 		}
 		
 		/*

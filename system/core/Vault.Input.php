@@ -20,10 +20,26 @@
 		
 		function post($var)
 		{
-			if(isset($this->_post[$var]))
-				return self::clean($this->_post[$var]);
+			if (isset($this->_post[$var]))
+			{
+				if (is_array($this->_post[$var]))
+				{
+					$clean_array = array();
+					foreach($this->_post[$var] as $key=>$val)
+					{
+						$clean_array[$key] = self::clean($val);
+					}
+					return $clean_array;
+				}
+				else
+				{
+					return self::clean($this->_post[$var]);
+				}
+			}
 			else
+			{
 				return null;
+			}
 		}
 		
 		function __toString()
