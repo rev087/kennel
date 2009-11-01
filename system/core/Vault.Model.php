@@ -49,11 +49,16 @@
 		* If an extended Model class exists in the models directory, returns an instance of that class instead.
 		*/
 		static function getInstance($model_name) {
+			/* Doesn't work on PHP <5.3.0
 			$called_class = get_called_class();
 			$model = strtolower(substr($called_class, 0, (strlen($called_class) - 6)));
 			
 			if ($called_class == 'Model') return new Model($model_name);
 			else return new $called_class($model);
+			*/
+			$extended_class = ucfirst($model_name) . '_model';
+			if (class_exists($extended_class)) return new $extended_class($model_name);
+			else return new Model($model_name);
 		}
 		
 		/*
