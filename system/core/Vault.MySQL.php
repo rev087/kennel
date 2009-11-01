@@ -23,19 +23,28 @@
 				self::$user = Vault::getSetting('database','user');
 				self::$pass = Vault::getSetting('database','pass');
 				self::$database = Vault::getSetting('database','database');
-				self::$conn = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
-				mysql_set_charset('utf-8', self::$conn);
-				mysql_select_db(($database?$database:self::$database), self::$conn);
+				self::connect($host, $user, $pass, $database);
 			}
 		}
 		
+		function connect($host=null, $user=null, $pass=null, $database=null)
+		{
+			self::$conn = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
+			mysql_set_charset('utf-8', self::$conn);
+			mysql_select_db(($database?$database:self::$database), self::$conn);
+		}
+		
 		function __destruct() {
-			if(self::$conn) @mysql_close(self::$conn);
+			@mysql_close(self::$conn);
 		}
 		
 		//query functions
 		/////////////////
 		function query($sql) {
+			if(! @mysql_ping(self::$conn)) {
+				self::connect();
+			}
+			
 			self::$num_queries++;
 			$rs = mysql_query($sql, self::$conn);
 			self::$last_query = $sql;

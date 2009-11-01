@@ -1,31 +1,40 @@
 <?php
 	class Input
 	{
-		var $_get;
-		var $_post;
+		private static $_get;
+		private static $_post;
 		
 		function __construct()
 		{
-			$this->_get = $_GET;
-			$this->_post = $_POST;
+			self::prepare();
+		}
+		
+		function prepare()
+		{
+			self::$_get = $_GET;
+			self::$_post = $_POST;
 		}
 		
 		function get($var)
 		{
-			if(isset($this->_get[$var]))
-				return self::clean($this->_get[$var]);
+			if(!self::$_get) self::prepare();
+			
+			if(isset(self::$_get[$var]))
+				return self::clean(self::$_get[$var]);
 			else
 				return null;
 		}
 		
 		function post($var)
 		{
-			if (isset($this->_post[$var]))
+			if(!self::$_get) self::prepare();
+			
+			if (isset(self::$_post[$var]))
 			{
-				if (is_array($this->_post[$var]))
+				if (is_array(self::$_post[$var]))
 				{
 					$clean_array = array();
-					foreach($this->_post[$var] as $key=>$val)
+					foreach(self::$_post[$var] as $key=>$val)
 					{
 						$clean_array[$key] = self::clean($val);
 					}
@@ -33,7 +42,7 @@
 				}
 				else
 				{
-					return self::clean($this->_post[$var]);
+					return self::clean(self::$_post[$var]);
 				}
 			}
 			else
@@ -44,7 +53,7 @@
 		
 		function __toString()
 		{
-			return $this->dump(true);
+			return self::dump(true);
 		}
 		
 		function dump($return=false)
