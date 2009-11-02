@@ -91,6 +91,14 @@
 				//$links .= '<span>...</span>';
 			}
 			
+			// Previous
+			/*
+			if ($this->page_number > 1)
+			{
+				$links .= $this->anchor(1, '&lt;');
+			}
+			*/
+			
 			// Left Range
 			for ($i = $this->page_number-3; $i < $this->page_number; $i++)
 			{
@@ -106,6 +114,14 @@
 				//if ($i+3 <= $this->pages)
 					$links .= $this->anchor($i);
 			}
+			
+			// Next
+			/*
+			if ($this->page_number < $this->pages)
+			{
+				$links .= $this->anchor($this->page_number + 1, '&gt;');
+			}
+			*/
 			
 			// Last
 			if ($this->page_number < $this->pages - 3)
