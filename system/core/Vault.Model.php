@@ -9,16 +9,9 @@
 		var $CRUDFieldDefs = array();
 		
 		function __construct($model_name=null) {
-			$called_class = get_called_class();
-			if ($called_class != get_class())
-			{
-				$extended_model = strtolower(substr($called_class, 0, (strlen($called_class) - 6)));
-				$this->model_name = $extended_model;
-			}
-			else
-			{
-				$this->model_name = $model_name;
-			}
+			$this->model_name = $model_name;
+			
+			if(!$model_name) Debug::backtrace();
 			
 			if(!self::$db) self::$db = new MySQL();
 			$this->fields = self::$db->getTableStructure($this->model_name);
@@ -188,7 +181,7 @@
 			self::$db->query($sql);
 			
 			//upadte the id
-			$this->id = self::$db->insert_id();
+			if(!$this->id) $this->id = self::$db->insert_id();
 		}
 		
 		/*
