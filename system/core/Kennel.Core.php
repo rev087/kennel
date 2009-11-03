@@ -34,6 +34,7 @@
 				require_once Kennel::getPath('system') . "/controllers/{$controller_name}.php"; return;
 			}
 		}
+		
 		// Helpers
 		if ($resource == strtolower($resource))
 		{
@@ -59,6 +60,7 @@
 				require_once Kennel::getPath('system') . "/helpers/{$resource}.php"; return;
 			}
 		}
+		
 		// Models
 		if (substr($resource, -6) == '_model')
 		{
@@ -87,8 +89,9 @@
 				require_once Kennel::getPath('system') . "/models/{$model_name}.php"; return;
 			}
 		}
+		
 		// System Core Resources
-		elseif (is_file(Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php"))
+		if (is_file(Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php"))
 		{
 			require_once Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php";
 		}
