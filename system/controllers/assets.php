@@ -19,7 +19,7 @@
 		function css($file)
 		{
 			header("Content-type: text/css");
-			$target = Vault::$app_root_path . self::_cascade($file, 'css');
+			$target = Kennel::$app_root_path . self::_cascade($file, 'css');
 			include($target);
 		}
 		
@@ -28,7 +28,7 @@
 			$file = array_slice($args, 1);
 			$file = join('/', $file);
 			
-			$target = Vault::$app_root_uri . self::_cascade($file,$type);
+			$target = Kennel::$app_root_uri . self::_cascade($file,$type);
 			header("location: $target");
 		}
 		

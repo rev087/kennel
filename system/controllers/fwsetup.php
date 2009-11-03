@@ -13,7 +13,7 @@
 			$this->template = new View('fwsetup_layout');
 			$this->template->action = 'modules';
 			$this->template->content = new View('fwsetup_modules');
-			$this->template->content->modules = Vault::$modules;
+			$this->template->content->modules = Kennel::$modules;
 			$this->template->render();
 		}
 		
@@ -22,7 +22,7 @@
 			$models = array();
 			
 			// User Models
-			$dir = Vault::getPath('models') . "/sql/";
+			$dir = Kennel::getPath('models') . "/sql/";
 			if (is_dir($dir))
 				foreach (scandir($dir) as $filename)
 				{
@@ -32,9 +32,9 @@
 				}
 			
 			// Module Models
-			foreach (Vault::$modules as $module)
+			foreach (Kennel::$modules as $module)
 			{
-				$dir = Vault::getPath('modules') . "/{$module['id']}/models/sql/";
+				$dir = Kennel::getPath('modules') . "/{$module['id']}/models/sql/";
 				if (is_dir($dir))
 					foreach (scandir($dir) as $filename)
 					{
@@ -45,7 +45,7 @@
 			}
 			
 			// System Models
-			$dir = Vault::getPath('system') . "/models/sql/";
+			$dir = Kennel::getPath('system') . "/models/sql/";
 			if (is_dir($dir))
 				foreach (scandir($dir) as $filename)
 				{
@@ -82,7 +82,7 @@
 			$models = array();
 			
 			// User Models
-			$dir = Vault::getPath('models') . "/sql/";
+			$dir = Kennel::getPath('models') . "/sql/";
 			if (is_dir($dir))
 				foreach (scandir($dir) as $filename)
 				{
@@ -92,9 +92,9 @@
 				}
 			
 			// Module Models
-			foreach (Vault::$modules as $module)
+			foreach (Kennel::$modules as $module)
 			{
-				$dir = Vault::getPath('modules') . "/{$module['id']}/models/sql/";
+				$dir = Kennel::getPath('modules') . "/{$module['id']}/models/sql/";
 				if (is_dir($dir))
 					foreach (scandir($dir) as $filename)
 					{
@@ -105,7 +105,7 @@
 			}
 			
 			// System Models
-			$dir = Vault::getPath('system') . "/models/sql/";
+			$dir = Kennel::getPath('system') . "/models/sql/";
 			if (is_dir($dir))
 				foreach (scandir($dir) as $filename)
 				{
@@ -139,7 +139,7 @@
 		
 		function settings()
 		{
-			require Vault::$app_root_path . '/settings.php';
+			require Kennel::$app_root_path . '/settings.php';
 			$this->template = new View('fwsetup_layout');
 			$this->template->action = 'settings';
 			$this->template->content = new View('fwsetup_settings');

@@ -24,20 +24,20 @@
 		private function _cascade($filename, $type)
 		{
 			//1. User asset
-			if (is_file(Vault::$app_root_path . Vault::getSetting('path', 'assets') . "/{$type}/{$filename}"))
-				return Vault::$app_root_uri . Vault::getSetting('path', 'assets') . "/{$type}/{$filename}";
+			if (is_file(Kennel::$app_root_path . Kennel::getSetting('path', 'assets') . "/{$type}/{$filename}"))
+				return Kennel::$app_root_uri . Kennel::getSetting('path', 'assets') . "/{$type}/{$filename}";
 			
 			//2. Module asset
-			if (!Vault::$modules) Vault::fetchModules();
-			foreach (Vault::$modules as $module=>$info)
+			if (!Kennel::$modules) Kennel::fetchModules();
+			foreach (Kennel::$modules as $module=>$info)
 			{
-				if (is_file(Vault::$app_root_path . Vault::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}"))
-					return Vault::$app_root_uri . Vault::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}";
+				if (is_file(Kennel::$app_root_path . Kennel::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}"))
+					return Kennel::$app_root_uri . Kennel::getSetting('path', 'modules') . "/{$module}/assets/{$type}/{$filename}";
 			}
 			
 			//3. System asset
-			if (is_file(Vault::$app_root_path . Vault::getSetting('path', 'system') . "/assets/{$type}/{$filename}"))
-				return Vault::$app_root_uri . Vault::getSetting('path', 'system') . "/assets/{$type}/{$filename}";
+			if (is_file(Kennel::$app_root_path . Kennel::getSetting('path', 'system') . "/assets/{$type}/{$filename}"))
+				return Kennel::$app_root_uri . Kennel::getSetting('path', 'system') . "/assets/{$type}/{$filename}";
 				
 			//Throw a error if not found
 			Debug::error("assets helper: <b>{$filename}</b> not found.", 1);

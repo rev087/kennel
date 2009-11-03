@@ -2,7 +2,7 @@
 
 	/*
 	* __autoload(string $resource)
-	* Automatically requires Controllers and Vault System files
+	* Automatically requires Controllers and Kennel System files
 	*/
 	function __autoload($resource)
 	{
@@ -13,50 +13,50 @@
 			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
 			
 			// User Controller
-			if (is_file(Vault::getPath('controllers') . "/{$controller_name}.php"))
+			if (is_file(Kennel::getPath('controllers') . "/{$controller_name}.php"))
 			{
-				require_once Vault::getPath('controllers') . "/{$controller_name}.php"; return;
+				require_once Kennel::getPath('controllers') . "/{$controller_name}.php"; return;
 			}
 			
 			// Module Controller
-			if(!Vault::$modules) Vault::fetchModules();
-			foreach(Vault::$modules as $module=>$info)
+			if(!Kennel::$modules) Kennel::fetchModules();
+			foreach(Kennel::$modules as $module=>$info)
 			{
-				if(is_file(Vault::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"))
+				if(is_file(Kennel::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"))
 				{
-					require_once Vault::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"; return;
+					require_once Kennel::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"; return;
 				}
 			}
 			
 			// System Controller
-			if(is_file(Vault::getPath('system') . "/controllers/{$controller_name}.php"))
+			if(is_file(Kennel::getPath('system') . "/controllers/{$controller_name}.php"))
 			{
-				require_once Vault::getPath('system') . "/controllers/{$controller_name}.php"; return;
+				require_once Kennel::getPath('system') . "/controllers/{$controller_name}.php"; return;
 			}
 		}
 		// Helpers
 		if ($resource == strtolower($resource))
 		{
 			// User Helper
-			if (is_file(Vault::getPath('helpers') . "/{$resource}.php"))
+			if (is_file(Kennel::getPath('helpers') . "/{$resource}.php"))
 			{
-				require_once Vault::getPath('helpers') . "/{$resource}.php"; return;
+				require_once Kennel::getPath('helpers') . "/{$resource}.php"; return;
 			}
 			
 			// Module Helper
-			if(!Vault::$modules) Vault::fetchModules();
-			foreach(Vault::$modules as $module=>$info)
+			if(!Kennel::$modules) Kennel::fetchModules();
+			foreach(Kennel::$modules as $module=>$info)
 			{
-				if(is_file(Vault::getPath('modules') . "/{$module}/helpers/{$resource}.php"))
+				if(is_file(Kennel::getPath('modules') . "/{$module}/helpers/{$resource}.php"))
 				{
-					require_once Vault::getPath('modules') . "/{$module}/helpers/{$resource}.php"; return;
+					require_once Kennel::getPath('modules') . "/{$module}/helpers/{$resource}.php"; return;
 				}
 			}
 			
 			// System Helper
-			if(is_file(Vault::getPath('system') . "/helpers/{$resource}.php"))
+			if(is_file(Kennel::getPath('system') . "/helpers/{$resource}.php"))
 			{
-				require_once Vault::getPath('system') . "/helpers/{$resource}.php"; return;
+				require_once Kennel::getPath('system') . "/helpers/{$resource}.php"; return;
 			}
 		}
 		// Models
@@ -66,50 +66,50 @@
 			$model_name = strtolower(substr($resource, 0, (strlen($resource) - 6)));
 			
 			// User Model
-			if (is_file(Vault::getPath('models') . "/{$model_name}.php"))
+			if (is_file(Kennel::getPath('models') . "/{$model_name}.php"))
 			{
-				require_once Vault::getPath('models') . "/{$model_name}.php"; return;
+				require_once Kennel::getPath('models') . "/{$model_name}.php"; return;
 			}
 			
 			// Module Model
-			if(!Vault::$modules) Vault::fetchModules();
-			foreach(Vault::$modules as $module=>$info)
+			if(!Kennel::$modules) Kennel::fetchModules();
+			foreach(Kennel::$modules as $module=>$info)
 			{
-				if(is_file(Vault::getPath('modules') . "/{$module}/models/{$model_name}.php"))
+				if(is_file(Kennel::getPath('modules') . "/{$module}/models/{$model_name}.php"))
 				{
-					require_once Vault::getPath('modules') . "/{$module}/models/{$model_name}.php"; return;
+					require_once Kennel::getPath('modules') . "/{$module}/models/{$model_name}.php"; return;
 				}
 			}
 			
 			// System Model
-			if(is_file(Vault::getPath('system') . "/models/{$model_name}.php"))
+			if(is_file(Kennel::getPath('system') . "/models/{$model_name}.php"))
 			{
-				require_once Vault::getPath('system') . "/models/{$model_name}.php"; return;
+				require_once Kennel::getPath('system') . "/models/{$model_name}.php"; return;
 			}
 		}
 		// System Core Resources
-		elseif (is_file(Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php"))
+		elseif (is_file(Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php"))
 		{
-			require_once Vault::getPath('system') . "/core/Vault.".ucfirst($resource).".php";
+			require_once Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php";
 		}
 	}
 	
 	/*
 	* url(string $action)
-	* Returns a Vault formated url.
+	* Returns a Kennel formated url.
 	* @action - the controller and actions. An example could be "blog/post".
 	*/
 	function url($action=null) {
 		if(isset($action))
 		{
-			if(Vault::getSetting('application', 'use_mod_rewrite'))
-				$url= Vault::$app_root_uri . "/{$action}";
+			if(Kennel::getSetting('application', 'use_mod_rewrite'))
+				$url= Kennel::$app_root_uri . "/{$action}";
 			else
-				$url= Vault::$app_root_uri . '/index.php/' . action;
+				$url= Kennel::$app_root_uri . '/index.php/' . action;
 		}
 		else 
 		{
-			$url = Vault::$app_root_uri;
+			$url = Kennel::$app_root_uri;
 		}
 		
 		return $url;
@@ -118,7 +118,7 @@
 	/*
 	 * The magic starts here.
 	 */
-	class Vault {
+	class Kennel {
 		
 		static $app_settings;
 		static $app_root_path;
@@ -136,12 +136,12 @@
 		static $time_final;
 		
 		/*
-		* Vault::init()
+		* Kennel::init()
 		*/
 		static function init() {
 			//begin the benchmark
 			self::$time_init = microtime(true);
-			register_shutdown_function(array("Vault","onShutdown"));
+			register_shutdown_function(array("Kennel","onShutdown"));
 			
 			//get the application path and root uri
 			self::$app_root_path = dirname($_SERVER["SCRIPT_FILENAME"]);
@@ -156,14 +156,14 @@
 		}
 		
 		/*
-		* Vault::onShutdown()
+		* Kennel::onShutdown()
 		*/
 		static function onShutdown() {
 			if(self::getSetting('application', 'show_benchmark')) self::printBenchmark();
 		}
 		
 		/*
-		* Vault::printBenchmark();
+		* Kennel::printBenchmark();
 		*/
 		static function printBenchmark() {
 			//finish the benchmark
@@ -173,21 +173,21 @@
 		}
 		
 		/*
-		* Vault::getSetting(str $category, str $setting)
+		* Kennel::getSetting(str $category, str $setting)
 		*/
 		static function getSetting($category, $setting) {
 			return self::$app_settings[$category][$setting];
 		}
 		
 		/*
-		* Vault::getPath(str $directory)
+		* Kennel::getPath(str $directory)
 		*/
 		static function getPath($directory='') {
 			return self::$app_root_path . self::getSetting('path', $directory);
 		}
 		
 		/*
-		* Vault::controllerAction(misc $controller, string $action, array $args);
+		* Kennel::controllerAction(misc $controller, string $action, array $args);
 		*/
 		static function controllerAction($controller, $action='index', $args=null)
 		{
@@ -250,7 +250,7 @@
 		}
 		
 		/*
-		* Vault::isModuleController(string $controller)
+		* Kennel::isModuleController(string $controller)
 		*/
 		static function fetchModules()
 		{
@@ -262,17 +262,17 @@
 			foreach ($files as $file)
 			{
 				// Get only valid directories
-				if (is_dir(Vault::getPath('modules') . '/' . $file) &&
+				if (is_dir(Kennel::getPath('modules') . '/' . $file) &&
 					$file != '.' && $file != '..' && $file != '.svn')
 					{
-						include Vault::getPath('modules') . "/{$file}/info.php";
+						include Kennel::getPath('modules') . "/{$file}/info.php";
 						self::$modules[$file] = $info[$file];
 					}
 			}
 		}
 		
 		/*
-		* Vault::processRequest()
+		* Kennel::processRequest()
 		*/
 		static function processRequest()
 		{

@@ -19,10 +19,10 @@
 		//////////////////////////////////
 		function __construct($host=null, $user=null, $pass=null, $database=null) {
 			if(!self::$conn) {
-				self::$host = Vault::getSetting('database','host');
-				self::$user = Vault::getSetting('database','user');
-				self::$pass = Vault::getSetting('database','pass');
-				self::$database = Vault::getSetting('database','database');
+				self::$host = Kennel::getSetting('database','host');
+				self::$user = Kennel::getSetting('database','user');
+				self::$pass = Kennel::getSetting('database','pass');
+				self::$database = Kennel::getSetting('database','database');
 				self::connect($host, $user, $pass, $database);
 			}
 		}
