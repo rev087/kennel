@@ -15,9 +15,9 @@
 		*/
 		function login($username, $password, $remember_me=false)
 		{
-			$model_name = Vault::getSetting('auth', 'model_name');
-			$username_field = Vault::getSetting('auth', 'username_field');
-			$password_field = Vault::getSetting('auth', 'password_field');
+			$model_name = Kennel::getSetting('auth', 'model_name');
+			$username_field = Kennel::getSetting('auth', 'username_field');
+			$password_field = Kennel::getSetting('auth', 'password_field');
 			
 			$user = Model::getOne(
 				$model_name,
@@ -28,7 +28,8 @@
 			{
 				self::$user = $user;
 				if(!session_id()) session_start();
-				$_SESSION['auth'] = $user->toArray();
+				$app_id = Kennel::getSetting('application', 'app_id');
+				$_SESSION["{$app_id}_auth"] = $user->toArray();
 				
 				return true;
 			}
@@ -43,7 +44,10 @@
 		function logout()
 		{
 			if(!session_id()) session_start();
-			unset($_SESSION['auth']);
+			
+			$app_id = Kennel::getSetting('application', 'app_id');
+			unset($_SESSION["{$app_id}_auth"]);
+			
 			return true;
 		}
 		
@@ -57,13 +61,15 @@
 		function check()
 		{
 			if(!session_id()) session_start();
-			if(!array_key_exists('auth', $_SESSION)) return false;
+			$app_id = Kennel::getSetting('application', 'app_id');
+			if(!array_key_exists("{$app_id}_auth", $_SESSION)) return false;
 			
 			$args = func_get_args();
 			if(count($args) > 0)
 			{
 				$user = self::getUser();
-				$userlevel_field = Vault::getSetting('auth', 'userlevel_field');
+				$app_id = Kennel::getSetting('application', 'app_id');
+				$userlevel_field = Kennel::getSetting("{$app_id}_auth", 'userlevel_field');
 				foreach($args as $arg) {
 					if($arg == $user->$userlevel_field) return true;
 				}
@@ -76,14 +82,16 @@
 		
 		function getUser() 
 		{
+			$app_id = Kennel::getSetting('application', 'app_id');
+			
 			if (self::$user)
 			{
 				return self::$user;
 			}
-			elseif ($_SESSION['auth'])
+			elseif ($_SESSION["{$app_id}_auth"])
 			{
-				self::$user = new Model(Vault::getSetting('auth', 'model_name'));
-				self::$user->feed($_SESSION['auth']);
+				self::$user = new Model(Kennel::getSetting('auth', 'model_name'));
+				self::$user->feed($_SESSION["{$app_id}_auth"]);
 				return self::$user;
 			}
 			else
@@ -93,7 +101,8 @@
 		function updateUser($user)
 		{
 			if(!session_id()) session_start();
-			$_SESSION['auth'] = $user->toArray();
+			$app_id = Kennel::getSetting('application', 'app_id');
+			$_SESSION["{$app_id}_auth"] = $user->toArray();
 			self::$user = $user;
 		}
 		

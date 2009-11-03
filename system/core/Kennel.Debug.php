@@ -72,7 +72,7 @@
 			$td = XML::element('td', $tr, null, $error);
 			
 			print $table;
-			if(Vault::getSetting('application', 'debug_mode')) self::backtrace(3 + $backtrace_depth);
+			if(Kennel::getSetting('application', 'debug_mode')) self::backtrace(3 + $backtrace_depth);
 		}
 		
 		static function error_handler($errno = E_USER_WARNING, $errstr)
@@ -96,7 +96,7 @@
 		
 		static function error($errstr, $backtrace_level=0)
 		{
-			if(Vault::getSetting('application', 'debug_mode'))
+			if(Kennel::getSetting('application', 'debug_mode'))
 			{
 				self::dumpError($errstr, $backtrace_level);
 			}

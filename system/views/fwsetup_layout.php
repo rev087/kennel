@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="pt-br">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title>Natural Framework Setup</title>
-		<meta name="description" content="Materiais para construção." />
+		<title>Kennel Setup</title>
+		<meta name="description" content="Kennel Framework Setup" />
 		<link rel="stylesheet" type="text/css" href="<?php print assets::css('fwsetup.css') ?>" />
 		<script type="text/javascript" src="<?php print assets::js('mootools-1.2.3-core-yc.js') ?>"></script>
 	</head>
@@ -11,7 +11,7 @@
 		
 		<div id="wrapper">
 			<div id="header">
-				<img src="<?php print assets::img('fw_logo.png'); ?>" alt="Natural Framework" />
+				<img src="<?php print assets::img('fw_logo.png'); ?>" alt="Kennel Framework" />
 			</div>
 			
 			<ul id="menu">
