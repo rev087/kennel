@@ -145,7 +145,7 @@
 			
 			//get the application path and root uri
 			self::$app_root_path = dirname($_SERVER["SCRIPT_FILENAME"]);
-			self::$app_root_uri = trim("http://{$_SERVER['HTTP_HOST']}", '/') . '/' . trim(substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT'])), '/');
+			self::$app_root_uri = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
 			
 			//get the application settings
 			require_once('settings.php');
