@@ -5,7 +5,7 @@
 		
 		function index()
 		{
-			Kennel::controllerAction('fwsetup');
+			Kennel::controllerAction('fwsetup', 'startpage');
 		}
 	}
 ?>

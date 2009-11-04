@@ -20,5 +20,5 @@
 </table>
 
 <p>
-	<a href="<?php print url('fwsetup/createmodels'); ?>">Create Models</a>
+	<a href="<?php print url('fwsetup/createmodels'); ?>" class="action">Create Models</a>
 </p>

@@ -15,17 +15,17 @@
 			</div>
 			
 			<ul id="menu">
-				<li <?php if($action=='modules') print 'class="selected"'; ?>>
+				<li <?php if(isset($action) && $action=='modules') print 'class="selected"'; ?>>
 					<a id="modules" href="<?php print url('fwsetup/modules') ?>">
 						Modules
 					</a>
 				</li>
-				<li <?php if($action=='database') print 'class="selected"'; ?>>
+				<li <?php if(isset($action) && $action=='database') print 'class="selected"'; ?>>
 					<a id="database" href="<?php print url('fwsetup/database') ?>">
 						Database
 					</a>
 				</li>
-				<li <?php if($action=='settings') print 'class="selected"'; ?>>
+				<li <?php if(isset($action) && $action=='settings') print 'class="selected"'; ?>>
 					<a id="settings" href="<?php print url('fwsetup/settings') ?>">
 						Settings
 					</a>
@@ -34,7 +34,6 @@
 			
 			<div id="content">
 				<?php print $content ?>
-				
 				<div id="footer" ></div>
 			</div>
 			
