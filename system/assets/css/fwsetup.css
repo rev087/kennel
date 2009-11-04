@@ -47,7 +47,7 @@ body {
 	}
 	
 	#menu a {
-		color: #594C42;
+		color: #666;
 		text-decoration: none;
 		margin-right: 10px;
 		width: 140px;
@@ -58,7 +58,7 @@ body {
 	}
 	
 	#menu a:hover {
-		text-decoration: underline;
+		color: #17B3D1;
 	}
 	
 	#menu li.selected {
@@ -81,8 +81,10 @@ body {
 #content {
 	background-color: #EDECEB;
 	width: 838px;
+	min-height: 150px;
 	float: left;
 	text-align: left;
+	padding-bottom: 15px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	/*border: 1px solid #C9C1BB;*/
@@ -96,16 +98,16 @@ body {
 	
 	h1 {
 		text-align: left;
-		padding: 10px 10px 5px 30px;
+		padding: 10px 10px 0px 30px;
 		font-size: 18pt;
 		color: #17B3D1;
 	}
 	
-	#content a {
+	a {
 		color: #17B3D1;
 		text-decoration: none;
 	}
-	#content a:hover {
+	a:hover {
 		text-decoration: underline;
 	}
 
@@ -113,6 +115,26 @@ body {
 }
 
 /* Elements */
+
+.action {
+	background-color: #EDECEB;
+	border: 2px solid #1E9C6D;
+	color: #1E9C6D;
+	
+	-moz-border-radius: 16px;
+	-webkit-border-radius: 16px;
+	line-height: 24px;
+	padding: 0px 10px;
+	
+	font-weight: bold;
+}
+
+.action:hover {
+	text-decoration: none;
+	color: #EDECEB;
+	border: 2px solid #EDECEB;
+	background-color: #1E9C6D;
+}
 
 /* Tables */
 
@@ -123,21 +145,16 @@ table {
 
 th {
 	color: #FFF;
-	background-color: #595959;
-	border-top: 1px solid #8D8D8D;
-	border-right: 1px solid #343434;
-	border-bottom: 1px solid #343434;
-	border-left: 1px solid #8D8D8D;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-}
-
-td, th {
-	padding: 2px 5px;
+	border: 1px solid #474747;
+	background: #3F3F3F url('../img/fw_button_bg.png') repeat-x top left;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 2px 20px 2px 10px;
 }
 
 td {
 	border-bottom: 1px dotted #C9C1BB;
+	padding: 2px 5px;
 }
 
 /* Messages */

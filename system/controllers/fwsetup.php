@@ -3,17 +3,29 @@
 	{
 		var $msg;
 		
+		function __construct()
+		{
+			$this->template = new View('fwsetup_layout');
+			
+		}
+		
 		function index()
 		{
 			$this->modules();
 		}
 		
+		function startpage()
+		{
+			$this->template->content = new View('fwsetup_startpage');
+			$this->template->modules = Kennel::$modules;
+			$this->template->render();
+		}
+		
 		function modules()
 		{
-			$this->template = new View('fwsetup_layout');
 			$this->template->action = 'modules';
 			$this->template->content = new View('fwsetup_modules');
-			$this->template->content->modules = Kennel::$modules;
+			$this->template->modules = Kennel::$modules;
 			$this->template->render();
 		}
 		
@@ -129,21 +141,19 @@
 				else $models[$id]['status'] = '';
 			}
 			
-			$this->template = new View('fwsetup_layout');
 			$this->template->action = 'database';
 			$this->template->content = new View('fwsetup_database');
-			$this->template->content->models = $models;
-			if($this->msg) $this->template->content->msg = $this->msg;
+			$this->template->models = $models;
+			if($this->msg) $this->template->msg = $this->msg;
 			$this->template->render();
 		}
 		
 		function settings()
 		{
 			require Kennel::$app_root_path . '/settings.php';
-			$this->template = new View('fwsetup_layout');
 			$this->template->action = 'settings';
 			$this->template->content = new View('fwsetup_settings');
-			$this->template->content->settings = $settings;
+			$this->template->settings = $settings;
 			$this->template->render();
 		}
 	}
