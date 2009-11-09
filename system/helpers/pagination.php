@@ -31,7 +31,7 @@
 			$links = '';
 			
 			// Make sure to show pagination even on an empty page
-			if(count($this->pages) == 0) $links = '<span>1</span>';
+			if(count($this->pages) == 0) return $links = '<span>1</span>';
 			
 			// First
 			if ($this->page_number > 4)
@@ -62,15 +62,6 @@
 				//$links .= '<span>...</span>';
 				$links .= $this->anchor(count($this->pages), '&gt;&gt;');
 			}
-			
-			/*
-			foreach($this->pages as $page => $item) {
-				$page++; //user-readable page is aways +1 relative to the array index
-				
-				if ($page == $this->page_number) $links .= '<span>'.$page.'</span>';
-				else $links .= $this->anchor($page);
-			}
-			*/
 			
 			// Return or print the result string
 			if($return) return $links;

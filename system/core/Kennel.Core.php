@@ -354,7 +354,8 @@
 			}
 				
 			// If the first request argument is not a method of the main controller nor a controller, send 404
-			self::controllerAction(self::$app_main_controller, 'notfound');
+			if(count($action_args) > 0) self::controllerAction(self::$app_main_controller, 'notfound', array_slice($action_args, 0));
+			else self::controllerAction(self::$app_main_controller, 'notfound');
 		}
 		
 	}

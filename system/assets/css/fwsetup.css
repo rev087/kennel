@@ -40,9 +40,9 @@ body {
 		margin-bottom: 3px;
 		background-color: #E2E0DE;
 		-moz-border-radius-topleft: 8px;
-		-webkit-border-radius-topleft: 8px;
+		-webkit-border-top-left-radius: 8px;
 		-moz-border-radius-bottomleft: 8px;
-		-webkit-border-radius-bottomleft: 8px;
+		-webkit-border-bottom-left-radius: 8px;
 		border-right: 2px solid #DDDBD9;
 	}
 	
@@ -132,7 +132,7 @@ body {
 .action:hover {
 	text-decoration: none;
 	color: #EDECEB;
-	border: 2px solid #EDECEB;
+	border: 2px solid #1E9C6D;
 	background-color: #1E9C6D;
 }
 
