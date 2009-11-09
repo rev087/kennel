@@ -82,7 +82,7 @@
 			$links = '';
 			
 			// Make sure to show pagination even on an empty page
-			if($this->pages == 0) $links = '<span>1</span>';
+			if($this->pages == 0) return $links = '<span>1</span>';
 			
 			// First
 			if ($this->page_number > 4)
