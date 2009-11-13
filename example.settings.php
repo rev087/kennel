@@ -3,7 +3,7 @@
 	$settings['database']['host'] = 'localhost';
 	$settings['database']['user'] = 'root';
 	$settings['database']['pass'] = '';
-	$settings['database']['database'] = 'cinemagic';
+	$settings['database']['database'] = 'castor';
 	
 	//paths
 	$settings['path']['system'] = '/system';
@@ -15,7 +15,7 @@
 	$settings['path']['models'] = '/models';
 	
 	//application settings
-	$settings['application']['app_id'] = 'cinemagic';
+	$settings['application']['app_id'] = 'example';
 	$settings['application']['use_mod_rewrite'] = true;
 	$settings['application']['show_benchmark'] = false;
 	$settings['application']['debug_mode'] = true;
