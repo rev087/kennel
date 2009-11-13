@@ -1,4 +1,4 @@
 <?php
-	require_once('system/core/Vault.Core.php');
-	Vault::init();
+	require_once('system/core/Kennel.Core.php');
+	Kennel::init();
 ?>
