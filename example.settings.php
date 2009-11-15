@@ -7,9 +7,6 @@
 	
 	//paths
 	$settings['path']['system'] = '/system';
-	$settings['path']['views'] = '/application/views';
-	$settings['path']['controllers'] = '/application/controllers';
-	$settings['path']['assets'] = '/application/assets';
 	$settings['path']['modules'] = '/modules';
 	$settings['path']['helpers'] = '/helpers';
 	$settings['path']['models'] = '/models';
