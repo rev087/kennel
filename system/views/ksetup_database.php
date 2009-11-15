@@ -8,7 +8,7 @@
 	<tr>
 		<th>Model</th>
 		<th>Source</th>
-		<th>Status</th>
+		<th>Table</th>
 	</tr>
 	<?php foreach ($models as $model): ?>
 	<tr>
@@ -20,5 +20,5 @@
 </table>
 
 <p>
-	<a href="<?php print url('fwsetup/createmodels'); ?>" class="action">Create Models</a>
+	<a href="<?php print url('ksetup/createmodels'); ?>" class="action">Create Models</a>
 </p>

@@ -1,11 +1,9 @@
 <?php
-	class Main_controller extends Controller
+	class Main_controller extends Ksetup_controller
 	{
-		var $msg;
-		
 		function index()
 		{
-			Kennel::controllerAction('fwsetup', 'startpage');
+			$this->startpage();
 		}
 	}
 ?>

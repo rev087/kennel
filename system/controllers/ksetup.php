@@ -1,11 +1,11 @@
 <?php
-	class fwsetup_controller extends Controller
+	class Ksetup_controller extends Controller
 	{
 		var $msg;
 		
 		function __construct()
 		{
-			$this->template = new View('fwsetup_layout');
+			$this->template = new View('ksetup_layout');
 			
 		}
 		
@@ -16,16 +16,16 @@
 		
 		function startpage()
 		{
-			$this->template->content = new View('fwsetup_startpage');
-			$this->template->modules = Kennel::$modules;
+			$this->template->content = new View('ksetup_startpage');
+			$this->template->modules = Kennel::$MODULES;
 			$this->template->render();
 		}
 		
 		function modules()
 		{
 			$this->template->action = 'modules';
-			$this->template->content = new View('fwsetup_modules');
-			$this->template->modules = Kennel::$modules;
+			$this->template->content = new View('ksetup_modules');
+			$this->template->modules = Kennel::$MODULES;
 			$this->template->render();
 		}
 		
@@ -44,7 +44,7 @@
 				}
 			
 			// Module Models
-			foreach (Kennel::$modules as $module)
+			foreach (Kennel::$MODULES as $module)
 			{
 				$dir = Kennel::getPath('modules') . "/{$module['id']}/models/sql/";
 				if (is_dir($dir))
@@ -104,7 +104,7 @@
 				}
 			
 			// Module Models
-			foreach (Kennel::$modules as $module)
+			foreach (Kennel::$MODULES as $module)
 			{
 				$dir = Kennel::getPath('modules') . "/{$module['id']}/models/sql/";
 				if (is_dir($dir))
@@ -142,7 +142,7 @@
 			}
 			
 			$this->template->action = 'database';
-			$this->template->content = new View('fwsetup_database');
+			$this->template->content = new View('ksetup_database');
 			$this->template->models = $models;
 			if($this->msg) $this->template->msg = $this->msg;
 			$this->template->render();
@@ -150,9 +150,9 @@
 		
 		function settings()
 		{
-			require Kennel::$app_root_path . '/settings.php';
+			require Kennel::$ROOT_PATH . '/settings.php';
 			$this->template->action = 'settings';
-			$this->template->content = new View('fwsetup_settings');
+			$this->template->content = new View('ksetup_settings');
 			$this->template->settings = $settings;
 			$this->template->render();
 		}

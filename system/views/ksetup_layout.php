@@ -4,29 +4,28 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Kennel Setup</title>
 		<meta name="description" content="Kennel Framework Setup" />
-		<link rel="stylesheet" type="text/css" href="<?php print assets::css('fwsetup.css') ?>" />
-		<script type="text/javascript" src="<?php print assets::js('mootools-1.2.3-core-yc.js') ?>"></script>
+		<link rel="stylesheet" type="text/css" href="<?php print assets::css('ksetup.css') ?>" />
 	</head>
 	<body>
 		
 		<div id="wrapper">
 			<div id="header">
-				<img src="<?php print assets::img('fw_logo.png'); ?>" alt="Kennel Framework" />
+				<img src="<?php print assets::img('k_logo.png'); ?>" alt="Kennel Framework" />
 			</div>
 			
 			<ul id="menu">
 				<li <?php if(isset($action) && $action=='modules') print 'class="selected"'; ?>>
-					<a id="modules" href="<?php print url('fwsetup/modules') ?>">
+					<a id="modules" href="<?php print url('ksetup/modules') ?>">
 						Modules
 					</a>
 				</li>
 				<li <?php if(isset($action) && $action=='database') print 'class="selected"'; ?>>
-					<a id="database" href="<?php print url('fwsetup/database') ?>">
+					<a id="database" href="<?php print url('ksetup/database') ?>">
 						Database
 					</a>
 				</li>
 				<li <?php if(isset($action) && $action=='settings') print 'class="selected"'; ?>>
-					<a id="settings" href="<?php print url('fwsetup/settings') ?>">
+					<a id="settings" href="<?php print url('ksetup/settings') ?>">
 						Settings
 					</a>
 				</li>

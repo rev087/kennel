@@ -19,7 +19,7 @@
 		function css($file)
 		{
 			header("Content-type: text/css");
-			$target = Kennel::$app_root_path . self::_cascade($file, 'css');
+			$target = Kennel::$ROOT_PATH . self::_cascade($file, 'css');
 			include($target);
 		}
 		
