@@ -53,15 +53,12 @@
 			// 0. Render the Home Page if no Request::PARTS are present
 			if (count(self::$PARTS) == 0)
 			{
-				self::$CONTROLLER = 'main';
+				self::$CONTROLLER = 'Main';
 				self::$ACTION = 'index';
-				
-				Kennel::controllerAction('main', 'index');
-				return;
 			}
 			
 			// 1. First check: method in the main controller
-			if (method_exists('Main_controller', self::$PARTS[0]))
+			if (isset(self::$PARTS[0]) && method_exists('Main_controller', self::$PARTS[0]))
 			{
 				self::$CONTROLLER = 'main';
 				self::$ACTION = self::$PARTS[0];
@@ -69,7 +66,7 @@
 			}
 			
 			// 2. Second check: user defined controller...
-			if (is_file(Kennel::$ROOT_PATH . '/application/controllers/' . self::$PARTS[0] . '.php'))
+			if (isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH . '/application/controllers/' . self::$PARTS[0] . '.php'))
 			{
 				self::$CONTROLLER = ucfirst(self::$PARTS[0]);
 				if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
@@ -85,27 +82,30 @@
 			}
 			
 			// 3. Third check: module controller
-			if (!Kennel::$MODULES) Kennel::fetchModules();
-			foreach (Kennel::$MODULES as $module=>$info)
+			if(isset(self::$PARTS[0]))
 			{
-				if(is_file(Kennel::$ROOT_PATH . "/modules/{$module}/controllers/" . self::$PARTS[0] . '.php'))
+				if (!Kennel::$MODULES) Kennel::fetchModules();
+				foreach (Kennel::$MODULES as $module=>$info)
 				{
-					self::$CONTROLLER = ucfirst(self::$PARTS[0]);
-					if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
+					if(is_file(Kennel::$ROOT_PATH . "/modules/{$module}/controllers/" . self::$PARTS[0] . '.php'))
 					{
-						self::$ACTION = self::$PARTS[1];
-						self::$ARGS = array_slice(self::$PARTS, 2);
+						self::$CONTROLLER = ucfirst(self::$PARTS[0]);
+						if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
+						{
+							self::$ACTION = self::$PARTS[1];
+							self::$ARGS = array_slice(self::$PARTS, 2);
+						}
+						else
+						{
+							self::$ACTION = 'index';
+							self::$ARGS = array_slice(self::$PARTS, 1);
+						}
 					}
-					else
-					{
-						self::$ACTION = 'index';
-						self::$ARGS = array_slice(self::$PARTS, 1);
-					}
-				}
-			}			
+				}			
+			}
 			
 			// 4. Forth check: system controller
-			if(is_file(Kennel::$ROOT_PATH .'/system/controllers/' . self::$PARTS[0] . '.php'))
+			if(isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH .'/system/controllers/' . self::$PARTS[0] . '.php'))
 			{
 				self::$CONTROLLER = ucfirst(self::$PARTS[0]);
 				if (isset(self::$PARTS[1]))
@@ -128,7 +128,9 @@
 				self::$CONTROLLER = 'Main';
 			if(!self::$ACTION)
 				self::$ACTION = 'notfound';
-				
+			if(self::$CONTROLLER == 'Main' && self::$ACTION == 'notfound')
+				self::$ARGS = self::$PARTS;
+			
 			return Kennel::controllerAction(self::$CONTROLLER, self::$ACTION, self::$ARGS);
 		}
 		
