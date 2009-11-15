@@ -46,26 +46,28 @@
 				foreach ($this->parent_view->vars as $var =>$val)
 					$$var = $val;
 			
+			$path = Kennel::cascade("{$this->view}.php", 'views');
+			if($path) require_once($path);
+			
 			//View cascading
 			
 			//1. User view
-			if (is_file(Kennel::getPath('views') . "/{$this->view}.php"))
-				require_once(Kennel::getPath('views') . "/{$this->view}.php");
+			if (is_file(Kennel::$ROOT_PATH . "/application/views/{$this->view}.php"))
+				require_once (Kennel::$ROOT_PATH . "/application/views/{$this->view}.php");
 			
 			//2. Model view
 			if (!Kennel::$MODULES) Kennel::fetchModules();
 			foreach (Kennel::$MODULES as $module=>$info)
 			{
-				if (is_file(Kennel::getPath('modules') . "/{$module}/views/{$this->view}.php"))
+				if (is_file(Kennel::$ROOT_PATH . "/modules/{$module}/views/{$this->view}.php"))
 				{
-					//var_dump($editor);
-					require_once Kennel::getPath('modules') . "/{$module}/views/{$this->view}.php"; return;
+					require_once (Kennel::$ROOT_PATH . "/modules/{$module}/views/{$this->view}.php");
 				}
 			}
 			
 			//3. System view
-			if (is_file(Kennel::getPath('system') . "/views/{$this->view}.php"))
-				require_once(Kennel::getPath('system') . "/views/{$this->view}.php");
+			if (is_file(Kennel::$ROOT_PATH . "/system/views/{$this->view}.php"))
+				require_once (Kennel::$ROOT_PATH . "/system/views/{$this->view}.php");
 			
 			
 			//unset all template variables

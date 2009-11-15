@@ -71,8 +71,7 @@
 		static $request_query_string;
 		static $request_uri;
 		
-		static $MAIN_CONTROLLER;
-		static $controller_instance;
+		static $CONTROLLER_INSTANCE;
 		
 		static $time_init;
 		static $time_final;
@@ -200,56 +199,32 @@
 		static function controllerAction($controller, $action='index', $args=null)
 		{
 			// Accepts both strings and objects
-			if(is_string($controller))
+			if (is_string($controller))
 			{
-				// Format the controller class name
 				$controller_class = ucfirst($controller) . "_controller";
-				
-				// Make the controller name available to the API
-				Request::$CONTROLLER = strtolower($controller);
-				
-				self::$controller_instance = Controller::getInstance($controller_class);
+				self::$CONTROLLER_INSTANCE = Controller::getInstance($controller_class);
 			} else {
 				// Set the controller as the current controller instance
-				self::$controller_instance = $controller;
-				
-				// Make the controller name available to the API
-				$controller_class = get_class($controller);
-				Request::$CONTROLLER = strtolower(substr($controller_class, -11));
+				self::$CONTROLLER_INSTANCE = $controller;
 			}
 			
-			// Make sure $action is defined
-			if(!$action) $action = 'index';
-			
-			// Makes the action name available to the API
-			Request::$ACTION = strtolower($action);
-			
 			// Check for the existance of the action as a method in the controller class
-			if(method_exists(self::$controller_instance, Request::$ACTION))
+			if(method_exists(self::$CONTROLLER_INSTANCE, $action))
 			{
 				// Call the method
-				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, Request::$ACTION), $args);
-				else 
-					call_user_func(array(self::$controller_instance, Request::$ACTION));
+				if (is_array($args)) call_user_func_array(array(self::$CONTROLLER_INSTANCE, $action), $args);
+				else  call_user_func(array(self::$CONTROLLER_INSTANCE, Request::$ACTION));
 			}
 			// Workaround in case the action does not exist
 			else
 			{
-				if(is_array($args))
-					$args = array_merge(array(Request::$ACTION), $args);
-				
 				// Select the 'notfound' method if present, or the 'index' method if not
-				if(method_exists(self::$controller_instance, 'notfound'))
-					Request::$ACTION = 'notfound';
-				else
-					Request::$ACTION = 'index';
+				if(method_exists(self::$CONTROLLER_INSTANCE, 'notfound')) Request::$ACTION = 'notfound';
+				else Request::$ACTION = 'index';
 				
 				// Call the workaround method
-				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, Request::$ACTION), $args);
-				else
-					call_user_func(array(self::$controller_instance, Request::$ACTION));
+				if(is_array($args)) call_user_func_array(array(self::$CONTROLLER_INSTANCE, Request::$ACTION), $args);
+				else call_user_func(array(self::$CONTROLLER_INSTANCE, Request::$ACTION));
 			}
 		}
 		
