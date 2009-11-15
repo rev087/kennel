@@ -4,115 +4,54 @@
 	* __autoload(string $resource)
 	* Automatically requires Controllers and Kennel System files
 	*/
-	function __autoload($resource)
+	function __autoload($class_name)
 	{
 		// Controllers
-		if (substr($resource, -11) == '_controller')
+		if (substr($class_name, -11) == '_controller')
 		{
-			// Clear the controller name
-			$controller_name = strtolower(substr($resource, 0, (strlen($resource) - 11)));
+			$controller_name = strtolower(substr($class_name, 0, (strlen($class_name) - 11)));
 			
-			// User Controller
-			if (is_file(Kennel::getPath('controllers') . "/{$controller_name}.php"))
-			{
-				require_once Kennel::getPath('controllers') . "/{$controller_name}.php"; return;
-			}
-			
-			// Module Controller
-			if(!Kennel::$modules) Kennel::fetchModules();
-			foreach(Kennel::$modules as $module=>$info)
-			{
-				if(is_file(Kennel::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"))
-				{
-					require_once Kennel::getPath('modules') . "/{$module}/controllers/{$controller_name}.php"; return;
-				}
-			}
-			
-			// System Controller
-			if(is_file(Kennel::getPath('system') . "/controllers/{$controller_name}.php"))
-			{
-				require_once Kennel::getPath('system') . "/controllers/{$controller_name}.php"; return;
-			}
+			$path = Kennel::cascade($controller_name, 'controllers');
+			if($path) require_once($path);
 		}
 		
 		// Helpers
-		if ($resource == strtolower($resource))
+		if ($class_name == strtolower($class_name))
 		{
-			// User Helper
-			if (is_file(Kennel::getPath('helpers') . "/{$resource}.php"))
-			{
-				require_once Kennel::getPath('helpers') . "/{$resource}.php"; return;
-			}
-			
-			// Module Helper
-			if(!Kennel::$modules) Kennel::fetchModules();
-			foreach(Kennel::$modules as $module=>$info)
-			{
-				if(is_file(Kennel::getPath('modules') . "/{$module}/helpers/{$resource}.php"))
-				{
-					require_once Kennel::getPath('modules') . "/{$module}/helpers/{$resource}.php"; return;
-				}
-			}
-			
-			// System Helper
-			if(is_file(Kennel::getPath('system') . "/helpers/{$resource}.php"))
-			{
-				require_once Kennel::getPath('system') . "/helpers/{$resource}.php"; return;
-			}
+			$path = Kennel::cascade($class_name, 'helpers');
+			if($path) require_once($path);
 		}
 		
 		// Models
-		if (substr($resource, -6) == '_model')
+		if (substr($class_name, -6) == '_model')
 		{
-			// Clear the model name
-			$model_name = strtolower(substr($resource, 0, (strlen($resource) - 6)));
+			$model_name = strtolower(substr($class_name, 0, (strlen($class_name) - 6)));
 			
-			// User Model
-			if (is_file(Kennel::getPath('models') . "/{$model_name}.php"))
-			{
-				require_once Kennel::getPath('models') . "/{$model_name}.php"; return;
-			}
-			
-			// Module Model
-			if(!Kennel::$modules) Kennel::fetchModules();
-			foreach(Kennel::$modules as $module=>$info)
-			{
-				if(is_file(Kennel::getPath('modules') . "/{$module}/models/{$model_name}.php"))
-				{
-					require_once Kennel::getPath('modules') . "/{$module}/models/{$model_name}.php"; return;
-				}
-			}
-			
-			// System Model
-			if(is_file(Kennel::getPath('system') . "/models/{$model_name}.php"))
-			{
-				require_once Kennel::getPath('system') . "/models/{$model_name}.php"; return;
-			}
+			$path = Kennel::cascade($model_name, 'models');
+			if($path) require_once($path);
 		}
 		
-		// System Core Resources
-		if (is_file(Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php"))
-		{
-			require_once Kennel::getPath('system') . "/core/Kennel.".ucfirst($resource).".php";
-		}
+		// System Core Libraries
+		$path = Kennel::cascade($class_name, 'libraries');
+		if($path) require_once($path);
 	}
 	
 	/*
 	* url(string $action)
 	* Returns a Kennel formated url.
-	* @action - the controller and actions. An example could be "blog/post".
+	* @action - the controller and actions. Eg. "blog/post"
 	*/
 	function url($action=null) {
 		if(isset($action))
 		{
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
-				$url= Kennel::$app_root_uri . "/{$action}";
+				$url= Kennel::$ROOT_URL . "/{$action}";
 			else
-				$url= Kennel::$app_root_uri . '/index.php/' . action;
+				$url= Kennel::$ROOT_URL . '/index.php/' . action;
 		}
 		else 
 		{
-			$url = Kennel::$app_root_uri;
+			$url = Kennel::$ROOT_URL;
 		}
 		
 		return $url;
@@ -123,16 +62,16 @@
 	 */
 	class Kennel {
 		
-		static $app_settings;
-		static $app_root_path;
-		static $app_root_uri;
+		private static $_APP_SETTINGS;
+		static $ROOT_PATH;
+		static $ROOT_URL;
 		
-		static $modules;
+		static $MODULES;
 		
 		static $request_query_string;
 		static $request_uri;
 		
-		static $app_main_controller;
+		static $MAIN_CONTROLLER;
 		static $controller_instance;
 		
 		static $time_init;
@@ -144,18 +83,18 @@
 		static function init() {
 			//begin the benchmark
 			self::$time_init = microtime(true);
-			register_shutdown_function(array("Kennel","onShutdown"));
+			register_shutdown_function(array('Kennel', 'onShutdown'));
 			
 			//get the application path and root uri
-			self::$app_root_path = dirname($_SERVER["SCRIPT_FILENAME"]);
-			self::$app_root_uri = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
+			self::$ROOT_PATH = dirname($_SERVER['SCRIPT_FILENAME']);
+			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
 			
 			//get the application settings
 			require_once('settings.php');
-			self::$app_settings = $settings;
+			self::$_APP_SETTINGS = $settings;
 			
 			//process the request
-			self::processRequest();
+			Request::process();
 		}
 		
 		/*
@@ -163,6 +102,72 @@
 		*/
 		static function onShutdown() {
 			if(self::getSetting('application', 'show_benchmark')) self::printBenchmark();
+		}
+		
+		/**
+			*	 Kennel::cascade(string $resource, string $type[, string $return]);
+			*
+			*	 @resource: String. The resource identifier to cascade. Must include the file extension in case of assets.
+			*	 @type: String. The type of the resource. Possible values:
+			*	        libraries, models, views, controllers, helpers, css, img, js, flash, file
+			*	 @return_url: Boolean. Defaults to false. Set to true if the method should return an URL instead of a physical path.
+			*/
+		function cascade($resource, $type, $return_url=false)
+		{
+			switch ($type)
+			{
+				case 'libraries':
+					$application_path = "/application/libraries/{$resource}.php";
+					$module_path = "/modules/{module}/libraries/{$resource}.php";
+					$system_path = "/system/core/Kennel.{$resource}.php";
+					break;
+				case 'models':
+				case 'views':
+				case 'controllers':
+				case 'helpers':
+					$application_path = "/application/{$type}/{$resource}.php";
+					$module_path = "/modules/{module}/{$type}/{$resource}.php";
+					$system_path = "/system/{$type}/{$resource}.php";
+					break;
+				case 'css':
+				case 'img':
+				case 'js':
+				case 'flash':
+				case 'file':
+					$application_path = "/application/assets/{$type}/{$resource}";
+					$module_path = "/modules/{module}/assets/{$type}/{$resource}";
+					$system_path = "/system/assets/{$type}/{$resource}";
+					break;
+			}
+			
+			// Application (user) resource
+			if (is_file(Kennel::$ROOT_PATH . $application_path))
+			{
+				if ($return_url) return Kennel::$ROOT_URL . $application_path;
+				else return Kennel::$ROOT_PATH . $application_path;
+			}
+			
+			// Module resource
+			if(!self::$MODULES) self::fetchModules();
+			foreach (self::$MODULES as $module=>$info)
+			{
+				$path = str_replace('{module}', $module, $module_path);
+				if (is_file(Kennel::$ROOT_PATH . $path))
+				{
+					if ($return_url) return Kennel::$ROOT_URL . $path;
+					else return Kennel::$ROOT_PATH . $path;
+				}
+			}
+			
+			// System resource
+			if(is_file(Kennel::$ROOT_PATH . $system_path))
+			{
+ 				if ($return_url) return Kennel::$ROOT_URL . $system_path;
+				else return Kennel::$ROOT_PATH . $system_path;
+			}
+			
+			// Resource not found
+			return false;
 		}
 		
 		/*
@@ -179,14 +184,14 @@
 		* Kennel::getSetting(str $category, str $setting)
 		*/
 		static function getSetting($category, $setting) {
-			return self::$app_settings[$category][$setting];
+			return self::$_APP_SETTINGS[$category][$setting];
 		}
 		
 		/*
 		* Kennel::getPath(str $directory)
 		*/
 		static function getPath($directory='') {
-			return self::$app_root_path . self::getSetting('path', $directory);
+			return trim(self::$ROOT_PATH, '/') . '/' . $directory;
 		}
 		
 		/*
@@ -201,54 +206,50 @@
 				$controller_class = ucfirst($controller) . "_controller";
 				
 				// Make the controller name available to the API
-				Request::$controller = strtolower($controller);
+				Request::$CONTROLLER = strtolower($controller);
 				
-				// Makes sure only one instace of the main controller is instantiated
-				if($controller == 'main')
-					self::$controller_instance = self::$app_main_controller;
-				else
-					self::$controller_instance = Controller::getInstance($controller_class);
+				self::$controller_instance = Controller::getInstance($controller_class);
 			} else {
 				// Set the controller as the current controller instance
 				self::$controller_instance = $controller;
 				
 				// Make the controller name available to the API
 				$controller_class = get_class($controller);
-				Request::$controller = strtolower(substr($controller_class, -11));
+				Request::$CONTROLLER = strtolower(substr($controller_class, -11));
 			}
 			
 			// Make sure $action is defined
 			if(!$action) $action = 'index';
 			
 			// Makes the action name available to the API
-			Request::$action = strtolower($action);
+			Request::$ACTION = strtolower($action);
 			
 			// Check for the existance of the action as a method in the controller class
-			if(method_exists(self::$controller_instance, Request::$action))
+			if(method_exists(self::$controller_instance, Request::$ACTION))
 			{
 				// Call the method
 				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, Request::$action), $args);
+					call_user_func_array(array(self::$controller_instance, Request::$ACTION), $args);
 				else 
-					call_user_func(array(self::$controller_instance, Request::$action));
+					call_user_func(array(self::$controller_instance, Request::$ACTION));
 			}
 			// Workaround in case the action does not exist
 			else
 			{
 				if(is_array($args))
-					$args = array_merge(array(Request::$action), $args);
+					$args = array_merge(array(Request::$ACTION), $args);
 				
 				// Select the 'notfound' method if present, or the 'index' method if not
 				if(method_exists(self::$controller_instance, 'notfound'))
-					Request::$action = 'notfound';
+					Request::$ACTION = 'notfound';
 				else
-					Request::$action = 'index';
+					Request::$ACTION = 'index';
 				
 				// Call the workaround method
 				if(is_array($args))
-					call_user_func_array(array(self::$controller_instance, Request::$action), $args);
+					call_user_func_array(array(self::$controller_instance, Request::$ACTION), $args);
 				else
-					call_user_func(array(self::$controller_instance, Request::$action));
+					call_user_func(array(self::$controller_instance, Request::$ACTION));
 			}
 		}
 		
@@ -258,7 +259,7 @@
 		static function fetchModules()
 		{
 			// Initialize the variable
-			self::$modules = array();
+			self::$MODULES = array();
 			
 			// Get through the file list in the modules directory
 			$files = scandir(self::getPath('modules'));
@@ -269,93 +270,9 @@
 					$file != '.' && $file != '..' && $file != '.svn')
 					{
 						include Kennel::getPath('modules') . "/{$file}/info.php";
-						self::$modules[$file] = $info[$file];
+						self::$MODULES[$file] = $info[$file];
 					}
 			}
-		}
-		
-		/*
-		* Kennel::processRequest()
-		*/
-		static function processRequest()
-		{
-			// Instantialize the main controller
-			self::$app_main_controller = Controller::getInstance('Main_controller');
-			
-			// Get the request args
-			if(self::getSetting('application', 'use_mod_rewrite'))
-			{
-				$app_root_uri = substr(self::$app_root_path, strlen($_SERVER['DOCUMENT_ROOT']));
-				$request_string = substr(trim($_SERVER['REQUEST_URI'], '/'), strlen($app_root_uri));
-				$action_string = str_replace(strstr($request_string, '?'), '', $request_string);
-				
-				$action_array = array_filter(explode('/', $action_string));
-			}
-			else
-			{
-				//todo: check this
-				self::$request_uri = $_SERVER['QUERY_STRING'];
-				$action_array = array_filter(explode('/', self::$request_uri));
-			}
-
-			// Reasign action keys (to avoid empty entries due to double slashes) and convert to lowercase
-			$action_args = array();
-			foreach ($action_array as $key=>$value)
-			{
-				if($value) $action_args[] = strtolower($value);
-			}
-			
-			// Display the Home page if no action_args are suplied
-			if (count($action_args) == 0)
-			{
-				self::controllerAction('main', 'index'); return;
-				return;
-			}
-			
-			// 1. First check: method in the main controller
-			if (method_exists(self::$app_main_controller, $action_args[0]))
-			{
-				self::controllerAction('main', array_shift($action_args), $action_args); return;
-			}
-				
-			// 2. Second check: user defined controller...
-			if (is_file(self::getPath('controllers')."/{$action_args[0]}.php"))
-			{
-				$action = isset($action_args[1])?$action_args[1]:null;
-				self::controllerAction($action_args[0], $action, array_slice($action_args, 2)); return;
-			}
-			
-			// 3. Third check: module controller
-			if (!self::$modules) self::fetchModules();
-			$controller_filename = strtolower($action_args[0]) . '.php';
-			foreach (self::$modules as $module=>$info)
-			{
-				if(is_file(self::getPath('modules') . "/{$module}/controllers/{$controller_filename}"))
-				{
-					if (count($action_args)==1)
-						self::controllerAction($action_args[0]);
-					else
-					{
-						if (method_exists($action_args[0], $action_args[1]))
-							self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
-						else
-							self::controllerAction($action_args[0], 'index', array_slice($action_args, 1));
-					}
-					return;
-				}
-			}
-			
-			// 4. Forth check: system controller
-			if(is_file(self::getPath('system')."/controllers/{$action_args[0]}.php"))
-			{
-				if (count($action_args)==1) self::controllerAction($action_args[0]);
-				else self::controllerAction($action_args[0], $action_args[1], array_slice($action_args, 2));
-				return;
-			}
-				
-			// If the first request argument is not a method of the main controller nor a controller, send 404
-			if(count($action_args) > 0) self::controllerAction(self::$app_main_controller, 'notfound', array_slice($action_args, 0));
-			else self::controllerAction(self::$app_main_controller, 'notfound');
 		}
 		
 	}

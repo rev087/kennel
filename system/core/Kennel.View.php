@@ -53,8 +53,8 @@
 				require_once(Kennel::getPath('views') . "/{$this->view}.php");
 			
 			//2. Model view
-			if (!Kennel::$modules) Kennel::fetchModules();
-			foreach (Kennel::$modules as $module=>$info)
+			if (!Kennel::$MODULES) Kennel::fetchModules();
+			foreach (Kennel::$MODULES as $module=>$info)
 			{
 				if (is_file(Kennel::getPath('modules') . "/{$module}/views/{$this->view}.php"))
 				{

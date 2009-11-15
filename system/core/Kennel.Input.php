@@ -19,7 +19,9 @@
 		{
 			if(!self::$_get) self::prepare();
 			
-			if(isset(self::$_get[$var]))
+			if(isset(Request::$NAMED_ARGS[$var]))
+				return self::clean(Request::$NAMED_ARGS[$var]);
+			elseif(isset(self::$_get[$var]))
 				return self::clean(self::$_get[$var]);
 			else
 				return null;

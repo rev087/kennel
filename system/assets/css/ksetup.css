@@ -37,7 +37,7 @@ body {
 		display: block;
 		height: 30px;
 		text-align: right;
-		margin-bottom: 3px;
+		margin: 0px 0px 3px 10px;
 		background-color: #E2E0DE;
 		-moz-border-radius-topleft: 8px;
 		-webkit-border-top-left-radius: 8px;
@@ -62,6 +62,7 @@ body {
 	}
 	
 	#menu li.selected {
+		margin-left: 0px;
 		background-color: #EDECEB;
 		width: 166px;
 		z-index: 0;
@@ -69,9 +70,9 @@ body {
 		border: 0;
 	}
 	
-	#modules { background-image: url('../img/fw_modules_ico.png'); }
-	#database { background-image: url('../img/fw_database_ico.png'); }
-	#settings { background-image: url('../img/fw_settings_ico.png'); }
+	#modules { background-image: url('../img/k_modules_ico.png'); }
+	#database { background-image: url('../img/k_database_ico.png'); }
+	#settings { background-image: url('../img/k_settings_ico.png'); }
 	
 	#menu .selected a {
 		color: #17B3D1;
@@ -146,7 +147,7 @@ table {
 th {
 	color: #FFF;
 	border: 1px solid #474747;
-	background: #3F3F3F url('../img/fw_button_bg.png') repeat-x top left;
+	background: #3F3F3F url('../img/k_button_bg.png') repeat-x top left;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	padding: 2px 20px 2px 10px;
