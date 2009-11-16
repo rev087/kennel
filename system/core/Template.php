@@ -1,4 +1,9 @@
 <?php
+	
+	/**
+		*  TODO; Don't use this library yet.
+		*/
+	
 	class Template
 	{
 		private static $view;

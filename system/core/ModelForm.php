@@ -1,4 +1,10 @@
-<?php	
+<?php
+	
+	/**
+		*  DEPRECATED; Don't use this library. It will soon be rewritten completely.
+		*  In it's current state, it's highly dated and will not work.
+		*/
+	
 	require_once('controllers/controller.XML.php');
 	require_once('controllers/controller.Model.php');
 	require_once('controllers/controller.MySQL.php');
