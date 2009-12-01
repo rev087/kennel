@@ -1,227 +1,205 @@
 <?php
 	
 	class Model {
-		private static $structure_cache = array();
-		private static $db;
-		private $fields;
-		private $sync_values = array();
+		
+		private static $DB;
+		private $synced_data;
+		private $data;
+		var $schema;
 		var $model_name;
-		var $CRUDFieldDefs = array();
 		
-		function __construct($model_name=null) {
-			$this->model_name = $model_name;
-			
-			if(!$model_name) Debug::backtrace();
-			
-			if(!self::$db) self::$db = new MySQL();
-			$this->fields = self::$db->getTableStructure($this->model_name);
-		}
-		
-		/*
-		* Model::getFields()
-		* Returns the complete field structure as an associative array.
-		* Each field has: field name, type, required, default value and current instance value.
-		*/
-		function getFields() {
-			return $this->fields;
-		}
-		
-		/*
-		* Model::dump()
-		* Prints a report of all model's fields and their properties. See Model::getFields() for a list of properties.
-		*/
-		function dump() {
-			foreach($this->fields as $key=>$value) {
-				print "<p><strong>{$key}: </strong>".print_r($value, true)."</p>";
-			}
-		}
-		
-		/*
-		* Model::getInstance(string $model_name)
-		* Returns an instance of the Model class.
-		* If an extended Model class exists in the models directory, returns an instance of that class instead.
-		*/
-		static function getInstance($model_name) {
-			/* Doesn't work on PHP <5.3.0
-			$called_class = get_called_class();
-			$model = strtolower(substr($called_class, 0, (strlen($called_class) - 6)));
-			
-			if ($called_class == 'Model') return new Model($model_name);
-			else return new $called_class($model);
+		/**
+			*  Instance Methods 
 			*/
-			$extended_class = ucfirst($model_name) . '_model';
-			if (class_exists($extended_class)) return new $extended_class($model_name);
-			else return new Model($model_name);
-		}
 		
-		/*
-		* misc Model::get()
-		* This static method returns one or more Model instancies.
-		*/
-		static function get($model_name, $where=null, $order=null) {
-			if(!self::$db) self::$db = new MySQL();
-			
-			$sql = "SELECT * FROM `{$model_name}`";
-			
-			if($where) {
-				$arr = array();
-				foreach($where as $key=>$value) {
-					if(!is_numeric($key)) $arr[] = "`{$key}` = '{$value}'";
-					else $arr[] = $value;
-				}
-				$sql .=' WHERE ' . join(" AND ", $arr);
-			}
-			
-			if($order) {
-				if(!is_array($order)) $order = array($order);
-				$arr = array();
-				foreach($order as $key=>$value) {
-					if(!is_numeric($key)) $arr[] = "{$key} {$value}";
-					else $arr[] = "{$value} ASC";
-				}
-				$sql .= ' ORDER BY ' . join(", ", $arr);
-			}
-			
-			$rs = self::$db->query($sql);
-			
-			$ret = array();
-			while($row = self::$db->fetch_assoc($rs)) {
-				$inst = self::getInstance($model_name);
-				$inst->sync_values = array();
-				foreach($row as $key=>$val) {
-					$inst->__set($key, $val);
-					if ($val===NULL)
-						$inst->sync_values[] = "`{$key}` IS NULL";
-					else
-						$inst->sync_values[] = "`{$key}` = '{$val}'";
-				}
-				$ret[] = $inst;
-			}
-			return  $ret;
-			
-		}
-		
-		/*
-		* array Model::getAll(string $model_name, misc $where)
-		* Get all results in an array.
-		* Same as Model::get(), but always returns an array, even with a single instance.
-		*/
-		static function getAll($model_name, $order=null) {
-			$ret = self::get($model_name, null, $order);
-			if(is_array($ret)) return $ret;
-			else return array($ret);
-		}
-		
-		/*
-		* object Model::getOne(string $model_name, misc $where)
-		* Get the first result.
-		*/
-		static function getOne($model_name, $where) {
-			$rows = self::get($model_name, $where);
-			if(count($rows) > 0) return $rows[0];
-			else return NULL;
-		}
-		
-		/*
-		* void Model::feed(array $array)
-		* Feed the given arrey as values to the model
-		*/
-		function feed($array) {
-			foreach($array as $key=>$value) {
-				$this->__set($key, $value);
+		function __construct($model_name)
+		{
+			if (!is_string($model_name)) Debug::error('Model::__construct - $model_name must be a string.');
+			$this->model_name = $model_name;
+			$this->schema = ORM::getSchema($model_name);
+			foreach ($this->schema as $field)
+			{
+				$this->data[$field->name] = null;
+				$this->synced_data[$field->name] = null;
 			}
 		}
 		
-		/*
-		* void Model::feed(array $array)
-		* The exact oposite of feed
-		*/
-		function toArray() {
-			$arr = array();
-			foreach($this->fields as $key=>$field) {
-				$arr[$field['name']] = $field['value'];
-			}
-			return $arr;
+		function __set($name, $value)
+		{
+			$this->data[$name] = $value;
 		}
 		
-		/*
-		* Model::save(void)
-		* Save the model.
-		* If the model was loaded from the database, this method updates the database record.
-		* If it's a new model, this method creates a new database record.
-		*/
-		function save() {
-			$values = array();
-			if($this->sync_values) {
-				//save a database row that already exists
-				foreach($this->fields as $field) {
-					if($field['value'] !== NULL) $values[] = "`{$field['name']}` = '{$field['value']}'";
-					else "`{$field['name']}` IS NULL";
-				}
-				$sql = "UPDATE {$this->model_name} SET " . join(", ", $values) . " WHERE " . join(" AND ", $this->sync_values);
-			} else {
-				//insert a new database row
-				foreach ($this->fields as $field)
-				{
-					if($field['value']) $values[] = "'{$field['value']}'";
-					else $values[] = "null";
-				}
-				$sql = "INSERT INTO {$this->model_name} VALUES (" . join(", ", $values) . ")";
-			}
-			
-			//register the new syncronized values
-			foreach($this->fields as $field) {
-				if ($field['value'] === NULL)
-					$this->sync_values = "`{$field['name']}` IS NULL";
-				else
-					$this->sync_values = "`{$field['name']}` = '{$field['value']}'";
-			}
-			
-			//execute the query
-			self::$db->query($sql);
-			
-			//upadte the id
-			if(!$this->id) $this->id = self::$db->insert_id();
+		function __get($name)
+		{
+			if (isset($this->data[$name]))
+				return $this->data[$name];
+			else
+				return null;
 		}
 		
-		/*
-		* Model::delete()
-		* Deletes the database record. The model must have been loaded from the database.
-		*/
-		function delete() {
-			if(self::$db->query("DELETE FROM {$this->model_name} WHERE " . join(" AND ", $this->sync_values))) {
-				return true;
-				unset($this->fields);
-			} else {
-				return false;
-			}
-		}
-		
-		/*
-		* Magic!
-		*/
-		function __get($key) {
-			foreach($this->fields as $k=>$field) {
-				if($k == $key) return $field['value'];
-			}
-			Debug::error("Model::__get() - Field '{$key}' not found");
-		}
-		
-		/*
-		* Magic!
-		*/
-		function __set($key, $value) {
-			foreach($this->fields as $k=>$field) {
-				if($k == $key) {
-					$this->fields[$k]['value'] = $value;
-					return $value;
-				}
-			}
-			Debug::error("Model::__set() - Field '{$key}' not found");
-		}
-		
-		function __tostring() {
+		function __toString()
+		{
 			return $this->model_name;
+		}
+		
+		function hydrate($field, $value)
+		{
+			$this->data[$field] = $value;
+			$this->synced_data[$field] = $value;
+		}
+		
+		function delete()
+		{
+			$c = new Criteria($this->model_name);
+			foreach ($this->schema as $field)
+			{
+				$c->add($field->name, $this->data[$field->name]);
+			}
+			ORM::delete($c);
+			unset($this->synced_data);
+			unset($this->data);
+		}
+		
+		function save()
+		{
+			$primaryKey = $this->schema->getPrimaryKey();
+			
+			$columns = array();
+			$newValues = array();
+			$syncedValues = array();
+			
+			// Add quotes for non-numeric field values, used while building the SQL statement
+			foreach ($this->schema as $field)
+			{
+				$columns[] = '`' . $field->name . '`';
+				switch (strtolower($field->type))
+				{
+					case 'varchar':
+					case 'text':
+					case 'datetime':
+						if ($this->data[$field->name] !== NULL)
+							$newValues[] = '"' . MySQL::escape_string($this->data[$field->name]) . '"';
+						else
+							$newValues[] = 'NULL';
+							
+						if ($this->synced_data[$field->name] !== NULL)
+							$syncedValues[] = '"' . MySQL::escape_string($this->synced_data[$field->name]) . '"';
+						else
+							$syncedValues[] = 'NULL';
+						break;
+					case 'int':
+					case 'float':
+					case 'tinyint':
+						if ($this->data[$field->name] !== NULL && is_numeric($this->data[$field->name]))
+							$newValues[] = $this->data[$field->name];
+						else
+							$newValues[] = 'NULL';
+						
+						if ($this->synced_data[$field->name] !== NULL && is_numeric($this->sunced_data[$field->name]))
+							$syncedValues[] = $this->synced_data[$field->name];
+						else
+							$syncedValues[] = 'NULL';
+						break;
+					default:
+						Debug::error("Model::save - Unsuported field type \"{$field->type}\" for field \"{$field->name}\" on model \"{$this->model_name}\"");
+				}
+			}
+			
+			// Check if it's an existing record, build SQL statement accordingly
+			if (!$this->synced_data[$primaryKey->name])
+			{
+				$sql = "INSERT INTO {$this->schema->table} (";
+				$sql .= implode(', ', $columns);
+				$sql .= ")\nVALUES (";
+				$sql .= implode(', ', $newValues);
+				$sql .= ");";
+			} else
+			{
+				$dataList = array();
+				foreach ($columns as $key=>$column)
+					$dataList[] = "\n {$column} = {$newValues[$key]}";
+				
+				$c = new Criteria($this->model_name);
+				foreach ($this->schema as $field)
+					$c->add($field->name, $this->synced_data[$field->name]);
+				
+				$sql = "UPDATE {$this->schema->table} SET " . implode(', ', $dataList);
+				$sql .= "\nWHERE " . ORM::getWhereString($c) . ';';
+			}
+			
+			if (!self::$DB) self::$DB = new MySQL;
+			self::$DB->query($sql);
+
+			if (!$this->data[$primaryKey->name])
+			{
+				//Update the PrimaryKey
+				$insertId = self::$DB->insert_id();
+				$this->synced_data[$primaryKey->name] = $insertId;
+				$this->data[$primaryKey->name] = $insertId;
+			}
+		}
+		
+		function toArray()
+		{
+			return $this->data;
+		}
+		
+		function fromArray($data)
+		{
+			foreach ($data as $field=>$value)
+			{
+				$this->data[$field] = $value;
+			}
+		}
+		
+		function dump($dump_relationships=true)
+		{
+			print '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background-color: #FFF; color: #1E9C6D; float: left; text-align: left;">';
+			print '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background-color: #1E9C6D; color: #FFF;">';
+			$class = get_class($this);
+			print "{$this->model_name}: {$class}";
+			print '</h2>';
+			foreach ($this->schema as $field)
+			{
+				if ($field->primaryKey) print '<strong>*</strong> ';
+				elseif ($field->foreignKey && $field->foreignModel) print '<strong>~</strong> ';
+				else print '&nbsp; ';
+				
+				if ($field->required)
+					print "<strong>{$field->name}</strong> = \"{$this->data[$field->name]}\"<br />";
+				else
+					print "<strong>[{$field->name}]</strong> = \"{$this->data[$field->name]}\"<br />";
+			}
+			
+			if ($dump_relationships)
+				foreach ($this->schema->getRelationships() as $relationship)
+				{
+					$foreignModel = $relationship->foreignModel;
+					if ($this->$foreignModel) $this->$foreignModel->dump();
+				}
+			
+			print '</pre></div><div style="clear: both;"></div>';
+		}
+		
+		/**
+			*  Static methods 
+			*/
+		
+		static function getInstance($model_name)
+		{
+			$path = Kennel::cascade($model_name, 'models');
+			if ($path)
+			{
+				$class = ucfirst($model_name) . '_model';
+				$instance = new $class;
+			}
+			else
+			{
+				$class = 'Model';
+				$instance = new $class($model_name);
+			}
+			
+			return $instance;
 		}
 		
 	}

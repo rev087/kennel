@@ -38,5 +38,31 @@
 			
 		</div>
 		
+		<?php if (isset($_GET['omg']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Gecko') > 0): ?>
+		<!--egg-->
+		<script type="text/javascript">
+			document.body.style.MozTransform = "rotate(5deg)";
+			document.body.style.webkitTransform = "rotate(5deg)";
+		</script>
+		<h1 style="
+			clear: both;
+			text-align: center;
+			color: #E2E0DE;
+			background-color: #900;
+			margin: 50px;
+			position: relative;
+			top: 20px;
+			line-height: 35px;
+			-moz-border-radius: 5px;
+			float: left;
+			padding: 5px 10px 5px 50px;
+      -webkit-transform: rotateY(45deg);
+
+		">
+			OMG! YOU BROKE IT!
+		</h1>
+		<!--/egg-->
+		<?php endif; ?>
+		
 	</body>
 </html>

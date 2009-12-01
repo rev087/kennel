@@ -63,6 +63,7 @@
 	class Kennel {
 		
 		private static $_APP_SETTINGS;
+		private static $_CASCADE_CACHE;
 		static $ROOT_PATH;
 		static $ROOT_URL;
 		
@@ -113,12 +114,23 @@
 			*/
 		function cascade($resource, $type, $return_url=false)
 		{
+			if (isset(self::$_CASCADE_CACHE[$type][$resource]))
+			{
+				if ($return_url) return self::$ROOT_URL . self::$_CASCADE_CACHE[$type][$resource];
+				else return self::$ROOT_PATH . self::$_CASCADE_CACHE[$type][$resource];
+			}
+			
 			switch ($type)
 			{
 				case 'libraries':
 					$application_path = "/application/libraries/{$resource}.php";
 					$module_path = "/modules/{module}/libraries/{$resource}.php";
-					$system_path = "/system/core/Kennel.{$resource}.php";
+					$system_path = "/system/core/{$resource}.php";
+					break;
+				case 'schemas':
+					$application_path = "/application/models/{$resource}.xml";
+					$module_path = "/modules/{module}/models/{$resource}.xml";
+					$system_path = "/system/models/{$resource}.xml";
 					break;
 				case 'models':
 				case 'views':
@@ -142,6 +154,7 @@
 			// Application (user) resource
 			if (is_file(Kennel::$ROOT_PATH . $application_path))
 			{
+				self::$_CASCADE_CACHE[$type][$resource] = $application_path;
 				if ($return_url) return Kennel::$ROOT_URL . $application_path;
 				else return Kennel::$ROOT_PATH . $application_path;
 			}
@@ -153,6 +166,7 @@
 				$path = str_replace('{module}', $module, $module_path);
 				if (is_file(Kennel::$ROOT_PATH . $path))
 				{
+					self::$_CASCADE_CACHE[$type][$resource] = $path;
 					if ($return_url) return Kennel::$ROOT_URL . $path;
 					else return Kennel::$ROOT_PATH . $path;
 				}
@@ -161,6 +175,7 @@
 			// System resource
 			if(is_file(Kennel::$ROOT_PATH . $system_path))
 			{
+				self::$_CASCADE_CACHE[$type][$resource] = $system_path;
  				if ($return_url) return Kennel::$ROOT_URL . $system_path;
 				else return Kennel::$ROOT_PATH . $system_path;
 			}

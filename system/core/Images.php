@@ -9,8 +9,6 @@
 			$path = "img/library/{$pathinfo['filename']}{$uniqid}.{$pathinfo['extension']}";
 			
 			move_uploaded_file($file['tmp_name'], $path);
-			//$chmod = chmod($path, "777");
-			//var_dump($chmod);
 			
 			$size = getimagesize($path);
 			
