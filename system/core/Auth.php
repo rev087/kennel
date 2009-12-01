@@ -19,17 +19,18 @@
 			$username_field = Kennel::getSetting('auth', 'username_field');
 			$password_field = Kennel::getSetting('auth', 'password_field');
 			
-			$user = Model::getOne(
-				$model_name,
-				array($username_field=>$username, $password_field=>$password)
-			);
+			$c = new Criteria($model_name);
+			$c->add($username_field, $username);
+			$c->add($password_field, $password);
 			
-			if ($user)
+			$users = ORM::retrieve($c);
+			
+			if (isset($users[0]))
 			{
-				self::$user = $user;
+				self::$user = $users[0];
 				if(!session_id()) session_start();
 				$app_id = Kennel::getSetting('application', 'app_id');
-				$_SESSION["{$app_id}_auth"] = $user->toArray();
+				$_SESSION["{$app_id}_auth"] = self::$user->toArray();
 				
 				return true;
 			}
@@ -91,7 +92,7 @@
 			elseif ($_SESSION["{$app_id}_auth"])
 			{
 				self::$user = new Model(Kennel::getSetting('auth', 'model_name'));
-				self::$user->feed($_SESSION["{$app_id}_auth"]);
+				self::$user->fromArray($_SESSION["{$app_id}_auth"]);
 				return self::$user;
 			}
 			else

@@ -8,7 +8,7 @@
 		public static $user;
 		public static $pass;
 		public static $database;
-		static $conn;
+		private static $CONN;
 		
 		public static $last_query;
 		public static $num_queries = 0;
@@ -17,36 +17,35 @@
 		
 		//constructor/destructor functions
 		//////////////////////////////////
-		function __construct($host=null, $user=null, $pass=null, $database=null) {
-			if(!self::$conn) {
-				self::$host = Kennel::getSetting('database','host');
-				self::$user = Kennel::getSetting('database','user');
-				self::$pass = Kennel::getSetting('database','pass');
-				self::$database = Kennel::getSetting('database','database');
-				self::connect($host, $user, $pass, $database);
-			}
+		function __construct() {
+			if(!self::$CONN) self::connect();
 		}
 		
 		function connect($host=null, $user=null, $pass=null, $database=null)
 		{
-			self::$conn = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
-			mysql_set_charset('utf-8', self::$conn);
-			mysql_select_db(($database?$database:self::$database), self::$conn);
+			if (self::$CONN && @mysql_ping(self::$CONN)) return;
+			
+			self::$host = Kennel::getSetting('database','host');
+			self::$user = Kennel::getSetting('database','user');
+			self::$pass = Kennel::getSetting('database','pass');
+			self::$database = Kennel::getSetting('database','database');
+			
+			self::$CONN = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
+			mysql_set_charset('utf-8', self::$CONN);
+			mysql_select_db(($database?$database:self::$database), self::$CONN);
 		}
 		
 		function __destruct() {
-			@mysql_close(self::$conn);
+			@mysql_close(self::$CONN);
 		}
 		
 		//query functions
 		/////////////////
 		function query($sql) {
-			if(! @mysql_ping(self::$conn)) {
-				self::connect();
-			}
+			self::connect();
 			
 			self::$num_queries++;
-			$rs = mysql_query($sql, self::$conn);
+			$rs = mysql_query($sql, self::$CONN);
 			self::$last_query = $sql;
 			if(mysql_error()) self::dumpError($sql);
 			else return $rs;
@@ -60,11 +59,11 @@
 			
 			$tr = XML::element('tr', $table);
 			$th = XML::element('th', $tr, null, 'query');
-			$td = XML::element('td', $tr, null, $sql);
+			$td = XML::element('td', $tr, null, "<pre>{$sql}</pre>");
 			
 			$tr = XML::element('tr', $table);
 			$th = XML::element('th', $tr, null, 'error');
-			$td = XML::element('td', $tr, null, mysql_error(self::$conn));
+			$td = XML::element('td', $tr, null, mysql_error(self::$CONN));
 			
 			$full_backtrace = debug_backtrace();
 			$backtrace = $full_backtrace[2];
@@ -117,7 +116,7 @@
 		}
 		
 		function insert_id() {
-			return mysql_insert_id(self::$conn);
+			return mysql_insert_id(self::$CONN);
 		}
 		
 		//fetch functions
@@ -167,6 +166,12 @@
 		
 		//misc functions
 		////////////////
+		function escape_string($string)
+		{
+			self::connect();
+			return mysql_real_escape_string($string, self::$CONN);
+		}
+		
 		function dateToUs($str) {
 			if(!$str) return false;
 			$split = split("/",$str);
