@@ -17,6 +17,9 @@
 		const RIGHT_JOIN = 'RIGHT JOIN';
 		const INNER_JOIN = 'INNER JOIN';
 		
+		// Values
+		const NOW = 'NOW()';
+		
 		// Query variables
 		var $criterion_groups = array();
 		var $from_model_name;
