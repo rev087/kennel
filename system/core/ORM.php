@@ -204,10 +204,12 @@
 				foreach ($criterion_group as $criterion)
 				{
 					$column = self::formatColumnReference($criterion->column, $criteria);
-					if ($criterion->value !== NULL)
-						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
-					else
+					if ($criterion->value === Criteria::NOW)
+						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' NOW()';
+					elseif ($criterion->value === NULL)
 						$where_groups[$group_key][] = $column . ' IS NULL';
+					else
+						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
 				}
 			}
 			
