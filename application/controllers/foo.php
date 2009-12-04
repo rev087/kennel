@@ -3,7 +3,10 @@
 	{
 		function index()
 		{
-			print '<h1>Foo Index</h1>';
+			$poster = ORM::retrieveByPrimaryKey('image', 35);
+			$img = new Image($poster->path());
+			$img->thumb(137, 225);
+			$img->output();
 		}
 		
 		function bar()
