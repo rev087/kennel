@@ -59,7 +59,7 @@
 			$this->order_by[] = array('column'=>$column, 'direction'=>'DESC');
 		}
 		
-		function addGroupByColumn($column)
+		function addGroupBy($column)
 		{
 			$this->group_by[] = $column;
 		}
