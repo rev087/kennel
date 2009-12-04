@@ -35,43 +35,74 @@
 			}
 		}
 		
+		function __destruct()
+		{
+			imagedestroy($this->image);
+		}
+		
 		function output() {
 			header("Content-Type: image/jpeg");
 			imagejpeg($this->image, null, 95);
 		}
-
-		function resize($limit)
+		
+		function thumb($width, $height)
 		{
-			$prop = $this->width>$this->height?$limit/$this->width:$limit/$this->height;
+			$ratio = $this->width / $this->height;
+		 
+			if ($width / $height > $ratio) {
+				 $new_height = $width / $ratio;
+				 $new_width = $width;
+			} else {
+				 $new_width = $height * $ratio;
+				 $new_height = $height;
+			}
+		 
+			$x_mid = $new_width / 2;  //horizontal middle
+			$y_mid = $new_height / 2; //vertical middle
+		 
+			$process = imagecreatetruecolor(round($new_width), round($new_height));
+		 
+			imagecopyresampled($process, $this->image, 0, 0, 0, 0, $new_width, $new_height, $this->width, $this->height);
+			$thumb = imagecreatetruecolor($width, $height);
+			imagecopyresampled($thumb, $process, 0, 0, ($x_mid-($width/2)), ($y_mid-($height/2)), $width, $height, $width, $height);
+			
+			imagedestroy($process);
+			return $this->image = $thumb;
+		}
+		
+		function limit($side)
+		{
+			$prop = $this->width>$this->height?$side/$this->width:$side/$this->height;
 			
 			$new_w = $this->width * $prop;
 			$new_h = $this->height * $prop;
 			
 			$resized = imagecreatetruecolor($new_w, $new_h);
 			imagecopyresampled($resized, $this->image, 0, 0, 0, 0, $new_w, $new_h, $this->width, $this->height);
+			
+			$this->width = $new_w;
+			$this->height = $new_h;
+			
+			imagedestroy($resized);
 			return $this->image = $resized;
 		}
 		
-		function resizeCrop($width, $height)
+		function square($side)
 		{
-			$difW = $width - $this->width;
-			$difH = $height - $this->height;
-			
-			print $difW . ' ' . $difH;
-		}
-		
-		function square($limit)
-		{
-			$prop = $this->width<$this->height?$limit/$this->width:$limit/$this->height;
+			$prop = $this->width<$this->height?$side/$this->width:$side/$this->height;
 			
 			$new_w = $this->width * $prop;
 			$new_h = $this->height * $prop;
 			
-			$new_x = ($new_w - $limit) / 2;
-			$new_y = ($new_h - $limit) / 2;
+			$new_x = ($new_w - $side) / 2;
+			$new_y = ($new_h - $side) / 2;
 			
-			$cropped = imagecreatetruecolor($limit, $limit);
+			$cropped = imagecreatetruecolor($side, $side);
 			imagecopyresampled($cropped, $this->image, 0, 0, $new_x, $new_y, $new_w, $new_h, $this->width, $this->height);
+			
+			$this->width = $new_w;
+			$this->height = $new_w;
+			
 			return $this->image = $cropped;
 		}
 		
