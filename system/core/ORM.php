@@ -19,8 +19,7 @@
 			
 			foreach ($relationships as $rel)
 			{
-				$rel_schema = self::getSchema($rel->foreignModel);
-				$criteria->addJoin($rel->foreignModel, "{$schema->table}.{$rel->name}", "{$rel_schema->table}.{$rel->foreignKey}", Criteria::LEFT_JOIN);
+				$criteria->addJoin($rel->foreignModel, "{$criteria->from_model_name}.{$rel->name}", "{$rel->foreignModel}.{$rel->foreignKey}");
 			}
 			
 			$sql = self::getSelectString($criteria);
@@ -43,6 +42,14 @@
 			}
 			
 			return $model_array;
+		}
+		
+		static function retrieveFirst($criteria)
+		{
+			$criteria->setLimit(1);
+			$items = self::retrieve($criteria);
+			if (count($items) > 0) return $items[0];
+			else return null;
 		}
 		
 		static function delete($criteria)
@@ -110,15 +117,19 @@
 			
 			// JOINS
 			$join_string = self::getJoinString($criteria);
-			if($join_string) $sql .= $join_string;
+			if ($join_string) $sql .= $join_string;
 			
 			// WHERE
 			$where_string = self::getWhereString($criteria);
 			if ($where_string) $sql .= "\nWHERE {$where_string}";
 			
+			// GROUP
+			$group_string = self::getGroupString($criteria);
+			if ($group_string) $sql .= "\nGROUP BY {$group_string}";
+			
 			// ORDER
 			$order_string = self::getOrderString($criteria);
-			if($order_string) $sql .= "\nORDER BY {$order_string}";
+			if ($order_string) $sql .= "\nORDER BY {$order_string}";
 			
 			// LIMIT
 			$limit_string = self::getLimitString($criteria);
@@ -188,8 +199,9 @@
 			foreach($criteria->joins as $join)
 			{
 				$schema = self::getSchema($join['model_name']);
-				$table_name = $schema->table;
-				$joins[] = "\n {$join['join_type']} {$table_name} ON {$join['left_column']} = {$join['right_column']}";
+				$left_column_reference = self::formatColumnReference($join['left_column'], $criteria);
+				$right_column_reference = self::formatColumnReference($join['right_column'], $criteria);
+				$joins[] = "\n {$join['join_type']} {$schema->table} ON {$left_column_reference} = {$right_column_reference}";
 			}
 			
 			return implode('', $joins);
@@ -233,6 +245,16 @@
 			return implode(', ', $order_params);
 		}
 		
+		// ORM::getGroupString(Criteria $criteria)
+		function getGroupString($criteria)
+		{
+			$params = array();
+			foreach($criteria->group_by as $group_by)
+				$params[] = "\n " . self::formatColumnReference($group_by, $criteria);
+			
+			return implode(', ', $params);
+		}
+		
 		// ORM::getLimitString(Criteria $criteria)
 		function getLimitString($criteria)
 		{
@@ -251,7 +273,8 @@
 			if (strpos($column_reference, '.') > 0)
 			{
 				$column_composition = explode('.', $column_reference);
-				return '`' . trim($column_composition[0], '`') . '`.`' . trim($column_composition[1], '`') . '`';
+				$schema = ORM::getSchema($column_composition[0]);
+				return '`' . trim($schema->table, '`') . '`.`' . trim($column_composition[1], '`') . '`';
 			}
 			else
 			{
