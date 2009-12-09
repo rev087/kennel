@@ -71,26 +71,15 @@
 		
 		function addJoin($model_name, $left_column, $right_column, $join_type=self::INNER_JOIN)
 		{
-			if (is_array($left_column))
-			{
-				$schema = Model::getSchema($left_column[0]);
-				$left_column = "{$schema->table}.$left_column[1]";
-			}
+			foreach ($this->joins as $join)
+				if ($join['model_name'] == $model_name) return false; // This should actually throw a Warning
 			
-			if (is_array($right_column))
-			{
-				$schema = Model::getSchema($right_column[0]);
-				$right_column = "{$schema->table}.$right_column[1]";
-			}
-			
-			$join = array(
+			$this->joins[] = array(
 				'model_name' => $model_name,
 				'left_column' => $left_column,
 				'right_column' => $right_column,
 				'join_type' => $join_type
 			);
-			
-			if (array_search($join, $this->joins) === false) $this->joins[] = $join;
 			
 		}
 		

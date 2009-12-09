@@ -19,7 +19,7 @@
 			
 			foreach ($relationships as $rel)
 			{
-				$criteria->addJoin($rel->foreignModel, "{$criteria->from_model_name}.{$rel->name}", "{$rel->foreignModel}.{$rel->foreignKey}");
+				$criteria->addJoin($rel->foreignModel, "{$criteria->from_model_name}.{$rel->name}", "{$rel->foreignModel}.{$rel->foreignKey}", Criteria::LEFT_JOIN);
 			}
 			
 			$sql = self::getSelectString($criteria);
@@ -56,6 +56,16 @@
 		{
 			if (!self::$DB) self::$DB = new MySQL;
 			$sql = self::getDeleteString($criteria);
+			self::$DB->query($sql);
+		}
+		
+		static function create($model)
+		{
+			if (!self::$DB) self::$DB = new MySQL;
+			
+			$schema = self::getSchema($model);
+			$sql = $schema->getCreateString();
+			
 			self::$DB->query($sql);
 		}
 		
