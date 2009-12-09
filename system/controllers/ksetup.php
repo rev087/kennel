@@ -1,6 +1,7 @@
 <?php
 	class Ksetup_controller extends Controller
 	{
+		private static $DB;
 		var $msg;
 		
 		function __construct()
@@ -38,11 +39,7 @@
 				if (!$model['status'])
 				{
 					$created++;
-					$schema = ORM::getSchema($model['info']['filename']);
-					$sql = $schema->getCreateString();
-					
-					$db = new MySQL;
-					$db->query($sql);
+					ORM::create($model['info']['filename']);
 				}
 			}
 			
@@ -68,6 +65,34 @@
 			$this->template->content = new View('ksetup_settings');
 			$this->template->settings = $settings;
 			$this->template->render();
+		}
+		
+		private function checkModel($model)
+		{
+		/*
+			$schema = ORM::getSchema($model);
+			$sql = "DESC `$schema->table`";
+			
+			$rs = self::$DB->query($sql);
+			
+			$schema = ORM::getSchema($model);
+			print $schema->getCreateString();
+			
+			// compare existing database Table to Schema
+			while ($row = self::$DB->fetch($rs))
+			{
+				print '<br />';
+				print ' <strong>field:</strong>';
+				print $row->Field;
+				print ' <strong>type:</strong>';
+				print $row->Type;
+				print ' <strong>null:</strong>';
+				print $row->Null;
+				print '<br />';
+			}
+			
+			print '<hr />';
+		*/
 		}
 		
 		private function getModels()
@@ -107,16 +132,17 @@
 						$models[] = array('dir'=>$dir, 'info'=> $path_info, 'source'=>'system');
 				}
 			
-			$db = new MySQL();
-			$rs = $db->query("SHOW TABLES");
+			self::$DB = new MySQL();
+			$rs = self::$DB->query("SHOW TABLES");
 			$tables = array();
-			while ($row = $db->fetch_array($rs))
+			while ($row = self::$DB->fetch_array($rs))
 			{
 				$tables[] = $row[0];
 			}
 			
 			foreach ($models as $id=>$model)
 			{
+				self::checkModel($model['info']['filename']);
 				$schema = ORM::getSchema($model['info']['filename']);
 				$result = array_search($schema->table, $tables);
 				if ($result !== FALSE) $models[$id]['status'] = 'ok';

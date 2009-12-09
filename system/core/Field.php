@@ -77,8 +77,15 @@
 			
 			// PRIMARY KEY
 			if ($this->primaryKey) $createString .= ' PRIMARY KEY AUTO_INCREMENT';
+			
+			// REQUIRED
 			if ($this->required && !$this->primaryKey) $createString .= ' NOT NULL';
+			
+			// DEFAULT
 			if ($this->default) $createString .= ' DEFAULT "' . $this->default . '"';
+			
+			// UNIQUE
+			if ($this->unique && !$this->primaryKey) $createString .= ' UNIQUE';
 			
 			return $createString;
 		}
