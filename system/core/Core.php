@@ -206,7 +206,7 @@
 		* Kennel::getPath(str $directory)
 		*/
 		static function getPath($directory='') {
-			return trim(self::$ROOT_PATH, '/') . '/' . $directory;
+			return rtrim(self::$ROOT_PATH, '/') . '/' . $directory;
 		}
 		
 		/*
