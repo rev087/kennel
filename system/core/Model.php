@@ -62,6 +62,23 @@
 		
 		function save()
 		{
+			$sql = $this->getSaveQuery();
+			if (!self::$DB) self::$DB = new MySQL;
+			self::$DB->query($sql);
+			
+			$primaryKey = $this->schema->getPrimaryKey();
+			
+			if (!$this->data[$primaryKey->name])
+			{
+				//Update the PrimaryKey
+				$insertId = self::$DB->insert_id();
+				$this->synced_data[$primaryKey->name] = $insertId;
+				$this->data[$primaryKey->name] = $insertId;
+			}
+		}
+		
+		function getSaveQuery()
+		{
 			$primaryKey = $this->schema->getPrimaryKey();
 			
 			$columns = array();
@@ -127,16 +144,7 @@
 				$sql .= "\nWHERE " . ORM::getWhereString($c) . ';';
 			}
 			
-			if (!self::$DB) self::$DB = new MySQL;
-			self::$DB->query($sql);
-
-			if (!$this->data[$primaryKey->name])
-			{
-				//Update the PrimaryKey
-				$insertId = self::$DB->insert_id();
-				$this->synced_data[$primaryKey->name] = $insertId;
-				$this->data[$primaryKey->name] = $insertId;
-			}
+			return $sql;
 		}
 		
 		function toArray()
