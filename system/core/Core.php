@@ -47,7 +47,7 @@
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
 				$url= Kennel::$ROOT_URL . "/{$action}";
 			else
-				$url= Kennel::$ROOT_URL . '/index.php/' . action;
+				$url= Kennel::$ROOT_URL . "/index.php/{$action}";
 		}
 		else 
 		{
