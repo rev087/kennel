@@ -5,12 +5,6 @@
 	$settings['database']['pass'] = '';
 	$settings['database']['database'] = 'castor';
 	
-	//paths
-	$settings['path']['system'] = '/system';
-	$settings['path']['modules'] = '/modules';
-	$settings['path']['helpers'] = '/helpers';
-	$settings['path']['models'] = '/models';
-	
 	//application settings
 	$settings['application']['app_id'] = 'example';
 	$settings['application']['use_mod_rewrite'] = true;
