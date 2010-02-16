@@ -263,8 +263,11 @@
 				if (is_dir(Kennel::getPath('modules') . '/' . $file) &&
 					$file != '.' && $file != '..' && $file != '.svn')
 					{
-						include Kennel::getPath('modules') . "/{$file}/info.php";
-						self::$MODULES[$file] = $info[$file];
+						if (is_file(Kennel::getPath('modules') . "/{$file}/info.php"))
+						{
+							include Kennel::getPath('modules') . "/{$file}/info.php";
+							self::$MODULES[$file] = $info[$file];
+						}
 					}
 			}
 		}
