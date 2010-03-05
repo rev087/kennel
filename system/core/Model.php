@@ -44,7 +44,7 @@
 		
 		function hydrate($field, $value)
 		{
-			$this->data[$field] = stripslashes($value);
+			$this->data[$field] = $value !== null? stripslashes($value) : null;
 			$this->synced_data[$field] = $value;
 		}
 		

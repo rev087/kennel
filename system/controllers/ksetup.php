@@ -100,7 +100,7 @@
 			$models = array();
 			
 			// User Models
-			$dir = Kennel::getPath() . '/models/';
+			$dir = Kennel::getPath() . '/application/models/';
 			if (is_dir($dir))
 				foreach (scandir($dir) as $filename)
 				{
