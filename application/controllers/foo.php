@@ -3,23 +3,10 @@
 	{
 		function index()
 		{
-			$poster = ORM::retrieveByPrimaryKey('image', 38);
-			$poster->thumb(137, 225);
-			$poster->thumb(137, 225);
-			$poster->thumb(137, 225);
-			$poster->thumb(137, 225);
-			$poster->thumb(137, 225);
-			$poster->thumb(540, 1000);
-			$poster->thumb(540, 1000);
-			$poster->thumb(540, 1000);
-			$poster->thumb(540, 1000);
-			$poster->thumb(540, 1000);
-			$poster->thumb(100, 125);
-			$poster->thumb(100, 125);
-			$poster->thumb(100, 125);
-			$poster->thumb(100, 125);
-			$poster->thumb(100, 125);
-			$poster->dump();
+			$c = new Criteria('page');
+			$c->add('id', 0, Criteria::NOT_EQUAL);
+			$test = ORM::retrieveFirst($c);
+			$test->dump();
 		}
 		
 		function bar()
