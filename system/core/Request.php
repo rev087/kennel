@@ -20,6 +20,14 @@
 				return false;
 		}
 		
+		function is_iPhone()
+		{
+			if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone') > 0 || strpos($_SERVER['HTTP_USER_AGENT'], 'iPod') > 0)
+				return true;
+			else
+				return false;
+		}
+		
 		/*
 		* Kennel::processRequest()
 		*/
