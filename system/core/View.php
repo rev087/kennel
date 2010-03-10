@@ -55,7 +55,7 @@
 			if (is_file(Kennel::$ROOT_PATH . "/application/views/{$this->view}.php"))
 				require_once (Kennel::$ROOT_PATH . "/application/views/{$this->view}.php");
 			
-			//2. Model view
+			//2. Module view
 			if (!Kennel::$MODULES) Kennel::fetchModules();
 			foreach (Kennel::$MODULES as $module=>$info)
 			{
