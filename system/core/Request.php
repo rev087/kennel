@@ -158,7 +158,7 @@
 			
 			$tr = XML::element('tr', $table);
 			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Arguments');
-			$td = XML::element('td', $tr, null, self::$ARGS);
+			$td = XML::element('td', $tr, null, Debug::dump(self::$ARGS, true));
 			
 			if($return) return $table;
 			else print $table;
