@@ -29,7 +29,7 @@
 		
 		function post($var)
 		{
-			if(!self::$_get) self::prepare();
+			if(!self::$_post) self::prepare();
 			
 			if (isset(self::$_post[$var]))
 			{
