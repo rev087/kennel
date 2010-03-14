@@ -10,6 +10,7 @@
 		function __construct($image) {
 			if (is_string($image))
 			{
+				if (!is_file($image)) return;
 				$this->path = pathinfo($image);
 				$imageSize = getimagesize($image);
 				$this->width = $imageSize[0];
@@ -37,6 +38,7 @@
 		
 		function __destruct()
 		{
+			if (!$this->image) return;
 			imagedestroy($this->image);
 		}
 		
@@ -47,6 +49,7 @@
 		
 		function thumb($width, $height)
 		{
+			if (!$this->image) return;
 			$ratio = $this->width / $this->height;
 		 
 			if ($width / $height > $ratio) {
@@ -72,6 +75,7 @@
 		
 		function limit($side)
 		{
+			if (!$this->image) return;
 			$prop = $this->width>$this->height?$side/$this->width:$side/$this->height;
 			
 			$new_w = $this->width * $prop;
@@ -89,6 +93,7 @@
 		
 		function square($side)
 		{
+			if (!$this->image) return;
 			$prop = $this->width<$this->height?$side/$this->width:$side/$this->height;
 			
 			$new_w = $this->width * $prop;
@@ -107,6 +112,7 @@
 		}
 		
 		function save($filename) {
+			if (!$this->image) return;
 			imagejpeg($this->image, $filename, 95);
 		}
 
