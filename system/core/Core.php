@@ -68,7 +68,6 @@
 		static $ROOT_URL;
 		
 		static $MODULES;
-		static $MODULE_SETTINGS;
 		
 		static $request_query_string;
 		static $request_uri;
@@ -249,9 +248,6 @@
 		*/
 		static function fetchModules()
 		{
-			// Get the module settings
-			self::$MODULE_SETTINGS = parse_ini_file('modulesettings.ini', true);
-			
 			// Initialize the variable
 			self::$MODULES = array();
 			
@@ -265,17 +261,12 @@
 					{
 						if (is_file(Kennel::getPath('modules') . "/{$file}/info.php"))
 						{
+							if (isset($info)) unset($info);
 							include Kennel::getPath('modules') . "/{$file}/info.php";
-							self::$MODULES[$file] = $info[$file];
+							self::$MODULES[$file] = $info;
 						}
 					}
 			}
-		}
-		
-		static function getModuleOption($module, $option)
-		{
-			if (isset(self::$MODULE_SETTINGS[$module][$option])) return self::$MODULE_SETTINGS[$module][$option];
-			else return null;
 		}
 		
 	}

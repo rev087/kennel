@@ -76,5 +76,15 @@
 			return $sql;
 		}
 		
+		function isField($name)
+		{
+			foreach ($this as $field)
+			{
+				if ($field->name == $name)
+					return true;
+			}
+			return false;
+		}
+		
 	}
 ?>

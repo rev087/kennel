@@ -5,6 +5,7 @@
 		private static $DB;
 		private $synced_data;
 		private $data;
+		var $is_synced;
 		var $schema;
 		var $model_name;
 		
@@ -22,10 +23,16 @@
 				$this->data[$field->name] = null;
 				$this->synced_data[$field->name] = null;
 			}
+			$this->is_synced = true;
 		}
 		
 		function __set($name, $value)
 		{
+			if ($this->schema->isField($name) && $this->data[$name] != $value)
+			{
+				$this->is_synced = false;
+			}
+			
 			$this->data[$name] = $value;
 		}
 		
@@ -62,19 +69,25 @@
 		
 		function save()
 		{
+			$primaryKey = $this->schema->getPrimaryKey();
+			
+			// No need to save if the model has a PK set and is synced with the DB
+			if ($this->data[$primaryKey->name] && $this->is_synced)
+				return null;
+			
 			$sql = $this->getSaveQuery();
 			if (!self::$DB) self::$DB = new MySQL;
 			self::$DB->query($sql);
 			
-			$primaryKey = $this->schema->getPrimaryKey();
-			
-			if (!$this->data[$primaryKey->name])
+			if (!$this->is_synced)
 			{
 				//Update the PrimaryKey
 				$insertId = self::$DB->insert_id();
 				$this->synced_data[$primaryKey->name] = $insertId;
 				$this->data[$primaryKey->name] = $insertId;
 			}
+			
+			$this->is_synced = true;
 		}
 		
 		function getSaveQuery()
@@ -94,6 +107,7 @@
 					case 'varchar':
 					case 'text':
 					case 'datetime':
+						
 						if ($this->data[$field->name] !== NULL)
 							$newValues[] = '"' . MySQL::escape_string($this->data[$field->name]) . '"';
 						else
@@ -103,10 +117,13 @@
 							$syncedValues[] = '"' . MySQL::escape_string($this->synced_data[$field->name]) . '"';
 						else
 							$syncedValues[] = 'NULL';
+							
 						break;
+						
 					case 'int':
 					case 'float':
 					case 'tinyint':
+						
 						if ($this->data[$field->name] !== NULL && is_numeric($this->data[$field->name]))
 							$newValues[] = $this->data[$field->name];
 						else
@@ -116,7 +133,9 @@
 							$syncedValues[] = $this->synced_data[$field->name];
 						else
 							$syncedValues[] = 'NULL';
+						
 						break;
+						
 					default:
 						Debug::error("Model::save - Unsuported field type \"{$field->type}\" for field \"{$field->name}\" on model \"{$this->model_name}\"");
 				}
