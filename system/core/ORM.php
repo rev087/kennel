@@ -231,7 +231,7 @@
 					elseif ($criterion->value === NULL)
 						$where_groups[$group_key][] = $column . ' IS NULL';
 					else
-						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
+						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . addslashes(MySQL::escape_string($criterion->value)) . '"';
 				}
 			}
 			

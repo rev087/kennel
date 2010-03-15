@@ -13,7 +13,6 @@
 		public static $last_query;
 		public static $num_queries = 0;
 		private static $structure_cache = array();
-		//paging
 		
 		//constructor/destructor functions
 		//////////////////////////////////
