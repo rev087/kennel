@@ -24,10 +24,10 @@ class calendar {
 	
 	function __toString()
 	{
-		return $this->generate();
+		return $this->output();
 	}
 	
-	function generate()
+	function output()
 	{
 		$ret  = '<table class="calendar">';
 		$ret .= '<tr>';
@@ -43,12 +43,12 @@ class calendar {
 		$dom=1-$this->msw;
 		while($dom<=$this->dim) {
 			for($dow=1; $dow<=7; $dow++) {
-				unset($class);
-				unset($title);
-				unset($link_start);
-				unset($link_end);
+				$class = '';
+				$title = '';
+				$link_start = '';
+				$link_end = '';
 				if($dom>0 && $dom<=$this->dim)  {
-					if($this->events[$dom]) {
+					if(isset($this->events[$dom])) {
 						$class = " cal_event";
 						$title = ' title="&nbsp;'.$this->events[$dom].'&nbsp;"';
 						if($this->links[$dom]) {

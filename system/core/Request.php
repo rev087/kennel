@@ -28,8 +28,17 @@
 				return false;
 		}
 		
+		// Return the value of a Named Paramater
+		static function param($param)
+		{
+			if (is_set(self::$NAMED_ARGS[$param]))
+				return self::$NAMED_ARGS[$param];
+			else
+				return null;
+		}
+		
 		/*
-		* Kennel::processRequest()
+		* Kennel::process()
 		*/
 		static function process()
 		{
