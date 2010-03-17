@@ -31,10 +31,15 @@
 		// Return the value of a Named Paramater
 		static function param($param)
 		{
-			if (is_set(self::$NAMED_ARGS[$param]))
+			if (isset(self::$NAMED_ARGS[$param]))
 				return self::$NAMED_ARGS[$param];
 			else
 				return null;
+		}
+		
+		static function referer()
+		{
+			return $_SERVER['HTTP_REFERER'];
 		}
 		
 		/*
