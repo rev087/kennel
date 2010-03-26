@@ -11,12 +11,17 @@
 			return $a = XML::element('a', null, $properties, $text);
 		}
 		
-		static function css($filename)
+		static function css()
 		{
-			$link = XML::element('link');
-			$link->rel = 'stylesheet';
+			$arguments = func_get_args();
+			if (sizeOf($arguments) == 0) return null;
+			
+			$link = XML::element('style');
 			$link->type = 'text/css';
-			$link->href = assets::css($filename);
+			foreach ($arguments as $filename) {
+				$path = assets::css($filename);
+				$text = new XMLText("\n\t@import url('{$path}');", $link);
+			}
 			return $link;
 		}
 		
