@@ -28,6 +28,7 @@
 		
 		function getPage($page_number=1)
 		{
+			if (!is_numeric($page_number)) $page_number = 1;
 			$this->page_number = $page_number;
 			
 			$this->criteria->setOffset(($page_number - 1) * $this->items_per_page);
