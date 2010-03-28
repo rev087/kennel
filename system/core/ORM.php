@@ -10,7 +10,7 @@
 			self::$DB = new MySQL;
 		}
 		
-		static function retrieve($criteria)
+		static function retrieve(Criteria $criteria)
 		{
 			if (!self::$DB) self::$DB = new MySQL;
 			
@@ -44,7 +44,7 @@
 			return $model_array;
 		}
 		
-		static function retrieveFirst($criteria)
+		static function retrieveFirst(Criteria $criteria)
 		{
 			$criteria->setLimit(1);
 			$items = self::retrieve($criteria);
@@ -52,7 +52,7 @@
 			else return null;
 		}
 		
-		static function delete($criteria)
+		static function delete(Criteria $criteria)
 		{
 			if (!self::$DB) self::$DB = new MySQL;
 			$sql = self::getDeleteString($criteria);
@@ -102,7 +102,7 @@
 		// PRIVATE METHODS
 		//////////////////
 		
-		function hydrateModel($model, $data)
+		static function hydrateModel($model, $data)
 		{
 			foreach ($data as $key=>$value)
 			{
@@ -115,7 +115,7 @@
 		}
 		
 		// ORM::getSelectString(Criteria $criteria)
-		function getSelectString($criteria)
+		static function getSelectString(Criteria $criteria)
 		{
 			// SELECT
 			$sql = "SELECT ";
@@ -151,7 +151,7 @@
 		}
 		
 		// ORM::getDeleteString(Criteria $criteria)
-		function getDeleteString($criteria)
+		static function getDeleteString(Criteria $criteria)
 		{
 			// DELETE
 			$sql = "DELETE ";
@@ -171,7 +171,7 @@
 
 		
 		// ORM::getFieldListString(Criteria $criteria)
-		function getFieldListString($criteria)
+		static function getFieldListString(Criteria $criteria)
 		{
 			$select_array = array();
 			
@@ -196,14 +196,14 @@
 		}
 		
 		// ORM::getFromString(Criteria $criteria)
-		function getFromString($criteria)
+		static function getFromString(Criteria $criteria)
 		{
 			$schema = self::getSchema($criteria->from_model_name);
 			return "\n `{$schema->table}`";
 		}
 		
 		// ORM::getJoinString(Criteria $criteria)
-		function getJoinString($criteria)
+		static function getJoinString(Criteria $criteria)
 		{
 			$joins = array();
 			foreach($criteria->joins as $join)
@@ -218,7 +218,7 @@
 		}
 		
 		// ORM::getWhereString(Criteria $criteria)
-		function getWhereString($criteria)
+		static function getWhereString(Criteria $criteria)
 		{
 			$where_groups = array();
 			foreach($criteria->criterion_groups as $group_key=>$criterion_group)
@@ -245,7 +245,7 @@
 		}
 		
 		// ORM::getOrderString(Criteria $criteria)
-		function getOrderString($criteria)
+		static function getOrderString(Criteria $criteria)
 		{
 			$order_params = array();
 			
@@ -256,7 +256,7 @@
 		}
 		
 		// ORM::getGroupString(Criteria $criteria)
-		function getGroupString($criteria)
+		static function getGroupString(Criteria $criteria)
 		{
 			$params = array();
 			foreach($criteria->group_by as $group_by)
@@ -266,7 +266,7 @@
 		}
 		
 		// ORM::getLimitString(Criteria $criteria)
-		function getLimitString($criteria)
+		static function getLimitString(Criteria $criteria)
 		{
 			if ($criteria->limit)
 			{
@@ -278,7 +278,7 @@
 		}
 		
 		// ORM::formatColumnReference(String $column, Criteria $criteria);
-		function formatColumnReference($column_reference, $criteria)
+		static function formatColumnReference($column_reference, Criteria $criteria)
 		{
 			if (strpos($column_reference, '.') > 0)
 			{

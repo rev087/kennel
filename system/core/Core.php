@@ -112,7 +112,7 @@
 			*	        libraries, models, views, controllers, helpers, css, img, js, flash, file
 			*	 @return_url: Boolean. Defaults to false. Set to true if the method should return an URL instead of a physical path.
 			*/
-		function cascade($resource, $type, $return_url=false)
+		static function cascade($resource, $type, $return_url=false)
 		{
 			if (isset(self::$_CASCADE_CACHE[$type][$resource]))
 			{

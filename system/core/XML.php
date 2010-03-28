@@ -17,7 +17,7 @@
 		var $tagname;
 		var $properties = array();
 		
-		function __construct($tagname, $parent=null, $properties=null, $text=null) {
+		function __construct($tagname, XMLElement $parent=null, $properties=null, $text=null) {
 			$this->tagname = $tagname;
 			$this->properties = $properties;
 			
@@ -99,7 +99,7 @@
 		var $text;
 		var $parent;
 		
-		function __construct($text, $parent=null) {
+		function __construct($text, XMLElement $parent=null) {
 			$this->text = $text;
 			if($parent) {
 				$this->parent = $parent;
