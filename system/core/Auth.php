@@ -59,7 +59,7 @@
 			exit;
 		}
 		
-		function check()
+		static function check()
 		{
 			if(!session_id()) session_start();
 			$app_id = Kennel::getSetting('application', 'app_id');
@@ -81,7 +81,7 @@
 			return false;
 		}
 		
-		function getUser() 
+		static function getUser() 
 		{
 			$app_id = Kennel::getSetting('application', 'app_id');
 			

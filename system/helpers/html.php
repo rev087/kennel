@@ -25,14 +25,20 @@
 			return $link;
 		}
 		
-		static function js($filename)
+		static function js()
 		{
-			//<script type="text/javascript" src=""></script>
-			$script = XML::element('script');
-			$script->type = 'text/javascript';
-			$script->src = assets::js($filename);
-			$script->adopt(XML::text(''));
-			return $script;
+			$arguments = func_get_args();
+			if (sizeOf($arguments) == 0) return null;
+			
+			$return = '';
+			foreach ($arguments as $filename) {
+				$script = XML::element('script');
+				$script->type = 'text/javascript';
+				$script->src = assets::js($filename);
+				$script->adopt(XML::text(''));
+				$return .= "\n\t".$script;
+			}
+			return $return;
 		}
 		
 		function img($filename, $alt=NULL)

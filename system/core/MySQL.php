@@ -20,7 +20,7 @@
 			if(!self::$CONN) self::connect();
 		}
 		
-		function connect($host=null, $user=null, $pass=null, $database=null)
+		static function connect($host=null, $user=null, $pass=null, $database=null)
 		{
 			if (self::$CONN && @mysql_ping(self::$CONN)) return;
 			
@@ -165,7 +165,7 @@
 		
 		//misc functions
 		////////////////
-		function escape_string($string)
+		static function escape_string($string)
 		{
 			self::connect();
 			return mysql_real_escape_string($string, self::$CONN);

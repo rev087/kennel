@@ -11,7 +11,7 @@
 		public static $MODULE;
 		public static $CASCADED_TO;
 		
-		function is_ajax()
+		static function is_ajax()
 		{
 			if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
@@ -20,7 +20,7 @@
 				return false;
 		}
 		
-		function is_iPhone()
+		static function is_iPhone()
 		{
 			if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone') > 0 || strpos($_SERVER['HTTP_USER_AGENT'], 'iPod') > 0)
 				return true;

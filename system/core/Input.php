@@ -9,13 +9,13 @@
 			self::prepare();
 		}
 		
-		function prepare()
+		static function prepare()
 		{
 			self::$_get = $_GET;
 			self::$_post = $_POST;
 		}
 		
-		function get($var)
+		static function get($var)
 		{
 			if(!self::$_get) self::prepare();
 			
@@ -27,7 +27,7 @@
 				return null;
 		}
 		
-		function post($var)
+		static function post($var)
 		{
 			if(!self::$_post) self::prepare();
 			
@@ -58,7 +58,7 @@
 			return self::dump(true);
 		}
 		
-		function dump($return=false)
+		static function dump($return=false)
 		{
 			$dump = '<h1>GET</h1>';
 			$dump .= Debug::dump($_GET, true);
@@ -76,7 +76,7 @@
 		* wich is a modified version of Christian Stocker's code. (http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php)
 		* Information on Kohana's modifications of the original code can be found in the comments inside Kohana's Input Library.
 		*/
-		function clean($data)
+		static function clean($data)
 		{
 			
 			// Fix &entity\n;
