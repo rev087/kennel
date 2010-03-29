@@ -72,12 +72,14 @@
 		/*
 		* string Input::clean(string $data)
 		*
-		* This entire method comes straight from the Kohana Input Library (http://docs.kohanaphp.com/libraries/input),
+		* This entire method comes almost straight from the Kohana Input Library (http://docs.kohanaphp.com/libraries/input),
 		* wich is a modified version of Christian Stocker's code. (http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php)
 		* Information on Kohana's modifications of the original code can be found in the comments inside Kohana's Input Library.
 		*/
 		static function clean($data)
 		{
+			// Remove slashes added by the browser for \, " and '
+			$data = str_replace(array('\\\\', '\"', "\'"), array('\\', '"', "'"), $data);
 			
 			// Fix &entity\n;
 			$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
