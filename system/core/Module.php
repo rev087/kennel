@@ -7,25 +7,25 @@
 		var $dependencies = array();
 		private static $INSTANCES = array();
 		
-		function __construct($id)
+		function __construct($mod_id)
 		{
-			$this->id = $id;
+			$this->mod_id = $mod_id;
 			$this->doc = new DOMDocument;
 			$this->doc->load(Kennel::$ROOT_PATH . '/modulesettings.xml');
 			$root = $this->doc->getElementsByTagName('modules')->item(0);
 			
 			foreach ($root->childNodes as $node)
-				if ($node->nodeType == 1 && $node->getAttribute('id') == $id)
+				if ($node->nodeType == 1 && $node->getAttribute('id') == $mod_id)
 					$this->settings = $node->childNodes;
 			
 		}
 		
-		static function getInstance($id)
+		static function getInstance($mod_id)
 		{
-			if (isset(self::$INSTANCES[$id]))
-				return self::$INSTANCES[$id];
+			if (isset(self::$INSTANCES[$mod_id]))
+				return self::$INSTANCES[$mod_id];
 			else
-				return new Module($id);
+				return new Module($mod_id);
 		}
 		
 		function get($variable)

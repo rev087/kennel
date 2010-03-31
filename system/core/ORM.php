@@ -250,7 +250,10 @@
 			$order_params = array();
 			
 			foreach($criteria->order_by as $order_by)
-				$order_params[] = "\n " . self::formatColumnReference($order_by['column'], $criteria) . " {$order_by['direction']}";
+				if ($order_by['direction'] == 'ASC' or $order_by['direction'] == 'DESC')
+					$order_params[] = "\n " . self::formatColumnReference($order_by['column'], $criteria) . " {$order_by['direction']}";
+				elseif ($order_by['direction'] == 'RAND')
+					$order_params[] = "\n " . "RAND()";
 			
 			return implode(', ', $order_params);
 		}

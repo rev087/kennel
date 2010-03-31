@@ -59,6 +59,11 @@
 			$this->order_by[] = array('column'=>$column, 'direction'=>'DESC');
 		}
 		
+		function addRandomOrder()
+		{
+			$this->order_by[] = array('direction'=>'RAND');
+		}
+		
 		function addGroupBy($column)
 		{
 			$this->group_by[] = $column;
