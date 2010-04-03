@@ -28,6 +28,7 @@
 		var $group_by = array();
 		var $limit;
 		var $offset = 0;
+		var $custom_select_columns = array();
 		
 		function __construct($model_name=null)
 		{
@@ -86,6 +87,11 @@
 				'join_type' => $join_type
 			);
 			
+		}
+		
+		function addCustomSelectColumn($definition, $alias = null)
+		{
+			$this->custom_select_columns[] = array('definition'=>$definition, 'alias'=>$alias);
 		}
 		
 		function addOr()

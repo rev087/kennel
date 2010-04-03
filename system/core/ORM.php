@@ -180,6 +180,13 @@
 			{
 				$select_array[] = "\n `{$schema->table}`.`{$field->name}` AS `{$schema->table}_{$field->name}`";
 			}
+			foreach ($criteria->custom_select_columns as $custom_field)
+			{
+				if ($custom_field['alias'])
+					$select_array[] = "\n {$custom_field['definition']} AS `{$schema->table}_{$custom_field['alias']}`";
+				else
+					$select_array[] = "\n {$custom_field['definition']}";
+			}
 			
 			foreach ($criteria->joins as $join)
 			{
