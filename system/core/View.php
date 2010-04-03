@@ -36,8 +36,6 @@
 		}
 		
 		private function _getOutput() {
-			//begin intercepting the output buffer the buffer
-			ob_start();
 			
 			//set all template variables
 			foreach ($this->vars as $var =>$val)
@@ -46,37 +44,21 @@
 				foreach ($this->parent_view->vars as $var =>$val)
 					$$var = $val;
 			
-			$path = Kennel::cascade("{$this->view}.php", 'views');
+			$path = Kennel::cascade("{$this->view}", 'views');
+			if (!$path) return Debug::error("View <strong>{$this->view}</strong> not found.");
+			
+			//begin intercepting the output buffer the buffer
+			ob_start();
+			
 			if($path) require_once($path);
 			
-			//View cascading
-			
-			//1. User view
-			if (is_file(Kennel::$ROOT_PATH . "/application/views/{$this->view}.php"))
-				require_once (Kennel::$ROOT_PATH . "/application/views/{$this->view}.php");
-			
-			//2. Module view
-			if (!Kennel::$MODULES) Kennel::fetchModules();
-			foreach (Kennel::$MODULES as $module=>$info)
-			{
-				if (is_file(Kennel::$ROOT_PATH . "/modules/{$module}/views/{$this->view}.php"))
-				{
-					require_once (Kennel::$ROOT_PATH . "/modules/{$module}/views/{$this->view}.php");
-				}
-			}
-			
-			//3. System view
-			if (is_file(Kennel::$ROOT_PATH . "/system/views/{$this->view}.php"))
-				require_once (Kennel::$ROOT_PATH . "/system/views/{$this->view}.php");
-			
+			//return the output and close the buffer
+			return ob_get_clean();
 			
 			//unset all template variables
 			foreach ($this->vars as $var =>$val) {
 				unset($$var);
 			}
-			
-			//return the output and close the buffer
-			return ob_get_clean();
 		}
 		
 		function render()

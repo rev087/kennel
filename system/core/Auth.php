@@ -13,7 +13,7 @@
 		* $password - the password, not cryptographed
 		* $remember_me - if true, will set a cookie with the user authentication
 		*/
-		function login($username, $password, $remember_me=false)
+		static function login($username, $password, $remember_me=false)
 		{
 			$model_name = Kennel::getSetting('auth', 'model_name');
 			$username_field = Kennel::getSetting('auth', 'username_field');
@@ -42,7 +42,7 @@
 		/*
 		* Auth::logout()
 		*/
-		function logout()
+		static function logout()
 		{
 			if(!session_id()) session_start();
 			
@@ -52,14 +52,14 @@
 			return true;
 		}
 		
-		function gtfo()
+		static function gtfo()
 		{
 			Auth::$error = "Você não tem acesso à esta área ou sua sessão expirou";
 			die(Auth::$error);
 			exit;
 		}
 		
-		static function check()
+		static static function check()
 		{
 			if(!session_id()) session_start();
 			$app_id = Kennel::getSetting('application', 'app_id');
@@ -99,7 +99,7 @@
 				return false;
 		}
 		
-		function updateUser($user)
+		static function updateUser($user)
 		{
 			if(!session_id()) session_start();
 			$app_id = Kennel::getSetting('application', 'app_id');
