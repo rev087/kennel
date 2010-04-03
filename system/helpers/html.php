@@ -41,7 +41,7 @@
 			return $return;
 		}
 		
-		function img($filename, $alt=NULL)
+		static function img($filename, $alt=NULL)
 		{
 			if ($alt === NULL) $alt = $filename;
 			$img = XML::element('img');
