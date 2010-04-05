@@ -57,6 +57,7 @@
 			if (!self::$DB) self::$DB = new MySQL;
 			$sql = self::getDeleteString($criteria);
 			self::$DB->query($sql);
+			return self::$DB->affected_rows();
 		}
 		
 		static function create($model)
@@ -182,10 +183,7 @@
 			}
 			foreach ($criteria->custom_select_columns as $custom_field)
 			{
-				if ($custom_field['alias'])
-					$select_array[] = "\n {$custom_field['definition']} AS `{$schema->table}_{$custom_field['alias']}`";
-				else
-					$select_array[] = "\n {$custom_field['definition']}";
+				$select_array[] = "\n {$custom_field['definition']} AS `{$schema->table}_{$custom_field['alias']}`";
 			}
 			
 			foreach ($criteria->joins as $join)
@@ -235,8 +233,10 @@
 					$column = self::formatColumnReference($criterion->column, $criteria);
 					if ($criterion->value === Criteria::NOW)
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' NOW()';
-					elseif ($criterion->value === NULL)
+					elseif ($criterion->value === NULL || $criterion->value === Criteria::IS_NULL)
 						$where_groups[$group_key][] = $column . ' IS NULL';
+					elseif ($criterion->value === Criteria::IS_NOT_NULL)
+						$where_groups[$group_key][] = $column . ' IS NOT NULL';
 					else
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
 				}
@@ -290,17 +290,33 @@
 		// ORM::formatColumnReference(String $column, Criteria $criteria);
 		static function formatColumnReference($column_reference, Criteria $criteria)
 		{
+			// Reference has table/column
 			if (strpos($column_reference, '.') > 0)
 			{
 				$column_composition = explode('.', $column_reference);
 				$schema = ORM::getSchema($column_composition[0]);
 				return '`' . trim($schema->table, '`') . '`.`' . trim($column_composition[1], '`') . '`';
 			}
+			// Reference to a custom select column
+			elseif (self::isCustomSelectColumn($column_reference, $criteria))
+			{
+				$schema = self::getSchema($criteria->from_model_name);
+				return "`{$schema->table}_{$column_reference}`";
+			}
 			else
 			{
+				// Standard reference (just the column name)
 				$schema = ORM::getSchema($criteria->from_model_name);
 				return '`' . trim($schema->table, '`') . '`.`' . $column_reference . '`';
 			}
+		}
+		
+		static function isCustomSelectColumn($column_reference, Criteria $criteria)
+		{
+			foreach ($criteria->custom_select_columns as $custom_column)
+				if ($custom_column['alias'] == $column_reference)
+					return true;
+			return false;
 		}
 	}
 	
