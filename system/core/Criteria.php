@@ -19,6 +19,8 @@
 		
 		// Values
 		const NOW = 'NOW()';
+		const IS_NULL = 'IS NULL';
+		const IS_NOT_NULL = 'IS NOT NULL';
 		
 		// Query variables
 		var $criterion_groups = array();
@@ -89,9 +91,12 @@
 			
 		}
 		
-		function addCustomSelectColumn($definition, $alias = null)
+		function addCustomSelectColumn($definition, $alias)
 		{
-			$this->custom_select_columns[] = array('definition'=>$definition, 'alias'=>$alias);
+			$this->custom_select_columns[] = array(
+				'definition'=>$definition,
+				'alias'=>$alias
+			);
 		}
 		
 		function addOr()
