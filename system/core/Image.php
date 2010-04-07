@@ -2,8 +2,8 @@
 	class Image
 	{
 		private $image;
-		private $width;
-		private $height;
+		var $width;
+		var $height;
 		private $mime;
 		private $path;
 		
@@ -87,8 +87,8 @@
 			$this->width = $new_w;
 			$this->height = $new_h;
 			
-			imagedestroy($resized);
 			return $this->image = $resized;
+			imagedestroy($resized);
 		}
 		
 		function square($side)
