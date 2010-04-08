@@ -75,8 +75,10 @@
 		
 		function limit($side)
 		{
-			if (!$this->image) return;
-			$prop = $this->width>$this->height?$side/$this->width:$side/$this->height;
+			if (!$this->image) return null;
+			if ($this->width < $side && $this->height < $side) return $this->image;
+			
+			$prop = $this->width > $this->height ? $side / $this->width : $side / $this->height;
 			
 			$new_w = $this->width * $prop;
 			$new_h = $this->height * $prop;
