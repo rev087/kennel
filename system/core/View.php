@@ -50,7 +50,7 @@
 			//begin intercepting the output buffer the buffer
 			ob_start();
 			
-			if($path) require_once($path);
+			if($path) require($path);
 			
 			//return the output and close the buffer
 			return ob_get_clean();

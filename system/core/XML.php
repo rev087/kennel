@@ -29,10 +29,21 @@
 			if($text) $txtEl = new XMLText($text, $this);
 		}
 		
-		function adopt($element) {
-			if($element->parent) $element->parent->abandon($element);
-			$element->parent = $this;
-			$this->children[] = $element;
+		function adopt() {
+			$elements = func_get_args();
+			foreach ($elements as $element)
+			{
+				if ($element instanceof XMLElement || $element instanceof XMLText)
+				{
+					if ($element->parent) $element->parent->abandon($element);
+					$element->parent = $this;
+				}
+				else
+				{
+					$element = XML::text($element);
+				}
+				$this->children[] = $element;
+			}
 		}
 		
 		function abandon($element) {
@@ -51,17 +62,32 @@
 			return $this;
 		}
 		
-		function output() {
+		function setValue($text)
+		{
+			if ($text instanceof XMLText)
+				$this->adopt($text);
+			else
+				XML::text($text, $this);
+		}
+		
+		function output($formatOutput=false, $indent=null) {
+			
+			$indent = $formatOutput ? $indent : '';
+			$nl = $formatOutput ? "\n" : '';
+			
 			$properties = $this->_propertiesToString();
-			if(count($this->children) >= 1) {
-				$ret = "<{$this->tagname}{$properties}>";
-				foreach($this->children as $child) {
-					$ret .= $child->__tostring();
-				}
-				$ret .= "</{$this->tagname}>";
+			
+			if (count($this->children) >= 1)
+			{
+				$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
+				foreach ($this->children as $child)
+					$ret .= $child->output($formatOutput, $indent . "\t");
+				$ret .= "{$nl}{$indent}</{$this->tagname}>";
 				return $ret;
-			} else {
-				return "<{$this->tagname}{$properties} />";
+			}
+			else
+			{
+				return "{$nl}{$indent}<{$this->tagname}{$properties} />";
 			}
 		}
 		
@@ -107,7 +133,31 @@
 			}
 		}
 		
-		function __tostring() {
+		private function indentText($formatOutput=null, $indent=null)
+		{
+			if (!$formatOutput)
+			{
+				return $this->text;
+			}
+			else
+			{
+				$str = $this->text;
+				$str = trim($str, "\n");
+				$str = "\n{$str}";
+				$str = str_replace("\t", '', $str);
+				$str = str_replace("\n", "\n{$indent}", $str);
+				return $str;
+			}
+		}
+		
+		function output($formatOutput=false, $indent=null)
+		{
+			$indent = $formatOutput ? $indent : '';
+			$nl = $formatOutput ? "\n" : '';
+			return $this->indentText($formatOutput, $indent);
+		}
+		
+		function __tostring($formatOutput=false, $indent=null) {
 			return $this->text;
 		}
 		

@@ -11,9 +11,33 @@
 			return $a = XML::element('a', null, $properties, $text);
 		}
 		
+		static function meta($name, $content)
+		{
+			$meta = XML::element('meta');
+			$meta->name = $name;
+			$meta->content = $content;
+			return $meta;
+		}
+		
+		static function favicon($img)
+		{
+			return self::link('shortcut icon', assets::img($img));
+		}
+		
+		static function link($rel, $href, $type=null, $title=null)
+		{
+			$link = XML::element('link');
+			$link->rel = $rel;
+			$link->href = $href;
+			if ($type) $link->type = $type;
+			if ($title) $link->title = $title;
+			return $link;
+		}
+		
 		static function css()
 		{
 			$arguments = func_get_args();
+			$arguments = a::flatten($arguments);
 			if (sizeOf($arguments) == 0) return null;
 			
 			$link = XML::element('style');
@@ -28,6 +52,7 @@
 		static function js()
 		{
 			$arguments = func_get_args();
+			$arguments = a::flatten($arguments);
 			if (sizeOf($arguments) == 0) return null;
 			
 			$return = '';
@@ -41,12 +66,13 @@
 			return $return;
 		}
 		
-		static function img($filename, $alt=NULL)
+		static function img($filename, $alt=null, $title=null)
 		{
 			if ($alt === NULL) $alt = $filename;
 			$img = XML::element('img');
 			$img->src = assets::img($filename);
 			$img->alt = $alt;
+			if ($title) $img->title = $title;
 			return $img;
 		}
 		
