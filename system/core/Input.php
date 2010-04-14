@@ -27,29 +27,21 @@
 				return null;
 		}
 		
-		static function post($var)
+		static function post($var=null)
 		{
 			if(!self::$_post) self::prepare();
 			
-			if (isset(self::$_post[$var]))
+			if ($var)
 			{
-				if (is_array(self::$_post[$var]))
-				{
-					$clean_array = array();
-					foreach(self::$_post[$var] as $key=>$val)
-					{
-						$clean_array[$key] = self::clean($val);
-					}
-					return $clean_array;
-				}
-				else
-				{
+				if (isset(self::$_post[$var]))
 					return self::clean(self::$_post[$var]);
-				}
+				else
+					return null;
 			}
 			else
 			{
-				return null;
+				if (isset(self::$_post)) return self::$_post;
+				return self::$_post = self::clean($_POST);
 			}
 		}
 		
@@ -69,14 +61,30 @@
 			else print $dump;
 		}
 		
+		static function clean($data)
+		{
+			if (is_array($data))
+			{
+				$clean = array();
+				foreach($data as $item) {
+					$clean[] = self::clean($item);
+				}
+				return $clean;
+			}
+			else
+			{
+				return self::cleanString($data);
+			}
+		}
+		
 		/*
-		* string Input::clean(string $data)
+		* string Input::cleanString(string $data)
 		*
 		* This entire method comes almost straight from the Kohana Input Library (http://docs.kohanaphp.com/libraries/input),
 		* wich is a modified version of Christian Stocker's code. (http://svn.bitflux.ch/repos/public/popoon/trunk/classes/externalinput.php)
 		* Information on Kohana's modifications of the original code can be found in the comments inside Kohana's Input Library.
 		*/
-		static function clean($data)
+		static function cleanString($data)
 		{
 			// Remove slashes added by the browser for \, " and '
 			$data = str_replace(array('\\\\', '\"', "\'"), array('\\', '"', "'"), $data);
