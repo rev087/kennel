@@ -9,7 +9,7 @@
 		var $unique;
 		var $primaryKey;
 		var $size;
-		var $default;
+		var $defaultValue;
 		var $maxlength;
 		var $minlength;
 		var $validator;
@@ -82,7 +82,7 @@
 			if ($this->required && !$this->primaryKey) $createString .= ' NOT NULL';
 			
 			// DEFAULT
-			if ($this->default) $createString .= ' DEFAULT "' . $this->default . '"';
+			if ($this->defaultValue) $createString .= ' DEFAULT "' . $this->defaultValue . '"';
 			
 			// UNIQUE
 			if ($this->unique && !$this->primaryKey) $createString .= ' UNIQUE';
@@ -98,7 +98,7 @@
 			$this->unique = $element->getAttribute('unique') == 'true' ? true : false;
 			$this->primaryKey = $element->getAttribute('primaryKey') == 'true' ? true : false;
 			$this->size = intval($element->getAttribute('size'));
-			$this->default = intval($element->getAttribute('default'));
+			$this->defaultValue = $element->getAttribute('default');
 			$this->maxlength = intval($element->getAttribute('maxlength'));
 			$this->minlength = intval($element->getAttribute('minlength'));
 			$this->validator = $element->getAttribute('validator');
