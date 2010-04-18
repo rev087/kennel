@@ -6,9 +6,11 @@
 		private $parent_view;
 		private $vars = array();
 		
-		function __construct($view)
+		function __construct($view, $parentView=null)
 		{
 			$this->view = $view;
+			if ($parentView)
+				$this->parent_view = $parentView;
 		}
 		
 		function __toString()
@@ -19,7 +21,7 @@
 		function __get($var)
 		{
 			if(isset($this->vars[$var])) return $this->vars[$var];
-			else return null;
+			else Debug::error("'{$var}' is not defined");
 		}
 		
 		function __set($var, $value)
@@ -36,7 +38,6 @@
 		}
 		
 		private function _getOutput() {
-			
 			//set all template variables
 			foreach ($this->vars as $var =>$val)
 				$$var = $val;
