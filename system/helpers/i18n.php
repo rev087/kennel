@@ -1,12 +1,17 @@
 <?php
 	/*
-		i18n helper: internationalization functions
+	*	i18n helper: internationalization functions
 	*/
 	class i18n
 	{
-		// Holds the current language output selection, set by the Router::$PREFIXES
-		// eg.: example.com/en/articles
-		public static $LANG;
+		// The current language output selection is either:
+		// a) set by the router::$PREFIX - eg.: example.com/en/articles
+		// b) set by the default_lang in settings.php
+		
+		function getLang()
+		{
+			return router::$PREFIX ? router::$PREFIX : Kennel::getSetting('application', 'default_lang');
+		}
 		
 		function get($string)
 		{

@@ -8,10 +8,9 @@
 		public static $CONTROLLER;
 		public static $ACTION;
 		
-		public static $MODULE;
-		public static $CASCADED_TO;
+		private static $HOOKS;
 		
-		static function is_ajax()
+		static function isAjax()
 		{
 			if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 			strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
@@ -20,7 +19,7 @@
 				return false;
 		}
 		
-		static function is_iPhone()
+		static function isIPhone()
 		{
 			if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone') > 0 || strpos($_SERVER['HTTP_USER_AGENT'], 'iPod') > 0)
 				return true;
@@ -43,7 +42,15 @@
 		}
 		
 		/*
-		* Kennel::process()
+		* Hooks
+		*/
+		static function hook($callback)
+		{
+			self::$HOOKS[] = $callback;
+		}
+		
+		/*
+		* Request::process()
 		*/
 		static function process()
 		{
@@ -70,6 +77,13 @@
 					}
 					
 				}
+			}
+			
+			// Process any hooks if present
+			if (is_array(self::$HOOKS) && count(self::$HOOKS > 0))
+			{
+				foreach (self::$HOOKS as $hook)
+					self::$PARTS = call_user_func($hook, self::$PARTS);
 			}
 			
 			// 0. Render the Home Page if no Request::PARTS are present
