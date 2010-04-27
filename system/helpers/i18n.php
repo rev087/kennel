@@ -8,6 +8,8 @@
 		// a) set by the router::$PREFIX - eg.: example.com/en/articles
 		// b) set by the default_lang in settings.php
 		
+		private static $_BROWSER;
+		
 		// List of language codes
 		private static $LANGS = array(
 			'af'=>'afrikaans',
@@ -55,17 +57,20 @@
 		
 		function browser()
 		{
+			// Avoid detecting twice
+			if (self::$_BROWSER) return self::$_BROWSER;
+			
 			foreach (self::$LANGS as $key=>$lang)
 			{
 				if (strpos($_SERVER["HTTP_ACCEPT_LANGUAGE"], $key) === 0)
-					return $key;
+					return self::$_BROWSER = $key;
 			}
 		}
 		
 		function getLang($long_title=false)
 		{
 			if (router::$PREFIX) $code = router::$PREFIX;
-			elseif (Kennel::getSetting('i18n', 'detect') && $browser = self::browser()) $code = $browser;
+			elseif (Kennel::getSetting('i18n', 'detect') && $browser = self::browser() && preg_match('/' . Kennel::getSetting('i18n','list') . '/', self::browser())) $code = self::browser();
 			else $code = Kennel::getSetting('i18n', 'default');
 			
 			if ($long_title) return self::$LANGS[$code];
