@@ -5,6 +5,7 @@
 		public static $ARGS = array();
 		public static $NAMED_ARGS = array();
 		
+		public static $RESOURCE;
 		public static $CONTROLLER;
 		public static $ACTION;
 		
@@ -85,6 +86,13 @@
 				foreach (self::$HOOKS as $hook)
 					self::$PARTS = call_user_func($hook, self::$PARTS);
 			}
+			
+			// Make the Resrouce String available to the API
+			self::$RESOURCE = implode('/', self::$PARTS);
+			
+			// i18n URL redirection
+			if (Kennel::getSetting('i18n', 'enabled') && Kennel::getSetting('i18n', 'redirect') && !router::$PREFIX)
+				header('location: ' . url(Request::$RESOURCE, i18n::getLang()));
 			
 			// 0. Render the Home Page if no Request::PARTS are present
 			if (count(self::$PARTS) == 0)
