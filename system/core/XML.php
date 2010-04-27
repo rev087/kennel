@@ -141,6 +141,9 @@
 			}
 			else
 			{
+				// Avoid messing with HTML content
+				if (preg_match('/\<[a-z]+[ \/]?\>/', $this->text)) return $this->text;
+				
 				$str = $this->text;
 				$str = trim($str, "\n");
 				$str = "\n{$str}";

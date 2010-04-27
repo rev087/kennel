@@ -42,25 +42,31 @@
 	* @action - the controller and actions. Eg. "blog/post"
 	*/
 	function url($action=null, $lang=null) {
+		// Trim slashes
+		$action = trim($action, '/');
+		
 		// i18n language prefix
-		if (!$lang && Kennel::getSetting('application', 'i18n'))
-			$prefix = router::$PREFIX ? '/' . router::$PREFIX : '/' . Kennel::getSetting('application', 'default_lang');
+		if (!$lang && Kennel::getSetting('i18n', 'enabled'))
+			$prefix = '/' . i18n::getLang();
 		elseif ($lang)
 			$prefix = "/{$lang}";
 		else
 			$prefix = '';
 		
 		// Action string
-		if(isset($action))
+		if($action)
 		{
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
-				$url= Kennel::$ROOT_URL . "{$prefix}/{$action}";
+				$url= Kennel::$ROOT_URL . "{$prefix}/{$action}/";
 			else
-				$url= Kennel::$ROOT_URL . "/index.php{$prefix}/{$action}";
+				$url= Kennel::$ROOT_URL . "/index.php{$prefix}/{$action}/";
 		}
 		else 
 		{
-			$url = Kennel::$ROOT_URL . ($prefix ? "/{$prefix}/" : '');
+			if(Kennel::getSetting('application', 'use_mod_rewrite'))
+				$url = Kennel::$ROOT_URL . ($prefix ? "{$prefix}/" : '/');
+			else
+				$url = Kennel::$ROOT_URL . ($prefix ? "/index.php{$prefix}/" : '/');
 		}
 		
 		return $url;
@@ -90,20 +96,24 @@
 		* Kennel::init()
 		*/
 		static function init() {
-			//begin the benchmark
+			// Begin the benchmark
 			self::$time_init = microtime(true);
 			register_shutdown_function(array('Kennel', 'onShutdown'));
 			
-			//get the application path and root uri
+			// Get the application path and root uri
 			self::$ROOT_PATH = dirname($_SERVER['SCRIPT_FILENAME']);
 			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
 			
-			//get the application settings
+			// Get the application settings
 			require_once('settings.php');
 			self::$_APP_SETTINGS = $settings;
 			
-			//detect the modules
+			// Detect the modules
 			self::fetchModules();
+			
+			// Accept language prefixes if i18n is being used
+			if (self::getSetting('i18n', 'enabled'))
+				router::prefix(self::getSetting('i18n', 'list'));
 			
 			//process the request
 			Request::process();
@@ -209,6 +219,7 @@
 		* Kennel::getSetting(str $category, str $setting)
 		*/
 		static function getSetting($category, $setting) {
+			if (!isset(self::$_APP_SETTINGS[$category][$setting])) Debug::error("Setting [{$category}][{$setting}] was not found");
 			return self::$_APP_SETTINGS[$category][$setting];
 		}
 		

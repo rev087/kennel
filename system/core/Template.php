@@ -14,7 +14,7 @@
 		
 		// Variables
 		var $doctype = 'XHTML 1.0 Transitional';
-		var $lang = 'pt-br';
+		var $lang = '';
 		var $dir = 'ltr';
 		var $favicon = null;
 		var $title = null;
@@ -51,7 +51,8 @@
 			// <html>
 			$this->_html = XML::element('html');
 			$this->_html->dir =$this->dir;
-			$this->_html->lang = $this->lang;
+			if (Kennel::getSetting('i18n', 'enabled'))
+				$this->_html->lang = i18n::getLang();
 			
 			// <head>
 			$this->_head = XML::element('head', $this->_html);
@@ -80,6 +81,8 @@
 			// <body>
 			$this->_body = XML::element('body', $this->_html);
 			$this->_body->class = browser::css();
+			if (Kennel::getSetting('i18n', 'enabled'))
+				$this->_body->class .= ' ' . i18n::getLang();
 			
 			// Inject the Template View
 			$this->_body->adopt($templateView);
