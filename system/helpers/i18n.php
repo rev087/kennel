@@ -9,6 +9,7 @@
 		// b) set by the default_lang in settings.php
 		
 		private static $_BROWSER;
+		private static $_TRANSLATION_DATA = array();
 		
 		// List of language codes
 		private static $LANGS = array(
@@ -55,6 +56,39 @@
 			'zh'=>'chinese'
 		);
 		
+		function loadTranslationData()
+		{
+			$lang = self::getLang();
+			$translationData = array();
+			
+			// Application (user) data
+			if (is_file(Kennel::$ROOT_PATH . "/application/assets/i18n/{$lang}.php"))
+			{
+				unset($data);
+				require_once(Kennel::$ROOT_PATH . "/application/assets/i18n/{$lang}.php");
+				$translationData = array_merge($translationData, $data);
+			}
+			
+			// Module data
+			foreach (Kennel::$MODULES as $module=>$info)
+				if (is_file(Kennel::$ROOT_PATH . "/modules/{$module}/assets/i18n/{$lang}.php"))
+				{
+					unset($data);
+					require_once(Kennel::$ROOT_PATH . "/modules/{$module}/assets/i18n/{$lang}.php");
+					$translationData = array_merge($translationData, $data);
+				}
+			
+			// System data
+			if(is_file(Kennel::$ROOT_PATH . "/system/assets/i18n/{$lang}.php"))
+			{
+				unset($data);
+				require_once(Kennel::$ROOT_PATH . "/system/assets/i18n/{$lang}.php");
+				$translationData = array_merge($translationData, $data);
+			}
+			
+			self::$_TRANSLATION_DATA = $translationData;
+		}
+		
 		function browser()
 		{
 			// Avoid detecting twice
@@ -65,6 +99,12 @@
 				if (strpos($_SERVER["HTTP_ACCEPT_LANGUAGE"], $key) === 0)
 					return self::$_BROWSER = $key;
 			}
+		}
+		
+		function getList()
+		{
+			if (!Kennel::getSetting('i18n', 'enabled')) return null;
+			else return explode('|', Kennel::getSetting('i18n', 'list'));
 		}
 		
 		function getLang($long_title=false)
@@ -79,7 +119,15 @@
 		
 		function get($string)
 		{
+			if (!self::$_TRANSLATION_DATA) self::loadTranslationData();
 			
+			if (isset(self::$_TRANSLATION_DATA[$string])) return self::$_TRANSLATION_DATA[$string];
+			else return $string;
+		}
+		
+		function _($string)
+		{
+			print self::get($string);
 		}
 	}
 ?>
