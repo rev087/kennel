@@ -17,6 +17,7 @@
 		var $lang = 'pt-br';
 		var $dir = 'ltr';
 		var $favicon = null;
+		var $title = null;
 		
 		// Structure
 		private $_html;
@@ -78,12 +79,13 @@
 			
 			// <body>
 			$this->_body = XML::element('body', $this->_html);
+			$this->_body->class = browser::css();
 			
 			// Inject the Template View
 			$this->_body->adopt($templateView);
 			
 			// Return the whole shebang
-			return self::$DOCTYPE_DECLARATIONS[$this->doctype] . "\n" . $this->_html->output();
+			return self::$DOCTYPE_DECLARATIONS[$this->doctype] . $this->_html->output(true);
 		}
 		
 		function render()
