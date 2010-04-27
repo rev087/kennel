@@ -16,7 +16,8 @@
 	// i18n settings
 	$settings['i18n']['enabled'] = true; // Other i18n settings are ignored if this is set to false
 	$settings['i18n']['detect'] = true;
-	$settings['i18n']['default'] = 'pt';
+	$settings['i18n']['redirect'] = true;
+	$settings['i18n']['default'] = 'pt'; // Ignored if detect is enabled
 	$settings['i18n']['list'] = 'pt|en|es';
 	
 	// User authentication - if your application doesn't use authentication, you can safelly ignore these settings
