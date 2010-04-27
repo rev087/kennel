@@ -41,17 +41,26 @@
 	* Returns a Kennel formated url.
 	* @action - the controller and actions. Eg. "blog/post"
 	*/
-	function url($action=null) {
+	function url($action=null, $lang=null) {
+		// i18n language prefix
+		if (!$lang && Kennel::getSetting('application', 'i18n'))
+			$prefix = router::$PREFIX ? '/' . router::$PREFIX : '/' . Kennel::getSetting('application', 'default_lang');
+		elseif ($lang)
+			$prefix = "/{$lang}";
+		else
+			$prefix = '';
+		
+		// Action string
 		if(isset($action))
 		{
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
-				$url= Kennel::$ROOT_URL . "/{$action}";
+				$url= Kennel::$ROOT_URL . "{$prefix}/{$action}";
 			else
-				$url= Kennel::$ROOT_URL . "/index.php/{$action}";
+				$url= Kennel::$ROOT_URL . "/index.php{$prefix}/{$action}";
 		}
 		else 
 		{
-			$url = Kennel::$ROOT_URL;
+			$url = Kennel::$ROOT_URL . ($prefix ? "/{$prefix}/" : '');
 		}
 		
 		return $url;
@@ -92,6 +101,9 @@
 			//get the application settings
 			require_once('settings.php');
 			self::$_APP_SETTINGS = $settings;
+			
+			//detect the modules
+			self::fetchModules();
 			
 			//process the request
 			Request::process();
@@ -160,7 +172,6 @@
 			}
 			
 			// Module resource
-			if(!self::$MODULES) self::fetchModules();
 			foreach (self::$MODULES as $module=>$info)
 			{
 				$path = str_replace('{module}', $module, $module_path);
