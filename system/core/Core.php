@@ -31,7 +31,7 @@
 			if($path) require_once($path);
 		}
 		
-		// System Core Libraries
+		// Libraries
 		$path = Kennel::cascade($class_name, 'libraries');
 		if($path) require_once($path);
 	}
@@ -172,6 +172,7 @@
 					$system_path = "/system/assets/{$type}/{$resource}";
 					break;
 			}
+			
 			
 			// Application (user) resource
 			if (is_file(Kennel::$ROOT_PATH . $application_path))

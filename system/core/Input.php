@@ -66,8 +66,8 @@
 			if (is_array($data))
 			{
 				$clean = array();
-				foreach($data as $item) {
-					$clean[] = self::clean($item);
+				foreach($data as $key=>$item) {
+					$clean[$key] = self::clean($item);
 				}
 				return $clean;
 			}

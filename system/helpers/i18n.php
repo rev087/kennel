@@ -96,7 +96,7 @@
 			
 			foreach (self::$LANGS as $key=>$lang)
 			{
-				if (strpos($_SERVER["HTTP_ACCEPT_LANGUAGE"], $key) === 0)
+				if (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]) && strpos($_SERVER["HTTP_ACCEPT_LANGUAGE"], $key) === 0)
 					return self::$_BROWSER = $key;
 			}
 		}
