@@ -15,7 +15,7 @@
 		
 		function __toString()
 		{
-			return strval($this->_getOutput());
+			return strval($this->output());
 		}
 		
 		function __get($var)
@@ -37,7 +37,7 @@
 			return $this->vars;
 		}
 		
-		private function _getOutput() {
+		function output() {
 			//set all template variables
 			foreach ($this->vars as $var =>$val)
 				$$var = $val;
@@ -64,7 +64,7 @@
 		
 		function render()
 		{
-			print $this->_getOutput();
+			print $this->output();
 		}
 	}
 ?>

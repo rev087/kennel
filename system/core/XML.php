@@ -160,7 +160,7 @@
 			return $this->indentText($formatOutput, $indent);
 		}
 		
-		function __tostring($formatOutput=false, $indent=null) {
+		function __toString() {
 			return $this->text;
 		}
 		
