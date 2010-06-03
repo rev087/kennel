@@ -37,7 +37,6 @@
 		function __construct($template)
 		{
 			$this->_template = new View($template, $this);
-			$this->_template->template = $this;
 		}
 		
 		// Ovewriting normal View behavior
@@ -45,7 +44,10 @@
 		
 		private function _getOutput()
 		{
-			// Template View
+			// Make Template accessible in the view via $template
+			$this->__set('template', $this);
+			
+			// Template View (must run first since ancestor views might call functions from $template)
 			$templateView = XML::text($this->_template->__toString());
 			
 			// <html>
@@ -99,7 +101,7 @@
 		// Aditional utility methods
 		////////////////////////////
 		
-		private function getTitle()
+		function getTitle()
 		{
 			if ($this->title && Kennel::getSetting('application', 'app_title'))
 				return $this->title . ' | ' . Kennel::getSetting('application', 'app_title');
