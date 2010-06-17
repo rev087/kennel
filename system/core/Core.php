@@ -59,15 +59,18 @@
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
 				$url= Kennel::$ROOT_URL . "{$prefix}/{$action}/";
 			else
-				$url= Kennel::$ROOT_URL . "/index.php{$prefix}/{$action}/";
+				$url= Kennel::$ROOT_URL . "/index.php/{$prefix}/{$action}/";
 		}
 		else 
 		{
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
 				$url = Kennel::$ROOT_URL . ($prefix ? "{$prefix}/" : '/');
 			else
-				$url = Kennel::$ROOT_URL . ($prefix ? "/index.php{$prefix}/" : '/');
+				$url = Kennel::$ROOT_URL . ($prefix ? "/index.php/{$prefix}/" : '/');
 		}
+		
+		// Trim slash for query or hash strings
+		if (strpos($url, '?') !== false || strpos($url, '#') !== false) $url = trim($url, '/');
 		
 		return $url;
 	}
