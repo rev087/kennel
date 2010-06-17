@@ -134,8 +134,9 @@
 		{
 			$primaryKey = $this->schema->getPrimaryKey()->name;
 			
-			// Grab the localized versions
-			if (!$this->_i18n) {
+			// Grab the localized versions if present
+			$path = Kennel::cascade("{$this->model_name}_i18n", 'schemas');
+			if ($path && !$this->_i18n) {
 				$c = new Criteria("{$this->model_name}_i18n");
 				$c->add("{$this->model_name}_{$primaryKey}", $this->$primaryKey);
 				$i18n = ORM::retrieve($c);
@@ -255,8 +256,8 @@
 		
 		function dump($dump_relationships=true)
 		{
-			print '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background-color: #FFF; color: #1E9C6D; float: left; text-align: left;">';
-			print '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background-color: #1E9C6D; color: #FFF;">';
+			print '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
+			print '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
 			$class = get_class($this);
 			print "{$this->model_name}: {$class}";
 			print '</h2>';
@@ -276,7 +277,7 @@
 				foreach ($this->schema->getRelationships() as $relationship)
 				{
 					$foreignModel = $relationship->foreignModel;
-					if ($this->$foreignModel) $this->$foreignModelF();
+					if ($this->$foreignModel) $this->$foreignModel->dump();
 				}
 			
 			print '</pre></div><div style="clear: both;"></div>';

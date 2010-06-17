@@ -13,7 +13,7 @@
 			
 			$prefix = self::$PREFIX_PATTERN;
 			
-			if (preg_match("/{$prefix}/", $parts[0]))
+			if (preg_match("/^({$prefix})$/", $parts[0]))
 			{
 				self::$PREFIX = array_shift($parts);
 				return $parts;

@@ -46,6 +46,7 @@
 		{
 			// Make Template accessible in the view via $template
 			$this->__set('template', $this);
+			$this->__set('title', $this->title);
 			
 			// Template View (must run first since ancestor views might call functions from $template)
 			$templateView = XML::text($this->_template->__toString());
