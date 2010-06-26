@@ -1,4 +1,6 @@
 <?php
+	
+	// Array helpers
 	class a
 	{
 		function flatten($array, $return=null)
@@ -12,5 +14,21 @@
 					$return[] = $array[$x];
 			return $return;
 		}
+		
+		function split($array, $size=5)
+		{
+			$result = array();
+			while (count($array) >= $size)
+			{
+				$result[] = array_slice($array, 0, $size);
+				$array = array_slice($array, $size);
+			}
+			
+			if (count($array) > 0)
+				$result = array_merge($result, array($array));
+			
+			return $result;
+		} 
+		
 	}
 ?>
