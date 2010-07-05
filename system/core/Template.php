@@ -69,7 +69,10 @@
 				$this->_head->adopt(html::favicon($this->favicon));
 			
 			// content type
-			$this->_head->adopt(html::meta('Content-Type', 'text/html; charset=UTF-8'));
+			XML::element('meta', $this->_head, array(
+				'http-equiv'=>'Content-Type',
+				'content'=>'text/html; charset=UTF-8'
+			));
 			
 			// <meta>
 			foreach ($this->_meta as $meta)
@@ -96,6 +99,7 @@
 		
 		function render()
 		{
+			header('content-type: text/html; charset:UTF-8');
 			print $this->_getOutput();
 		}
 		
