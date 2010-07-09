@@ -73,6 +73,22 @@
 			return $this->image = $thumb;
 		}
 		
+		function resize($width, $height)
+		{
+			if (!$this->image) return null;
+			if ($this->width == $width && $this->height == $height) return $this->image;
+			
+			$resized = imagecreatetruecolor($width, $height);
+			imagecopyresampled($resized, $this->image, 0, 0, 0, 0, $width, $height, $this->width, $this->height);
+			
+			$this->width = $width;
+			$this->height = $height;
+			
+			$this->image = $resized;
+			imagedestroy($resized);
+			return $this->image;
+		}
+		
 		function limit($side)
 		{
 			if (!$this->image) return null;
@@ -89,8 +105,9 @@
 			$this->width = $new_w;
 			$this->height = $new_h;
 			
-			return $this->image = $resized;
+			$this->image = $resized;
 			imagedestroy($resized);
+			return $this->image;
 		}
 		
 		function square($side)
