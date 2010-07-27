@@ -165,7 +165,7 @@
 			return $this->_i18n[] = $i18n;
 		}
 		
-		function getSaveQuery()
+		function getSaveQuery($forceInsert=false)
 		{
 			$primaryKey = $this->schema->getPrimaryKey();
 			
@@ -217,7 +217,7 @@
 			}
 			
 			// Check if it's an existing record, build SQL statement accordingly
-			if (!$this->_synced_data[$primaryKey->name])
+			if (!$this->_synced_data[$primaryKey->name] || $forceInsert)
 			{
 				$sql = "INSERT INTO {$this->schema->table} (";
 				$sql .= implode(', ', $columns);
