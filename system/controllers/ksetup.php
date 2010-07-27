@@ -192,7 +192,7 @@
 				$model_instances = ORM::retrieveAll($model_name);
 				foreach ($model_instances as $instance)
 				{
-					$insert_query = $instance->getSaveQuery();
+					$insert_query = $instance->getSaveQuery(true);
 					$dump .= "{$insert_query}\n";
 				}
 				$dump .= "\n";
