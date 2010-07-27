@@ -61,7 +61,7 @@
 				$script->type = 'text/javascript';
 				$script->src = assets::js($filename);
 				$script->adopt(XML::text(''));
-				$return .= "\n\t".$script;
+				$return .= "\n\t".$script->output();
 			}
 			return $return;
 		}
