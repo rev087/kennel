@@ -30,7 +30,8 @@
 			self::$database = Kennel::getSetting('database','database');
 			
 			self::$CONN = mysql_connect(($host?$host:self::$host), ($user?$user:self::$user), ($pass?$pass:self::$pass));
-			mysql_set_charset('utf-8', self::$CONN);
+			if (function_exists('mysql_set_charset'))
+				mysql_set_charset('utf-8', self::$CONN);
 			mysql_select_db(($database?$database:self::$database), self::$CONN);
 		}
 		

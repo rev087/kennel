@@ -9,28 +9,38 @@
 			$this->template = new View('ksetup_layout');
 		}
 		
-		function index()
+		public function index()
 		{
 			$this->modules();
 		}
 		
-		function startpage()
+		private function access_denied()
+		{
+			$this->template->content = new View('ksetup_access_denied');
+			$this->template->render();
+			exit();
+		}
+		
+		public function startpage()
 		{
 			$this->template->content = new View('ksetup_startpage');
-			$this->template->modules = Kennel::$MODULES;
 			$this->template->render();
 		}
 		
-		function modules()
+		public function modules()
 		{
+			if (!Auth::check()) $this->access_denied();
+			
 			$this->template->action = 'modules';
 			$this->template->content = new View('ksetup_modules');
 			$this->template->modules = Kennel::$MODULES;
 			$this->template->render();
 		}
 		
-		function createmodels()
+		public function createmodels()
 		{
+			if (!Auth::check()) $this->access_denied();
+			
 			$created = 0;
 			$models = $this->getModels();
 			
@@ -39,7 +49,8 @@
 				if (!$model['status'])
 				{
 					$created++;
-					ORM::create($model['info']['filename']);
+					$filename = substr($model['info']['basename'], 0, strpos($model['info']['basename'], '.xml'));
+					ORM::create($filename);
 				}
 			}
 			
@@ -47,8 +58,10 @@
 			$this->database();
 		}
 		
-		function database()
+		public function database()
 		{
+			if (!Auth::check()) $this->access_denied();
+			
 			$models = self::getModels();
 			
 			$this->template->action = 'database';
@@ -58,8 +71,10 @@
 			$this->template->render();
 		}
 		
-		function settings()
+		public function settings()
 		{
+			if (!Auth::check()) $this->access_denied();
+			
 			require Kennel::$ROOT_PATH . '/settings.php';
 			$this->template->action = 'settings';
 			$this->template->content = new View('ksetup_settings');
@@ -142,14 +157,51 @@
 			
 			foreach ($models as $id=>$model)
 			{
-				self::checkModel($model['info']['filename']);
-				$schema = ORM::getSchema($model['info']['filename']);
+				//self::checkModel($model['info']['filename']);
+				// FILENAME was only introduced in PHP 5.2 and Terra Empresas is gay
+				$filename = substr($model['info']['basename'], 0, strpos($model['info']['basename'], '.xml'));
+				$schema = ORM::getSchema($filename);
 				$result = array_search($schema->table, $tables);
 				if ($result !== FALSE) $models[$id]['status'] = 'ok';
 				else $models[$id]['status'] = '';
 			}
 			
 			return $models;
+		}
+		
+		public function backup()
+		{
+			if (!Auth::check()) $this->access_denied();
+			
+			$dump = "";
+			
+			$models = $this->getModels();
+			foreach ($this->getModels() as $model)
+			{
+				$model_name = $model['info']['filename'];
+				$schema = ORM::getSchema($model_name);
+				
+				// Drop the table
+				$dump .= "DROP TABLE IF EXISTS `{$schema->table}`;\n";
+				
+				// Create the table
+				$create_sql = $schema->getCreateString();
+				$dump .= "{$create_sql}\n\n";
+				
+				// Dump the table data
+				$model_instances = ORM::retrieveAll($model_name);
+				foreach ($model_instances as $instance)
+				{
+					$insert_query = $instance->getSaveQuery();
+					$dump .= "{$insert_query}\n";
+				}
+				$dump .= "\n";
+			}
+			
+			$this->template->content = new View('ksetup_backup');
+			$this->template->action = 'backup';
+			$this->template->dump = $dump;
+			$this->template->render();
 		}
 	}
 ?>

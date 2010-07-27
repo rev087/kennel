@@ -29,6 +29,11 @@
 						Settings
 					</a>
 				</li>
+				<li <?php if(isset($action) && $action=='backup') print 'class="selected"'; ?>>
+					<a id="backup" href="<?php print url('ksetup/backup') ?>">
+						Backup
+					</a>
+				</li>
 			</ul>
 			
 			<div id="content">

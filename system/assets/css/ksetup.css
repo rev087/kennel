@@ -73,6 +73,7 @@ body {
 	#modules { background-image: url('../img/k_modules_ico.png'); }
 	#database { background-image: url('../img/k_database_ico.png'); }
 	#settings { background-image: url('../img/k_settings_ico.png'); }
+	#backup { background-image: url('../img/k_backup_ico.png'); }
 	
 	#menu .selected a {
 		color: #17B3D1;
@@ -186,7 +187,25 @@ td {
 /* Messages */
 
 .msg {
+	padding: 5px 10px;
+}
+
+.msg.ok {
 	background-color: #1E9C6D;
-	padding: 2px 10px;
 	color: #EDECEB;
+}
+
+.msg.error {
+	background-color: #C33;
+	color: #EDECEB;
+	font-weight: bold;
+}
+
+/* Form Elements */
+textarea {
+	margin: 0px 10px;
+	width: 785px;
+	height: 500px;
+	border: 1px solid #CCC;
+	padding: 5px;
 }
