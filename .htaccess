@@ -1,4 +1,4 @@
-php_value short_open_tag on
+#php_value short_open_tag on
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
