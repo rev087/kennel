@@ -46,7 +46,7 @@
 				$path = assets::css($filename);
 				$text = new XMLText("\n\t@import url('{$path}');", $link);
 			}
-			return $link;
+			return $link->output();
 		}
 		
 		static function js()
