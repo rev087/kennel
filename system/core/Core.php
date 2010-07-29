@@ -85,7 +85,7 @@
 		static $ROOT_PATH;
 		static $ROOT_URL;
 		
-		static $MODULES;
+		static $MODULES = array();
 		
 		static $request_query_string;
 		static $request_uri;
