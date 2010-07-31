@@ -178,7 +178,7 @@
 			$models = $this->getModels();
 			foreach ($this->getModels() as $model)
 			{
-				$model_name = $model['info']['filename'];
+				$model_name = substr($model['info']['basename'], 0, strpos($model['info']['basename'], '.xml'));
 				$schema = ORM::getSchema($model_name);
 				
 				// Drop the table
