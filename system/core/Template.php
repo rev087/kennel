@@ -18,6 +18,7 @@
 		var $dir = 'ltr';
 		var $favicon = null;
 		var $title = null;
+		var $titleSeparator = '|';
 		
 		// Structure
 		private $_html;
@@ -109,7 +110,7 @@
 		function getTitle()
 		{
 			if ($this->title && Kennel::getSetting('application', 'app_title'))
-				return $this->title . ' | ' . Kennel::getSetting('application', 'app_title');
+				return $this->title . " {$this->titleSeparator} " . Kennel::getSetting('application', 'app_title');
 			elseif (!$this->title && Kennel::getSetting('application', 'app_title'))
 				return Kennel::getSetting('application', 'app_title');
 			elseif ($this->title && !Kennel::getSetting('application', 'app_title'))
