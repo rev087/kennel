@@ -99,7 +99,10 @@
 		}
 		
 		function __set($property, $value) {
-			$this->properties[$property] = $value;
+			if ($property === 'text')
+				$this->setText($value);
+			else
+				$this->properties[$property] = $value;
 			return $this;
 		}
 		

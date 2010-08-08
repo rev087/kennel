@@ -148,6 +148,9 @@
 		// Get the instance of the localized version of the model
 		function i18n($lang=null)
 		{
+			// If i18n is not enabled, return itself
+			if (!Kennel::getSetting('i18n', 'enabled')) return $this;
+			
 			if (!$lang) $lang = i18n::getLang();
 			$primaryKey = $this->schema->getPrimaryKey()->name;
 			
