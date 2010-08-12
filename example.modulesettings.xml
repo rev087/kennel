@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modules>
+  <module id="pages">
+    <setting name="page_controller" value="pagina"/>
+  </module>
+  <module id="ecommerce_castor">
+    <setting name="display_prices" value="1"/>
+    <setting name="display_unavailable_products" value="1"/>
+  </module>
+  <module id="ecommerce_settings"/>
+</modules>
