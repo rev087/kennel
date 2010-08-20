@@ -21,6 +21,13 @@
 			exit();
 		}
 		
+		public function firststeps()
+		{
+			$view = new View('ksetup_firststeps');
+			$view->render();
+			exit();
+		}
+		
 		public function startpage()
 		{
 			$this->template->content = new View('ksetup_startpage');

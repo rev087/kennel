@@ -96,6 +96,7 @@
 		
 		static function error($errstr, $backtrace_level=0)
 		{
+			// Skip if settings are not found
 			if(Kennel::getSetting('application', 'debug_mode'))
 			{
 				self::dumpError($errstr, $backtrace_level);
