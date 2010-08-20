@@ -96,7 +96,6 @@
 		static $time_final;
 		
 		/*
-		* Kennel::init()
 		*/
 		static function init() {
 			// Begin the benchmark
@@ -108,8 +107,15 @@
 			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
 			
 			// Get the application settings
-			require_once('settings.php');
-			self::$_APP_SETTINGS = $settings;
+			if (file_exists('settings.php'))
+			{
+				require_once('settings.php');
+				self::$_APP_SETTINGS = $settings;
+			}
+			else
+			{
+				self::controllerAction('Ksetup', 'firststeps');
+			}
 			
 			// Detect the modules
 			self::fetchModules();
@@ -223,6 +229,9 @@
 		* Kennel::getSetting(str $category, str $setting)
 		*/
 		static function getSetting($category, $setting) {
+			// Skip if no settings found
+			if (!self::$_APP_SETTINGS) return null;
+			
 			if (!isset(self::$_APP_SETTINGS[$category][$setting])) Debug::error("Setting [{$category}][{$setting}] was not found");
 			return self::$_APP_SETTINGS[$category][$setting];
 		}
@@ -254,7 +263,7 @@
 			{
 				// Call the method
 				if (is_array($args)) call_user_func_array(array(self::$CONTROLLER_INSTANCE, $action), $args);
-				else  call_user_func(array(self::$CONTROLLER_INSTANCE, Request::$ACTION));
+				else  call_user_func(array(self::$CONTROLLER_INSTANCE, $action));
 			}
 			// Workaround in case the action does not exist
 			else
@@ -276,6 +285,9 @@
 		{
 			// Initialize the variable
 			self::$MODULES = array();
+			
+			// Skip if the modules folder do not exist
+			if (!file_exists(self::getPath('modules'))) return null;
 			
 			// Get through the file list in the modules directory
 			$files = scandir(self::getPath('modules'));
