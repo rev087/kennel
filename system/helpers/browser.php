@@ -13,37 +13,57 @@ class browser {
 	static public $version = false;
 	static public $platform = false;
 
-	function name($ua=null) {
+	function name($ua=null)
+	{
 		self::detect($ua);
 		return self::$browser;
 	}
 
-	function engine($ua=null) {
+	function engine($ua=null)
+	{
 		self::detect($ua);
 		return self::$engine;
 	}
 
-	function version($ua=null) {
+	function version($ua=null)
+	{
 		self::detect($ua);
 		return self::$version;
 	}
 
-	function platform($ua=null) {
+	function platform($ua=null)
+	{
 		self::detect($ua);
 		return self::$platform;
 	}
 
-	function mobile($ua=null) {
+	function mobile($ua=null)
+	{
 		self::detect($ua);
 		return (self::$platform == 'mobile') ? true : false;
 	}
 
-	function iphone($ua=null) {
+	function iphone($ua=null)
+	{
 		self::detect($ua);
 		return (in_array(self::$platform, array('ipod', 'iphone'))) ? true : false;
 	}
-
-	function css($ua=null, $array=false) {
+	
+	function dump($ua=null)
+	{
+		if (!self::$ua) self::detect($ua);
+		
+		print '<pre style="text-align: left; background: #FFF; color: #000; font-family: monospace; padding: 10px; margin: 10px;">';
+		print '<strong>Browser:</strong> ' . self::$browser . '<br />';
+		print '<strong>Version:</strong> ' . self::$version . '<br />';
+		print '<strong>Engine:</strong> ' . self::$engine . '<br />';
+		print '<strong>Platform:</strong> ' . self::$platform . '<br />';
+		print '<strong>User Agent:</strong> ' . self::$ua . '<br />';
+		print '</pre>';
+	}
+	
+	function css($ua=null, $array=false)
+	{
 		if (!self::$ua) self::detect($ua);
 		$css[] = self::$engine;
 		$css[] = self::$browser;
@@ -52,7 +72,8 @@ class browser {
 		return ($array) ? $css : implode(' ', $css);
 	}
 
-	function detect($ua=null) {
+	function detect($ua=null)
+	{
 		$ua = ($ua) ? str::lower($ua) : strtolower($_SERVER['HTTP_USER_AGENT']);
 
 		// don't do the detection twice
