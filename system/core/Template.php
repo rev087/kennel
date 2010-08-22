@@ -45,7 +45,7 @@
 		
 		private function _getOutput()
 		{
-			// Make Template accessible in the view via $template
+			// Make $template and $title accessible in the descendant views
 			$this->__set('template', $this);
 			$this->__set('title', $this->title);
 			
@@ -71,8 +71,7 @@
 			
 			// content type
 			XML::element('meta', $this->_head, array(
-				'http-equiv'=>'Content-Type',
-				'content'=>'text/html; charset=UTF-8'
+				'charset'=>'utf-8'
 			));
 			
 			// <meta>

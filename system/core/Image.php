@@ -10,7 +10,7 @@
 		function __construct($image) {
 			if (is_string($image))
 			{
-				if (!is_file($image)) return false;
+				if (!is_file($image)) return Debug::error("Image <strong>{$image}</strong> not found at");
 				$this->path = pathinfo($image);
 				$imageSize = getimagesize($image);
 				$this->width = $imageSize[0];
