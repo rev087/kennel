@@ -4,6 +4,7 @@
 	$settings['database']['user'] = 'username';
 	$settings['database']['pass'] = 'password';
 	$settings['database']['database'] = 'database';
+	$settings['database']['prefix'] = '';
 	
 	// Application settings
 	$settings['application']['app_title'] = 'Example Application';
