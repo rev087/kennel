@@ -22,7 +22,10 @@
 			$doc->load(realpath($path));
 			
 			$root = $doc->getElementsByTagName('model')->item(0);
-			$this->table = $root->getAttribute('table');
+			if (Kennel::getSetting('database', 'prefix'))
+				$this->table = Kennel::getSetting('database', 'prefix') . '_' . $root->getAttribute('table');
+			else
+				$this->table = $root->getAttribute('table');
 			
 			$fields = $doc->getElementsByTagName('field');
 			
