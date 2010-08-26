@@ -49,5 +49,17 @@
 			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
 		}
 		
+		static function file($uri)
+		{
+			# Absolute paths
+			if (substr($uri, 0, 7) === 'http://')
+				return $uri;
+			
+			# Cascading Resource
+			$path = Kennel::cascade($uri, 'file', true);
+			if($path) return $path;
+			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+		}
+		
 	}
 ?>
