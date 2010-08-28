@@ -18,7 +18,7 @@
 		var $dir = 'ltr';
 		var $favicon = null;
 		var $title = null;
-		var $titleSeparator = '|';
+		var $titleSeparator = '-';
 		
 		// Structure
 		private $_html;
