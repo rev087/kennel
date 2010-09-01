@@ -127,6 +127,9 @@
 					$i18n->save();
 				}
 			
+			// Update the synced data
+			$this->_synced_data = $this->_data;
+			
 			$this->is_synced = true;
 		}
 		
@@ -199,8 +202,10 @@
 						break;
 						
 					case 'int':
-					case 'float':
 					case 'tinyint':
+					case 'float':
+					case 'double':
+					case 'decimal':
 						
 						if ($this->_data[$field->name] !== NULL && is_numeric($this->_data[$field->name]))
 							$newValues[] = $this->_data[$field->name];
@@ -257,33 +262,36 @@
 			}
 		}
 		
-		function dump($dump_relationships=true)
+		function dump($return=false, $dump_relationships=true)
 		{
-			print '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
-			print '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
+			$dump = '';
+			$dump .= '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
+			$dump .= '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
 			$class = get_class($this);
-			print "{$this->model_name}: {$class}";
-			print '</h2>';
+			$dump .= "{$this->model_name}: {$class}";
+			$dump .= '</h2>';
 			foreach ($this->schema as $field)
 			{
-				if ($field->primaryKey) print '<strong>*</strong> ';
-				elseif ($field->foreignKey && $field->foreignModel) print '<strong>~</strong> ';
-				else print '&nbsp; ';
+				if ($field->primaryKey) $dump .= '<strong>*</strong> ';
+				elseif ($field->foreignKey && $field->foreignModel) $dump .= '<strong>~</strong> ';
+				else $dump .= '&nbsp; ';
 				
 				if ($field->required)
-					print "<strong>{$field->name}</strong> = \"{$this->_data[$field->name]}\"<br />";
+					$dump .= "<strong>{$field->name}</strong> = \"{$this->_data[$field->name]}\"<br />";
 				else
-					print "<strong>[{$field->name}]</strong> = \"{$this->_data[$field->name]}\"<br />";
+					$dump .= "<strong>[{$field->name}]</strong> = \"{$this->_data[$field->name]}\"<br />";
 			}
 			
 			if ($dump_relationships)
 				foreach ($this->schema->getRelationships() as $relationship)
 				{
 					$foreignModel = $relationship->foreignModel;
-					if ($this->$foreignModel) $this->$foreignModel->dump();
+					if ($this->$foreignModel) $dump .= $this->$foreignModel->dump(true, true);
 				}
 			
-			print '</pre></div><div style="clear: both;"></div>';
+			$dump .= '</pre></div><div style="clear: both;"></div>';
+			if ($return) return $dump;
+			else print $dump;
 		}
 		
 		/**
