@@ -231,12 +231,16 @@
 				foreach ($criterion_group as $criterion)
 				{
 					$column = self::formatColumnReference($criterion->column, $criteria);
+					// Criteria::NOW
 					if ($criterion->value === Criteria::NOW)
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' NOW()';
+					// NULL value or Criteria::IS_NULL
 					elseif ($criterion->value === NULL || $criterion->value === Criteria::IS_NULL)
 						$where_groups[$group_key][] = $column . ' IS NULL';
+					// Criteria::IS_NOT_NULL
 					elseif ($criterion->value === Criteria::IS_NOT_NULL)
 						$where_groups[$group_key][] = $column . ' IS NOT NULL';
+					// X = Y
 					else
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
 				}
@@ -303,9 +307,9 @@
 				$schema = self::getSchema($criteria->from_model_name);
 				return "`{$schema->table}_{$column_reference}`";
 			}
+			// Standard reference (just the column name)
 			else
 			{
-				// Standard reference (just the column name)
 				$schema = ORM::getSchema($criteria->from_model_name);
 				return '`' . trim($schema->table, '`') . '`.`' . $column_reference . '`';
 			}
