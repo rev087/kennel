@@ -59,6 +59,12 @@
 				case 'float':
 					$createString .= " FLOAT({$this->size})";
 					break;
+				case 'double':
+					$createString .= " DOUBLE({$this->size})";
+					break;
+				case 'decimal':
+					$createString .= " DECIMAL({$this->size})";
+					break;
 				case 'int':
 					$createString .= " INT({$this->size})";
 					break;
