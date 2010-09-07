@@ -13,7 +13,7 @@
 		);
 		
 		// Variables
-		var $doctype = 'XHTML 1.0 Transitional';
+		var $doctype = 'HTML 5';
 		var $lang = '';
 		var $dir = 'ltr';
 		var $favicon = null;
