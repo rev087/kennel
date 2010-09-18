@@ -56,6 +56,8 @@
 			$dump .= Debug::dump($_GET, true);
 			$dump .= '<h1>POST</h1>';
 			$dump .= Debug::dump($_POST, true);
+			$dump .= '<h1>FILES</h1>';
+			$dump .= Debug::dump($_FILES, true);
 			
 			if($return) return $dump;
 			else print $dump;
