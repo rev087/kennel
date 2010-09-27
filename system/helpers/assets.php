@@ -56,7 +56,7 @@
 				return $uri;
 			
 			# Cascading Resource
-			$path = Kennel::cascade($uri, 'file', true);
+			$path = Kennel::cascade($uri, 'files', true);
 			if($path) return $path;
 			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
 		}
