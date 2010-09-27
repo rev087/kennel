@@ -175,7 +175,7 @@
 				case 'img':
 				case 'js':
 				case 'flash':
-				case 'file':
+				case 'files':
 					$application_path = "/application/assets/{$type}/{$resource}";
 					$module_path = "/modules/{module}/assets/{$type}/{$resource}";
 					$system_path = "/system/assets/{$type}/{$resource}";
