@@ -10,7 +10,7 @@
 			# Cascading resource
 			$path = Kennel::cascade($uri, 'img', true);
 			if($path) return $path;
-			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+			else Debug::error("assets helper: Image <b>{$uri}</b> not found.", 1);
 		}
 		
 		static function css($uri)
@@ -22,7 +22,7 @@
 			# Cascading resource
 			$path = Kennel::cascade($uri, 'css', true);
 			if($path) return $path;
-			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+			else Debug::error("assets helper: CSS <b>{$uri}</b> not found.", 1);
 		}
 		
 		static function js($uri)
@@ -34,7 +34,7 @@
 			# Cascading resource
 			$path = Kennel::cascade($uri, 'js', true);
 			if($path) return $path;
-			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+			else Debug::error("assets helper: JS <b>{$uri}</b> not found.", 1);
 		}
 		
 		static function flash($uri)
@@ -46,7 +46,7 @@
 			# Cascading Resource
 			$path = Kennel::cascade($uri, 'flash', true);
 			if($path) return $path;
-			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+			else Debug::error("assets helper: Flash <b>{$uri}</b> not found.", 1);
 		}
 		
 		static function file($uri)
@@ -58,7 +58,7 @@
 			# Cascading Resource
 			$path = Kennel::cascade($uri, 'file', true);
 			if($path) return $path;
-			else Debug::error("assets helper: <b>{$uri}</b> not found.", 1);
+			else Debug::error("assets helper: File <b>{$uri}</b> not found.", 1);
 		}
 		
 	}
