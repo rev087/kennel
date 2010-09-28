@@ -209,3 +209,7 @@ textarea {
 	border: 1px solid #CCC;
 	padding: 5px;
 }
+
+/* Login */
+fieldset { padding: 15px; margin: 15px; }
+fieldset label { display: block; margin-bottom: 10px; }

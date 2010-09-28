@@ -14,6 +14,19 @@
 			$this->modules();
 		}
 		
+		public function login()
+		{
+			if (Input::post('username') && Input::post('password') &&
+			Auth::login(Input::post('username'), Input::post('password')))
+			{
+				$this->index();
+			}
+			else
+			{
+				return $this->access_denied();
+			}
+		}
+		
 		private function access_denied()
 		{
 			$this->template->content = new View('ksetup_access_denied');
