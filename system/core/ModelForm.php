@@ -1,118 +1,63 @@
 <?php
-	
-	/**
-		*  DEPRECATED; Don't use this library. It will soon be rewritten completely.
-		*  In it's current state, it's highly dated and will not work.
-		*/
-	
-	require_once('controllers/controller.XML.php');
-	require_once('controllers/controller.Model.php');
-	require_once('controllers/controller.MySQL.php');
-	
-	class ModelForm {
+	class ModelForm
+	{
+		var $model_name;
+		var $schema;
+		var $template;
 		
-		private $model_name;
-		private $model;
-		private $fieldset;
-		private $action;
-		private static $db = array();
-		
-		function __construct($model_name, $fieldset=null, $load_where=null) {
-			self::$db = new MySQL();
+		function __construct($model_name)
+		{
 			$this->model_name = $model_name;
-			if(!$load_where) {
-				$this->model = Model::getInstance($model_name);
-			} else {
-				$this->model = Model::getOne($model_name, $load_where);
-			}
-			
-			$this->fieldset = $fieldset;
+			$this->schema = new Schema($model_name);
+			$this->template = Template::getInstance();
 		}
 		
-		function output($return=false) {
-			$struc = self::$db->getTableStructure($this->model_name);
+		function field($field_name)
+		{
+			$field_schema = $this->schema->$field_name;
+			$field_id = $this->model_name . '-' . $field_name;
 			
-			//form
-			$this->form = new XMLElement('form', null, array('method'=>'post'));
-			if($this->action) $this->form->action = $this->action;
-			foreach($struc as $field) {
-				if ($fieldset) {
-					if(array_search($field['name'], $fieldset)) $this->field($field);	
-				} else $this->field($field);
-			}
+			$field = XML::element('div');
+			$field->set('class', 'field');
+			$field->set('id', "{$field_id}-container");
 			
-			//submit
-			$p = new XMLElement('p', $this->form, array('class'=>'ModelForm_line center'));
-			$submit = new XMLELement('input', $p, array('type'=>'submit', 'value'=>'Enviar'));
+			$label = XML::element('label', $field);
+			$label->set('text', i18n::get($field_schema->label ? $field_schema->label : $field_schema->name));
+			$label->set('for', $field_id);
 			
-			if($return) return $this->form;
-			else print $this->form;
-		}
-		
-		function setAction($url) {
-			$this->action = $url;
-		}
-		
-		function field($field) {
-			$fields = $this->model->fieldDefs;
-			$fieldDefs = $fields[$field['name']];
-			switch($fieldDefs['input']) {
-				case 'hidden':
-					//input
-					$value = $this->model->__get($field['name']);
-					$input = new XMLElement('input', $this->form, array('type'=>'hidden', 'name'=>$field['name'], 'value'=>$value));
-					break;
-				case 'radio':
-					//paragraph
-					$p = new XMLElement('p', $this->form, array('class'=>'ModelForm_line'));
-					
-					//label
-					if($fieldDefs['caption']) $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $fieldDefs['caption']);
-					else $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $field['name']);
-					
-					//radios
-					foreach($fields[$field['name']]['values'] as $key=>$opt) {
-						$label = new XMLElement('label', $p, null);
-						if($this->model->__get($field['name'])==$opt) {
-							$option = new XMLElement('input', $label, array('type'=>'radio', 'value'=>$opt, 'name'=>$field['name'], 'checked'=>$checked));
-						} else {
-							$option = new XMLElement('input', $label, array('type'=>'radio', 'value'=>$opt, 'name'=>$field['name']));
-						}
-						$text = new XMLText($key, $label);
-					}
-					break;
-				case 'select':
-					//paragraph
-					$p = new XMLElement('p', $this->form, array('class'=>'ModelForm_line'));
-					
-					//label
-					if($fieldDefs['caption']) $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $fieldDefs['caption']);
-					else $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $field['name']);
-					
-					//select
-					$select = new XMLElement('select', $p, array('name'=>$field['name']));
-					$option = new XMLElement('option', $select, null, '');
-					foreach($fields[$field['name']]['values'] as $key=>$opt) {
-						if($this->model->__get($field['name'])==$opt) {
-							$option = new XMLElement('option', $select, array('value'=>$opt, 'selected'=>'selected'), $key);
-						} else {
-							$option = new XMLElement('option', $select, array('value'=>$opt), $key);
-						}
-					}
-					break;
+			switch($field_schema->type)
+			{
+				case 'varchar':
+					$element = $this->input($field_schema, $field_id); break;
 				case 'text':
+					$element = $this->textarea($field_schema, $field_id); break;
 				default:
-					//paragraph
-					$p = new XMLElement('p', $this->form, array('class'=>'ModelForm_line'));
-					
-					//label
-					if($fieldDefs['caption']) $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $fieldDefs['caption']);
-					else $label = new XMLElement('label', $p, array('class'=>'ModelForm_label'), $field['name']);
-					
-					//input
-					$value = $this->model->__get($field['name']);
-					$input = new XMLElement('input', $p, array('type'=>'text', 'class'=>'text', 'name'=>$field['name'], 'value'=>$value));
+					$element = null;
 			}
+			
+			if ($element) $field->adopt($element);
+			return $field;
+		}
+		
+		function input($field_schema, $field_id)
+		{
+			$input = XML::element('input');
+			$input->set('name', $field_schema->name);
+			$input->set('id', $field_id);
+			$input->set('class', 'text');
+			if ($field_schema->maxlength)
+				$input->set('maxlength', $field_schema->maxlength);
+			
+			return $input;
+		}
+		
+		function textarea($field_schema, $field_id)
+		{
+			$textarea = XML::element('textarea');
+			$textarea->set('name', $field_schema->name);
+			$textarea->set('id', $field_id);
+			
+			return $textarea;
 		}
 		
 	}
