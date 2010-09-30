@@ -3,6 +3,7 @@
 	{
 		var $table;
 		
+		var $label;
 		var $name;
 		var $type;
 		var $required;
@@ -98,6 +99,7 @@
 		
 		function hydrateFromDOMElement($element)
 		{
+			$this->label = $element->getAttribute('label');
 			$this->name = $element->getAttribute('name');
 			$this->type = $element->getAttribute('type');
 			$this->required = $element->getAttribute('required') == 'true' ? true : false;
@@ -105,7 +107,7 @@
 			$this->primaryKey = $element->getAttribute('primaryKey') == 'true' ? true : false;
 			$this->size = intval($element->getAttribute('size'));
 			$this->defaultValue = $element->getAttribute('default');
-			$this->maxlength = intval($element->getAttribute('maxlength'));
+			$this->maxlength = $element->getAttribute('maxlength') ? intval($element->getAttribute('maxlength')) : intval($element->getAttribute('size'));
 			$this->minlength = intval($element->getAttribute('minlength'));
 			$this->validator = $element->getAttribute('validator');
 			

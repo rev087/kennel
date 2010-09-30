@@ -12,6 +12,8 @@
 			'HTML 5' => '<!doctype html>'
 		);
 		
+		static $INSTANCE = null;
+		
 		// Variables
 		var $doctype = 'HTML 5';
 		var $lang = '';
@@ -38,6 +40,13 @@
 		function __construct($template)
 		{
 			$this->_template = new View($template, $this);
+			self::$INSTANCE = $this;
+		}
+		
+		function getInstance()
+		{
+			if (self::$INSTANCE) return self::$INSTANCE;
+			else return Debug::error('Template::getInstance() error: there is no instance created yet');
 		}
 		
 		// Ovewriting normal View behavior
