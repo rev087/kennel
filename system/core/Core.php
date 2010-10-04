@@ -37,6 +37,17 @@
 	}
 	
 	/*
+	* pick($arg1, [$arg2, ...])
+	* Utility function that returns the first non-false value (not a boolean test)
+	*/
+	function pick()
+	{
+		$args = func_get_args();
+		foreach ($args as $arg) if ($arg) return $arg;
+		return null;
+	}
+	
+	/*
 	* url(string $action)
 	* Returns a Kennel formated url.
 	* @action - the controller and actions. Eg. "blog/post"

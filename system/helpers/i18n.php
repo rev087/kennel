@@ -117,12 +117,19 @@
 			else return $code;
 		}
 		
-		function get($string)
+		function get($string, $vars=array())
 		{
 			if (!self::$_TRANSLATION_DATA) self::loadTranslationData();
 			
-			if (isset(self::$_TRANSLATION_DATA[$string])) return self::$_TRANSLATION_DATA[$string];
-			else return $string;
+			if (isset(self::$_TRANSLATION_DATA[$string])) return self::expandVars(self::$_TRANSLATION_DATA[$string], $vars);
+			else return self::expandVars($string, $vars);
+		}
+		
+		function expandVars($string, $vars=array())
+		{
+			foreach ($vars as $n=>$value)
+				$string = str_replace("%{$n}", $value);
+			return $string;
 		}
 		
 		function _($string)
