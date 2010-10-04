@@ -3,20 +3,26 @@
 	{
 		var $table;
 		
-		var $label;
 		var $name;
 		var $type;
-		var $required;
 		var $unique;
 		var $primaryKey;
 		var $size;
 		var $defaultValue;
-		var $maxlength;
-		var $minlength;
-		var $validator;
 		
+		// Presentation
+		var $label;
+		
+		// Relationship
 		var $foreignKey;
 		var $foreignModel;
+		
+		// Validation
+		var $required;
+		var $template;
+		var $regex;
+		var $maxlength;
+		var $minlength;
 		
 		private $errors;
 		
@@ -99,33 +105,27 @@
 		
 		function hydrateFromDOMElement($element)
 		{
-			$this->label = $element->getAttribute('label');
+			// Basics
 			$this->name = $element->getAttribute('name');
 			$this->type = $element->getAttribute('type');
-			$this->required = $element->getAttribute('required') == 'true' ? true : false;
 			$this->unique = $element->getAttribute('unique') == 'true' ? true : false;
 			$this->primaryKey = $element->getAttribute('primaryKey') == 'true' ? true : false;
 			$this->size = intval($element->getAttribute('size'));
 			$this->defaultValue = $element->getAttribute('default');
-			$this->maxlength = $element->getAttribute('maxlength') ? intval($element->getAttribute('maxlength')) : intval($element->getAttribute('size'));
-			$this->minlength = intval($element->getAttribute('minlength'));
-			$this->validator = $element->getAttribute('validator');
 			
+			// Presentation
+			$this->label = $element->getAttribute('label');
+			
+			// Relationship
 			$this->foreignKey = $element->getAttribute('foreignKey');
 			$this->foreignModel = $element->getAttribute('foreignModel');
-		}
-		
-		function validate($value)
-		{
-			$this->errors = array();
-			$errors = false;
 			
-			// size and maxlength
-			$maxlength = $this->size < $this->maxlength ? $this->size : $this->maxlength;
-			if (strlen($value) > $maxlength)
-				$this->errors[] = Field::ERROR_MAXLENGTH;
-			
-			// unique (TODO)
+			// Validation
+			$this->required = $element->getAttribute('required') == 'true' ? true : false;
+			$this->regex = $element->getAttribute('regex');
+			$this->template = $element->getAttribute('template');
+			$this->maxlength = $element->getAttribute('maxlength') ? intval($element->getAttribute('maxlength')) : intval($element->getAttribute('size'));
+			$this->minlength = intval($element->getAttribute('minlength'));
 		}
 	}
 ?>
