@@ -138,7 +138,7 @@
 					// E-mail template
 					case 'email':
 						// E-mail error
-						$email_regex = '/^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}.[a-zA-Z0-9._-]{2,}$/';
+						$email_regex = '/^[a-zA-Z0-9._-]+@[a-zA-Z0-9][a-zA-Z0-9._-]+.[a-zA-Z0-9._-]{2,}$/';
 						if (!preg_match($email_regex, $input_value))
 						{
 							$this->errors[$input_id] = i18n::get('Please type a valid e-mail address.'); continue;
