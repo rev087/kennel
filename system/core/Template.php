@@ -11,6 +11,10 @@
 			'XHTML 1.0 Strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 			'HTML 5' => '<!doctype html>'
 		);
+		static $MODERNIZR = 'modermozr-1.5.min.js';
+		static $PNGFIX = 'dd_belatedpng-0.0.8a.min.js';
+		static $MOOTOOLS = 'mootools-1.2.4-core-yc.js';
+		static $MOOTOOLS_MORE = 'mootools-1.2.4.4-more-yc.js';
 		
 		static $INSTANCE = null;
 		
