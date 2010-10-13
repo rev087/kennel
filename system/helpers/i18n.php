@@ -128,7 +128,7 @@
 		function expandVars($string, $vars=array())
 		{
 			foreach ($vars as $n=>$value)
-				$string = str_replace("%{$n}", $value);
+				$string = str_replace("%{$n}", $value, $string);
 			return $string;
 		}
 		
