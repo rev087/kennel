@@ -52,7 +52,7 @@
 				return new Module($mod_id);
 		}
 		
-		/*	This method can called statically or instanced, like this:
+		/*	This method can be called statically or instanced, like this:
 		 *	$module->get(string $variable);
 		 *	Module::get(string $mod_id, string $variable);
 		 */
