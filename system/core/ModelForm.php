@@ -18,7 +18,7 @@
 			$this->template = Template::getInstance();
 		}
 		
-		function field($field_name, $custom_label=null)
+		function field($field_name, $custom_label=null, $custom_attributes=null)
 		{
 			$field_schema = $this->schema->$field_name;
 			$field_id = $this->model_name . '_' . $field_name;
@@ -42,9 +42,9 @@
 			switch($field_schema->type)
 			{
 				case 'varchar':
-					$element = $this->input($field_schema, $field_id, $field_value, $field_error); break;
+					$element = $this->input($field_schema, $field_id, $custom_attributes, $field_value, $field_error); break;
 				case 'text':
-					$element = $this->textarea($field_schema, $field_id, $field_value, $field_error); break;
+					$element = $this->textarea($field_schema, $field_id, $custom_attributes, $field_value, $field_error); break;
 				default:
 					$element = null;
 			}
@@ -62,31 +62,51 @@
 			return $field;
 		}
 		
-		function input($field_schema, $field_id, $field_value=null, $field_error=null)
+		function input($field_schema, $field_id, $attributes=null, $field_value=null, $field_error=null)
 		{
 			$input = XML::element('input');
 			$input->set('name', $field_id);
 			$input->set('id', $field_id);
 			$input->set('class', 'text');
+			
+			// Custom attributes
+			if (is_array($attributes))
+				foreach ($attributes as $att=>$value)
+					$input->set($att, $value);
+				
+			// Value
 			if ($field_value)
 				$input->set('value', $field_value);
+			
+			// Invalid
 			if ($field_error)
 				$input->set('class', 'text invalid');
+			
+			// Max length
 			if ($field_schema->maxlength)
 				$input->set('maxlength', $field_schema->maxlength);
 			
 			return $input;
 		}
 		
-		function textarea($field_schema, $field_id, $field_value=null, $field_error=null)
+		function textarea($field_schema, $field_id, $attributes=null, $field_value=null, $field_error=null)
 		{
 			$textarea = XML::element('textarea');
 			$textarea->set('name', $field_id);
 			$textarea->set('id', $field_id);
+			
+			// Custom attributes
+			if (is_array($attributes))
+				foreach ($attributes as $att=>$value)
+					$textarea->set($att, $value);
+			
+			// Value
 			if ($field_value)
 				$textarea->set('text', $field_value);
 			else
 				$textarea->set('text', '');
+			
+			// Invalid
 			if ($field_error)
 				$textarea->set('class', 'invalid');
 			
@@ -106,6 +126,10 @@
 				if (!$field->primaryKey && !$field->foreignKey && $field->required && ($input_value === null || strlen($input_value) === 0))
 				{
 					$this->errors[$input_id] = i18n::get('This field is required.');
+					continue;
+				}
+				elseif (!$field->required && ($input_value === null || strlen($input_value) === 0))
+				{
 					continue;
 				}
 				
