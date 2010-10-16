@@ -13,8 +13,9 @@
 		);
 		static $MODERNIZR = 'modermozr-1.5.min.js';
 		static $PNGFIX = 'dd_belatedpng-0.0.8a.min.js';
-		static $MOOTOOLS = 'mootools-1.2.4-core-yc.js';
-		static $MOOTOOLS_MORE = 'mootools-1.2.4.4-more-yc.js';
+		static $MOOTOOLS = 'mootools-core-1.3-full-nocompat-yc.js';
+		static $MOOTOOLS_MORE = 'mootools-more-1.3.0.1rc1.js';
+		static $RAPHAEL = 'raphael-min.js';
 		
 		static $INSTANCE = null;
 		
