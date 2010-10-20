@@ -48,7 +48,7 @@
 			$path = Kennel::cascade("{$this->view}", 'views');
 			if (!$path) return Debug::error("View <strong>{$this->view}</strong> not found.");
 			
-			//begin intercepting the output buffer the buffer
+			//begin intercepting the output buffer
 			ob_start();
 			
 			if($path) require($path);
