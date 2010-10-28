@@ -140,13 +140,17 @@
 		function css()
 		{
 			$arguments = func_get_args();
-			$this->_stylesheets = array_merge($this->_stylesheets, $arguments);
+			foreach ($arguments as $stylesheet)
+				if (!in_array($stylesheet, $this->_stylesheets))
+					$this->_stylesheets[] = $stylesheet;
 		}
 		
 		function js()
 		{
 			$arguments = func_get_args();
-			$this->_scripts = array_merge($this->_scripts, $arguments);
+			foreach ($arguments as $script)
+				if (!in_array($script, $this->_scripts))
+					$this->_scripts[] = $script;
 		}
 	}
 ?>

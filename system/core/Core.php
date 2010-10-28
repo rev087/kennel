@@ -12,14 +12,14 @@
 			$controller_name = strtolower(substr($class_name, 0, (strlen($class_name) - 11)));
 			
 			$path = Kennel::cascade($controller_name, 'controllers');
-			if($path) require_once($path);
+			if($path) return require_once($path);
 		}
 		
 		// Helpers
 		if ($class_name == strtolower($class_name))
 		{
 			$path = Kennel::cascade($class_name, 'helpers');
-			if($path) require_once($path);
+			if($path) return require_once($path);
 		}
 		
 		// Models
@@ -28,12 +28,15 @@
 			$model_name = strtolower(substr($class_name, 0, (strlen($class_name) - 6)));
 			
 			$path = Kennel::cascade($model_name, 'models');
-			if($path) require_once($path);
+			if($path) return require_once($path);
 		}
 		
-		// Libraries
-		$path = Kennel::cascade($class_name, 'libraries');
-		if($path) require_once($path);
+		// Libraries (allow use of namespaces, files must be organized in folders with the same structure)
+		$path = Kennel::cascade(str_replace('\\', '/', $class_name), 'libraries');
+		if($path) return require_once($path);
+		
+		// Nothing!
+		Debug::error("<strong>__autoload:</strong> class '$class_name' not found.");
 	}
 	
 	/*
