@@ -43,7 +43,7 @@
 				$$var = $val;
 			if($this->parent_view)
 				foreach ($this->parent_view->vars as $var =>$val)
-					$$var = $val;
+					$$var = $val; // TODO: Check extract() for an alternative method
 			
 			$path = Kennel::cascade("{$this->view}", 'views');
 			if (!$path) return Debug::error("View <strong>{$this->view}</strong> not found.");
