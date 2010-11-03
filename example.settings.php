@@ -15,9 +15,9 @@
 	$settings['application']['log_errors'] = true;
 	
 	// i18n settings
-	$settings['i18n']['enabled'] = true; // Other i18n settings are ignored if this is set to false
-	$settings['i18n']['detect'] = true;
-	$settings['i18n']['redirect'] = true;
+	$settings['i18n']['enabled'] = false; // Other i18n settings are ignored if this is set to false
+	$settings['i18n']['detect'] = false;
+	$settings['i18n']['redirect'] = false;
 	$settings['i18n']['default'] = 'pt'; // Ignored if detect is enabled
 	$settings['i18n']['list'] = 'pt|en|es';
 	
