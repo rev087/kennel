@@ -5,6 +5,9 @@
 		
 		function encode($data)
 		{
+			if (function_exists('json_encode'))
+				return json_encode($data);
+			
 			if (!self::$Services_JSON)
 				self::$Services_JSON = new Services_JSON();
 			
@@ -13,6 +16,9 @@
 		
 		function decode($data)
 		{
+			if (function_exists('json_decode'))
+				return json_decode($data);
+			
 			if (!self::$Services_JSON)
 				self::$Services_JSON = new Services_JSON();
 			
