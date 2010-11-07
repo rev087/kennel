@@ -2,15 +2,7 @@
 	
 	class Controller
 	{
-		var $input;
-		var $request;
 		static $_instances = array();
-		
-		function __construct()
-		{
-			$this->input = new Input();
-			$this->request = new Request();
-		}
 		
 		static function getInstance($descendent)
 		{

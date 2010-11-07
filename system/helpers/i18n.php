@@ -121,8 +121,10 @@
 		{
 			if (!self::$_TRANSLATION_DATA) self::loadTranslationData();
 			
-			if (isset(self::$_TRANSLATION_DATA[$string])) return self::expandVars(self::$_TRANSLATION_DATA[$string], $vars);
-			else return self::expandVars($string, $vars);
+			if (isset(self::$_TRANSLATION_DATA[$string]))
+				return self::expandVars(self::$_TRANSLATION_DATA[$string], $vars);
+			else
+				return self::expandVars($string, $vars);
 		}
 		
 		function expandVars($string, $vars=array())

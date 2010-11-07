@@ -1,5 +1,5 @@
 <?php
-
+	
 	/*
 	* __autoload(string $resource)
 	* Automatically requires Controllers and Kennel System files
@@ -322,4 +322,18 @@
 		}
 		
 	}
+	
+	/*
+	* New, smaller, more cute thing
+	*
+	class K extends Kennel {
+		
+		static $ROUTES = array();
+		
+		static function route($pattern, $callback, $method='GET') {
+			self::$ROUTES[] = array('pattern'=>$pattern, 'callback'=>$callback, 'method'=>$method);
+		}
+		
+	}
+	*/
 ?>

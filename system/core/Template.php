@@ -11,11 +11,11 @@
 			'XHTML 1.0 Strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 			'HTML 5' => '<!doctype html>'
 		);
-		static $MODERNIZR = 'modermozr-1.5.min.js';
-		static $PNGFIX = 'dd_belatedpng-0.0.8a.min.js';
-		static $MOOTOOLS = 'mootools-core-1.3-full-nocompat-yc.js';
-		static $MOOTOOLS_MORE = 'mootools-1.3-full-nocompat-yc.js';
-		static $RAPHAEL = 'raphael-min.js';
+		const MODERNIZR = 'modermozr-1.5.min.js';
+		const PNGFIX = 'dd_belatedpng-0.0.8a.min.js';
+		const MOOTOOLS = 'mootools-core-1.3-full-nocompat-yc.js';
+		const MOOTOOLS_MORE = 'mootools-1.3-full-nocompat-yc.js';
+		const RAPHAEL = 'raphael-min.js';
 		
 		static $INSTANCE = null;
 		
