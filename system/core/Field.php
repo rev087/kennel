@@ -84,6 +84,12 @@
 				case 'datetime':
 					$createString .= " DATETIME";
 					break;
+				case 'date':
+					$createString .= " DATE";
+					break;
+				case 'time':
+					$createString .= " TIME";
+					break;
 				default:
 					Debug::error("Field::getCreateString - Unsuported field type \"{$this->type}\" for field \"{$this->name}\" on table \"{$this->table}\"");
 			}
