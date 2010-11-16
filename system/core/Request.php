@@ -70,7 +70,7 @@
 				if ($part)
 				{
 					if (strpos($part, ':') === false)
-						self::$PARTS[] = strtolower(Input::clean($part));
+						self::$PARTS[] = Input::clean($part);
 					else
 					{
 						$named_arg = explode(':', $part);
