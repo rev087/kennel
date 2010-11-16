@@ -188,6 +188,8 @@
 					case 'varchar':
 					case 'text':
 					case 'datetime':
+					case 'date':
+					case 'time':
 						
 						if ($this->_data[$field->name] !== NULL)
 							$newValues[] = '"' . MySQL::escape_string($this->_data[$field->name]) . '"';
