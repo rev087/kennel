@@ -189,13 +189,16 @@
 				case 'img':
 				case 'js':
 				case 'flash':
-				case 'file':
 					$application_path = "/application/assets/{$type}/{$resource}";
 					$module_path = "/modules/{module}/assets/{$type}/{$resource}";
 					$system_path = "/system/assets/{$type}/{$resource}";
 					break;
+				case 'file':
+					$application_path = "/application/assets/files/{$resource}";
+					$module_path = "/modules/{module}/assets/files/{$resource}";
+					$system_path = "/system/assets/{$type}/{$resource}";
+					break;
 			}
-			
 			
 			// Application (user) resource
 			if (is_file(Kennel::$ROOT_PATH . $application_path))
