@@ -117,7 +117,7 @@
 			register_shutdown_function(array('Kennel', 'onShutdown'));
 			
 			// Get the application path and root uri
-			self::$ROOT_PATH = dirname($_SERVER['SCRIPT_FILENAME']);
+			self::$ROOT_PATH = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME']));
 			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
 			
 			// Get the application settings
