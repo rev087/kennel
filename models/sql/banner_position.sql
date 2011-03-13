@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS `banner_position` (
+	id INT(12) PRIMARY KEY AUTO_INCREMENT,
+	title VARCHAR(128) NOT NULL,  
+	rotation TINYINT(1)
+);
