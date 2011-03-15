@@ -87,7 +87,7 @@
 					self::$PARTS = call_user_func($hook, self::$PARTS);
 			}
 			
-			// Make the Resrouce String available to the API
+			// Make the Resource String available to the API
 			self::$RESOURCE = implode('/', self::$PARTS);
 			
 			// i18n URL redirection
@@ -102,20 +102,20 @@
 			}
 			
 			// 1. First check: method in the main controller
-			if (isset(self::$PARTS[0]) && method_exists('Main_controller', self::$PARTS[0]))
+			if (isset(self::$PARTS[0]) && method_exists('Main_controller', str_replace('-', '_', self::$PARTS[0])))
 			{
 				self::$CONTROLLER = 'main';
-				self::$ACTION = self::$PARTS[0];
+				self::$ACTION = str_replace('-', '_', self::$PARTS[0]);
 				self::$ARGS = array_slice(self::$PARTS, 1);
 			}
 			
 			// 2. Second check: user defined controller...
-			if (isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH . '/application/controllers/' . self::$PARTS[0] . '.php'))
+			if (isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH . '/application/controllers/' . str_replace('-', '_', self::$PARTS[0]) . '.php'))
 			{
-				self::$CONTROLLER = ucfirst(self::$PARTS[0]);
-				if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
+				self::$CONTROLLER = ucfirst(str_replace('-', '_', self::$PARTS[0]));
+				if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', str_replace('-', '_', self::$PARTS[1])))
 				{
-					self::$ACTION = self::$PARTS[1];
+					self::$ACTION = str_replace('-', '_', self::$PARTS[1]);
 					self::$ARGS = array_slice(self::$PARTS, 2);
 				}
 				else
@@ -131,12 +131,12 @@
 				if (!Kennel::$MODULES) Kennel::fetchModules();
 				foreach (Kennel::$MODULES as $module=>$info)
 				{
-					if(is_file(Kennel::$ROOT_PATH . "/modules/{$module}/controllers/" . self::$PARTS[0] . '.php'))
+					if(is_file(Kennel::$ROOT_PATH . "/modules/{$module}/controllers/" . str_replace('-', '_', self::$PARTS[0]) . '.php'))
 					{
-						self::$CONTROLLER = ucfirst(self::$PARTS[0]);
-						if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
+						self::$CONTROLLER = ucfirst(str_replace('-', '_', self::$PARTS[0]));
+						if (isset(self::$PARTS[1]) && method_exists(self::$CONTROLLER . '_controller', str_replace('-', '_', self::$PARTS[1])))
 						{
-							self::$ACTION = self::$PARTS[1];
+							self::$ACTION = str_replace('-', '_', self::$PARTS[1]);
 							self::$ARGS = array_slice(self::$PARTS, 2);
 						}
 						else
@@ -149,14 +149,14 @@
 			}
 			
 			// 4. Forth check: system controller
-			if(isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH .'/system/controllers/' . self::$PARTS[0] . '.php'))
+			if(isset(self::$PARTS[0]) && is_file(Kennel::$ROOT_PATH .'/system/controllers/' . str_replace('-', '_', self::$PARTS[0]) . '.php'))
 			{
-				self::$CONTROLLER = ucfirst(self::$PARTS[0]);
+				self::$CONTROLLER = ucfirst(str_replace('-', '_', self::$PARTS[0]));
 				if (isset(self::$PARTS[1]))
 				{
-					if (method_exists(self::$CONTROLLER . '_controller', self::$PARTS[1]))
+					if (method_exists(self::$CONTROLLER . '_controller', str_replace('-', '_', self::$PARTS[1])))
 					{
-						self::$ACTION = self::$PARTS[1];
+						self::$ACTION = str_replace('-', '_', self::$PARTS[1]);
 						self::$ARGS = array_slice(self::$PARTS, 2);
 					}
 				}
