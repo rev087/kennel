@@ -16,6 +16,7 @@
 		const MOOTOOLS = 'mootools-core-1.3-full-nocompat-yc.js';
 		const MOOTOOLS_MORE = 'mootools-1.3-full-nocompat-yc.js';
 		const RAPHAEL = 'raphael-min.js';
+		const JQUERY = 'jquery-1.5.1.min.js';
 		
 		static $INSTANCE = null;
 		
