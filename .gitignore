@@ -1,4 +1,6 @@
 application/*
+modules/*
 index.php
 modulesettings.xml
 settings.php
+.DS_Store
