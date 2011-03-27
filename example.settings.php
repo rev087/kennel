@@ -9,6 +9,7 @@
 	// Application settings
 	$settings['application']['app_title'] = 'Example Application';
 	$settings['application']['app_id'] = 'example_app';
+	$settings['application']['timezone'] = 'America/Sao_Paulo';
 	$settings['application']['use_mod_rewrite'] = true;
 	$settings['application']['show_benchmark'] = false;
 	$settings['application']['debug_mode'] = true;

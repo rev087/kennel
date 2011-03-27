@@ -138,6 +138,9 @@
 			if (self::getSetting('i18n', 'enabled'))
 				router::prefix(self::getSetting('i18n', 'list'));
 			
+			// Set the default timezone
+			date_default_timezone_set(self::getSetting('application', 'timezone'));
+			
 			//process the request
 			Request::process();
 		}
