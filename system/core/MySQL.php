@@ -59,7 +59,7 @@
 			
 			$tr = XML::element('tr', $table);
 			$th = XML::element('th', $tr, null, 'query');
-			$td = XML::element('td', $tr, null, "<pre>{$sql}</pre>");
+			$td = XML::element('td', $tr, null, syntax::mysql($sql));
 			
 			$tr = XML::element('tr', $table);
 			$th = XML::element('th', $tr, null, 'error');
