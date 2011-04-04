@@ -27,6 +27,7 @@
 		var $favicon = null;
 		var $title = null;
 		var $titleSeparator = '-';
+		var $bodyClass = null;
 		
 		// Structure
 		private $_html;
@@ -104,6 +105,7 @@
 			$this->_body->class = browser::css();
 			if (Kennel::getSetting('i18n', 'enabled'))
 				$this->_body->class .= ' ' . i18n::getLang();
+			if ($this->bodyClass) $this->_body->class .= ' ' . $this->bodyClass;
 			
 			// Inject the Template View
 			$this->_body->adopt($templateView);
