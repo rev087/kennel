@@ -7,13 +7,20 @@
 	$settings['database']['prefix'] = '';
 	
 	// Application settings
-	$settings['application']['app_title'] = 'Example Application';
-	$settings['application']['app_id'] = 'example_app';
+	$settings['application']['title'] = 'Example Application';
+	$settings['application']['id'] = 'example_app';
 	$settings['application']['timezone'] = 'America/Sao_Paulo';
 	$settings['application']['use_mod_rewrite'] = true;
 	$settings['application']['show_benchmark'] = false;
 	$settings['application']['debug_mode'] = true;
 	$settings['application']['log_errors'] = true;
+	
+	// E-mail settings
+	$settings['email']['smtp_host'] = 'smtp.example.com';
+	$settings['email']['port'] = '465';
+	$settings['email']['user'] = 'user@example.com';
+	$settings['email']['pass'] = 'password';
+	$settings['email']['encryption'] = 'ssl'; // "ssl", "tsl" or null
 	
 	// i18n settings
 	$settings['i18n']['enabled'] = false; // Other i18n settings are ignored if this is set to false
