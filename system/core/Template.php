@@ -125,11 +125,11 @@
 		
 		function getTitle()
 		{
-			if ($this->title && Kennel::getSetting('application', 'app_title'))
-				return $this->title . " {$this->titleSeparator} " . Kennel::getSetting('application', 'app_title');
-			elseif (!$this->title && Kennel::getSetting('application', 'app_title'))
-				return Kennel::getSetting('application', 'app_title');
-			elseif ($this->title && !Kennel::getSetting('application', 'app_title'))
+			if ($this->title && Kennel::getSetting('application', 'title'))
+				return $this->title . " {$this->titleSeparator} " . Kennel::getSetting('application', 'title');
+			elseif (!$this->title && Kennel::getSetting('application', 'title'))
+				return Kennel::getSetting('application', 'title');
+			elseif ($this->title && !Kennel::getSetting('application', 'title'))
 				return $this->title;
 			else
 				return 'Untitled';
