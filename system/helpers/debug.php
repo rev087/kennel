@@ -1,13 +1,13 @@
 <?php
 	
-	class Debug
+	class debug
 	{
 		static $notice = E_USER_NOTICE;
 		static $warning = E_USER_WARNING;
 		static $error = E_USER_ERROR;
 		
 		/*
-		* Debug::dump($variable, [$variable, ...])
+		* debug::dump($variable, [$variable, ...])
 		*/
 		static function dump()
 		{
@@ -19,7 +19,7 @@
 		}
 		
 		/*
-		* Debug::getDump($variable)
+		* debug::getDump($variable)
 		*/
 		static function getDump($variable)
 		{
@@ -68,7 +68,7 @@
 		}
 		
 		/*
-		* Debug::dumpError($error)
+		* debug::dumpError($error)
 		*/
 		static function dumpError($error, $backtrace_depth=0)
 		{

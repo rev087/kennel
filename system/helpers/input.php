@@ -1,5 +1,5 @@
 <?php
-	class Input
+	class input
 	{
 		private static $_get;
 		private static $_post;
@@ -53,11 +53,11 @@
 		static function dump($return=false)
 		{
 			$dump = '<h1>GET</h1>';
-			$dump .= Debug::getDump($_GET, true);
+			$dump .= debug::getDump($_GET, true);
 			$dump .= '<h1>POST</h1>';
-			$dump .= Debug::getDump($_POST, true);
+			$dump .= debug::getDump($_POST, true);
 			$dump .= '<h1>FILES</h1>';
-			$dump .= Debug::getDump($_FILES, true);
+			$dump .= debug::getDump($_FILES, true);
 			
 			if($return) return $dump;
 			else print $dump;

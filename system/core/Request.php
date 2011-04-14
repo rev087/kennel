@@ -70,7 +70,7 @@
 				if ($part)
 				{
 					if (strpos($part, ':') === false)
-						self::$PARTS[] = Input::clean($part);
+						self::$PARTS[] = input::clean($part);
 					else
 					{
 						$named_arg = explode(':', $part);
@@ -194,7 +194,7 @@
 			
 			$tr = XML::element('tr', $table);
 			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Arguments');
-			$td = XML::element('td', $tr, null, Debug::getDump(self::$ARGS, true));
+			$td = XML::element('td', $tr, null, debug::getDump(self::$ARGS, true));
 			
 			if($return) return $table;
 			else print $table;

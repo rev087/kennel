@@ -216,9 +216,9 @@
 		function populate($values=null)
 		{
 			if ($this->method == 'post')
-				$values = pick($values, Input::post());
+				$values = pick($values, input::post());
 			elseif ($this->method == 'get')
-				$values = pick($values, Input::get());
+				$values = pick($values, input::get());
 			
 			foreach ($this->schema as $field)
 			{
