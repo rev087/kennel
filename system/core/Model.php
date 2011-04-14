@@ -10,6 +10,11 @@
 		var $schema;
 		var $model_name;
 		
+		const ERR_UNIQUE = 1;
+		const ERR_REQUIRED = 2;
+		public $invalidFields = array(); // Fields with validation issues from the latest validate() or save() call; further calls reset this
+		public $errors = array(); // Types of validation errors found in the latest validate() or save() call; further calls reset this
+		
 		/**
 			*  Instance Methods 
 			*/
@@ -85,10 +90,9 @@
 			{
 				$c->add($field->name, $this->_data[$field->name]);
 			}
-			ORM::delete($c);
 			unset($this->_synced_data);
 			unset($this->_data);
-			
+			return ORM::delete($c);
 		}
 		
 		function getPrimaryKey()
@@ -97,8 +101,55 @@
 			return $this->$primaryKey;
 		}
 		
+		function validate()
+		{
+			$this->invalidFields = array();
+			$this->errors = array();
+			$uniques = array();
+			
+			foreach ($this->schema as $field)
+			{
+				// Simple required field validation
+				if (!$this->_data[$field->name] && $field->required && !$field->primaryKey)
+				{
+					$this->invalidFields[] = array(
+						$field->name => i18n::get('This field is required')
+					);
+					if (!in_array(self::ERR_REQUIRED, $this->errors))
+						$this->errors[] = self::ERR_REQUIRED;
+				}
+				
+				// Gather unique fields
+				if ($field->unique)
+					$uniques[] = $field->name;
+			}
+			
+			// Loop through each unique field and retrieve instances; could use some refactoring love to reduce the number of queries made
+			foreach ($uniques as $field_name)
+			{
+				$c = new Criteria($this->model_name);
+				$c->add($field_name, $this->_data[$field_name]);
+				if (ORM::count($c) > 0)
+				{
+					$this->invalidFields[] = array(
+						$field_name => i18n::get('Not available') // This message could be nicer with human readable labels in the model`s fields
+					);
+					if (!in_array(self::ERR_UNIQUE, $this->errors))
+						$this->errors[] = self::ERR_UNIQUE;
+				}
+			}
+			
+			if (count($this->invalidFields) > 0) return false;
+			else return true;
+		}
+		
 		function save()
 		{
+			if (!$this->validate()) {
+				trigger_error(i18n::get('Trying to save invalid content for model <strong>%0</strong>', array($this)), E_USER_WARNING);
+				return false;
+			}
+			
 			$primaryKey = $this->schema->getPrimaryKey()->name;
 			
 			// No need to save if the model has a PK set and is synced with the DB
@@ -179,7 +230,7 @@
 			$newValues = array();
 			$syncedValues = array();
 			
-			// Add quotes for non-numeric field values, used while building the SQL statement
+			// Add quotes for non-numeric field values, used to the SQL statement
 			foreach ($this->schema as $field)
 			{
 				$columns[] = '`' . $field->name . '`';
