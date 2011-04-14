@@ -44,6 +44,48 @@
 			return $model_array;
 		}
 		
+		static function count(Criteria $criteria)
+		{
+			if (!self::$DB) self::$DB = new MySQL;
+			
+			$schema = self::getSchema($criteria->from_model_name);
+			$relationships = $schema->getRelationships();
+			
+			foreach ($relationships as $rel)
+			{
+				$criteria->addJoin(
+					$rel->foreignModel,
+					"{$criteria->from_model_name}.{$rel->name}", "{$rel->foreignModel}.{$rel->foreignKey}",
+					Criteria::LEFT_JOIN
+				);
+			}
+			
+			$sql = self::getSelectString($criteria);
+			$rs = self::$DB->query($sql);
+			return self::$DB->num_rows($rs);
+		}
+		
+		static function dump(Criteria $criteria)
+		{
+			if (!self::$DB) self::$DB = new MySQL;
+			
+			$schema = self::getSchema($criteria->from_model_name);
+			$relationships = $schema->getRelationships();
+			
+			foreach ($relationships as $rel)
+			{
+				$criteria->addJoin(
+					$rel->foreignModel,
+					"{$criteria->from_model_name}.{$rel->name}", "{$rel->foreignModel}.{$rel->foreignKey}",
+					Criteria::LEFT_JOIN
+				);
+			}
+			
+			$sql = self::getSelectString($criteria);
+			echo syntax::mysql($sql);
+			return;
+		}
+		
 		static function retrieveFirst(Criteria $criteria)
 		{
 			$criteria->setLimit(1);
@@ -68,6 +110,7 @@
 			$sql = $schema->getCreateString();
 			
 			self::$DB->query($sql);
+			return self::$DB->affected_rows();
 		}
 		
 		static function retrieveByPrimaryKey($model_name, $primary_key_value)
