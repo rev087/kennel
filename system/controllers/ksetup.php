@@ -16,8 +16,8 @@
 		
 		public function login()
 		{
-			if (Input::post('username') && Input::post('password') &&
-			Auth::login(Input::post('username'), Input::post('password')))
+			if (input::post('username') && input::post('password') &&
+			Auth::login(input::post('username'), input::post('password')))
 			{
 				$this->index();
 			}
