@@ -53,11 +53,11 @@
 		static function dump($return=false)
 		{
 			$dump = '<h1>GET</h1>';
-			$dump .= Debug::dump($_GET, true);
+			$dump .= Debug::getDump($_GET, true);
 			$dump .= '<h1>POST</h1>';
-			$dump .= Debug::dump($_POST, true);
+			$dump .= Debug::getDump($_POST, true);
 			$dump .= '<h1>FILES</h1>';
-			$dump .= Debug::dump($_FILES, true);
+			$dump .= Debug::getDump($_FILES, true);
 			
 			if($return) return $dump;
 			else print $dump;
