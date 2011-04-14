@@ -17,7 +17,7 @@
 	
 	// E-mail settings
 	$settings['email']['smtp_host'] = 'smtp.example.com';
-	$settings['email']['port'] = '465';
+	$settings['email']['port'] = '465'; //gmail: 465 or 587
 	$settings['email']['user'] = 'user@example.com';
 	$settings['email']['pass'] = 'password';
 	$settings['email']['encryption'] = 'ssl'; // "ssl", "tsl" or null
