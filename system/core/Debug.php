@@ -7,13 +7,23 @@
 		static $error = E_USER_ERROR;
 		
 		/*
-		* Debug::dump($variable)
+		* Debug::dump($variable, [$variable, ...])
 		*/
-		static function dump($variable, $return=false)
+		static function dump()
 		{
-			$dump = '<pre>'.var_export($variable, true).'</pre>';
-			if($return) return $dump;
-			else print $dump;
+			$args = func_get_args();
+			foreach ($args as $arg)
+			{
+				echo self::getDump($arg);
+			}
+		}
+		
+		/*
+		* Debug::getDump($variable)
+		*/
+		static function getDump($variable)
+		{
+			return '<pre>'.var_export($variable, true).'</pre>';
 		}
 		
 		/*
