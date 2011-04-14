@@ -37,7 +37,7 @@
 			{
 				self::$user = $user;
 				if(!session_id()) session_start();
-				$app_id = Kennel::getSetting('application', 'app_id');
+				$app_id = Kennel::getSetting('application', 'id');
 				$_SESSION["{$app_id}_auth"] = self::$user->toArray();
 				
 				return true;
@@ -54,7 +54,7 @@
 		{
 			if(!session_id()) session_start();
 			
-			$app_id = Kennel::getSetting('application', 'app_id');
+			$app_id = Kennel::getSetting('application', 'id');
 			unset($_SESSION["{$app_id}_auth"]);
 			
 			return true;
@@ -70,14 +70,14 @@
 		static function check()
 		{
 			if(!session_id()) session_start();
-			$app_id = Kennel::getSetting('application', 'app_id');
+			$app_id = Kennel::getSetting('application', 'id');
 			if(!array_key_exists("{$app_id}_auth", $_SESSION)) return false;
 			
 			$args = func_get_args();
 			if(count($args) > 0)
 			{
 				$user = self::getUser();
-				$app_id = Kennel::getSetting('application', 'app_id');
+				$app_id = Kennel::getSetting('application', 'id');
 				$userlevel_field = Kennel::getSetting("{$app_id}_auth", 'userlevel_field');
 				foreach($args as $arg) {
 					if($arg == $user->$userlevel_field) return true;
@@ -91,7 +91,7 @@
 		
 		static function getUser() 
 		{
-			$app_id = Kennel::getSetting('application', 'app_id');
+			$app_id = Kennel::getSetting('application', 'id');
 			
 			if (self::$user)
 			{
@@ -110,7 +110,7 @@
 		static function updateUser($user)
 		{
 			if(!session_id()) session_start();
-			$app_id = Kennel::getSetting('application', 'app_id');
+			$app_id = Kennel::getSetting('application', 'id');
 			$_SESSION["{$app_id}_auth"] = $user->toArray();
 			self::$user = $user;
 		}
