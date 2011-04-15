@@ -36,6 +36,7 @@
 		if($path) return require_once($path);
 		
 		// Nothing!
+		var_dump($class_name);
 		debug::error("<strong>__autoload:</strong> class '$class_name' not found.");
 	}
 	
@@ -252,7 +253,7 @@
 			// Skip if no settings found
 			if (!self::$_APP_SETTINGS) return null;
 			
-			if (!isset(self::$_APP_SETTINGS[$category][$setting])) Debug::error("Setting [{$category}][{$setting}] was not found");
+			if (!isset(self::$_APP_SETTINGS[$category][$setting])) debug::error("Setting [{$category}][{$setting}] was not found");
 			return self::$_APP_SETTINGS[$category][$setting];
 		}
 		
