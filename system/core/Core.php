@@ -36,7 +36,7 @@
 		if($path) return require_once($path);
 		
 		// Nothing!
-		Debug::error("<strong>__autoload:</strong> class '$class_name' not found.");
+		debug::error("<strong>__autoload:</strong> class '$class_name' not found.");
 	}
 	
 	/*
