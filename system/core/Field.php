@@ -91,7 +91,7 @@
 					$createString .= " TIME";
 					break;
 				default:
-					Debug::error("Field::getCreateString - Unsuported field type \"{$this->type}\" for field \"{$this->name}\" on table \"{$this->table}\"");
+					debug::error("Field::getCreateString - Unsuported field type \"{$this->type}\" for field \"{$this->name}\" on table \"{$this->table}\"");
 			}
 			
 			// PRIMARY KEY

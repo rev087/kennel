@@ -21,7 +21,7 @@
 		
 		function __construct($model_name)
 		{
-			if (!is_string($model_name)) Debug::error('Model::__construct - $model_name must be a string.');
+			if (!is_string($model_name)) debug::error('Model::__construct - $model_name must be a string.');
 			$this->model_name = $model_name;
 			$this->schema = ORM::getSchema($model_name);
 			foreach ($this->schema as $field)
@@ -276,7 +276,7 @@
 						break;
 						
 					default:
-						Debug::error("Model::save - Unsuported field type \"{$field->type}\" for field \"{$field->name}\" on model \"{$this->model_name}\"");
+						debug::error("Model::save - Unsuported field type \"{$field->type}\" for field \"{$field->name}\" on model \"{$this->model_name}\"");
 				}
 			}
 			

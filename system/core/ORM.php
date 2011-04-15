@@ -117,7 +117,7 @@
 		{
 			$schema = self::getSchema($model_name);
 			$primaryKey = $schema->getPrimaryKey();
-			if(!$primaryKey) Debug::error("ORM::retrieveByPrimaryKey error: no primary key defined for model <strong>{$model_name}</strong>.");
+			if(!$primaryKey) debug::error("ORM::retrieveByPrimaryKey error: no primary key defined for model <strong>{$model_name}</strong>.");
 			
 			$c = new Criteria($model_name);
 			$c->add($primaryKey->name, $primary_key_value);
