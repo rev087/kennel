@@ -124,20 +124,23 @@
 					$uniques[] = $field->name;
 			}
 			
-			// Loop through each unique field and retrieve instances; could use some refactoring love to reduce the number of queries made
-			foreach ($uniques as $field_name)
-			{
-				$c = new Criteria($this->model_name);
-				$c->add($field_name, $this->_data[$field_name]);
-				if (ORM::count($c) > 0)
+			// Unique field validation only for new model instances
+			if (!$this->getPrimaryKey())
+				// Loop through each unique field and retrieve instances;
+				// Could be refactored to reduce the number of queries made
+				foreach ($uniques as $field_name)
 				{
-					$this->invalidFields[] = array(
-						$field_name => i18n::get('Not available') // This message could be nicer with human readable labels in the model`s fields
-					);
-					if (!in_array(self::ERR_UNIQUE, $this->errors))
-						$this->errors[] = self::ERR_UNIQUE;
+					$c = new Criteria($this->model_name);
+					$c->add($field_name, $this->_data[$field_name]);
+					if (ORM::count($c) > 0)
+					{
+						$this->invalidFields[] = array(
+							$field_name => i18n::get('Not available') // This message could come from human readable labels in the model`s fields
+						);
+						if (!in_array(self::ERR_UNIQUE, $this->errors))
+							$this->errors[] = self::ERR_UNIQUE;
+					}
 				}
-			}
 			
 			if (count($this->invalidFields) > 0) return false;
 			else return true;
