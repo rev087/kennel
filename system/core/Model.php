@@ -112,9 +112,7 @@
 				// Simple required field validation
 				if (!$this->_data[$field->name] && $field->required && !$field->primaryKey)
 				{
-					$this->invalidFields[] = array(
-						$field->name => i18n::get('This field is required')
-					);
+					$this->invalidFields[$field->name][] = i18n::get('This field is required');
 					if (!in_array(self::ERR_REQUIRED, $this->errors))
 						$this->errors[] = self::ERR_REQUIRED;
 				}
@@ -134,9 +132,7 @@
 					$c->add($field_name, $this->_data[$field_name]);
 					if (ORM::count($c) > 0)
 					{
-						$this->invalidFields[] = array(
-							$field_name => i18n::get('Not available') // This message could come from human readable labels in the model`s fields
-						);
+						$this->invalidFields[$field_name][] = i18n::get('Already registered');
 						if (!in_array(self::ERR_UNIQUE, $this->errors))
 							$this->errors[] = self::ERR_UNIQUE;
 					}
@@ -320,6 +316,12 @@
 		
 		function dump($return=false, $dump_relationships=true)
 		{
+			// Cache current validation vars
+			$errorsCache = $this->errors;
+			$invalidFieldsCache = $this->invaliFields;
+			
+			$isValid = $this->validate();
+			
 			$dump = '';
 			$dump .= '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
 			$dump .= '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
@@ -328,14 +330,31 @@
 			$dump .= '</h2>';
 			foreach ($this->schema as $field)
 			{
+				// Signs
 				if ($field->primaryKey) $dump .= '<strong>*</strong> ';
 				elseif ($field->foreignKey && $field->foreignModel) $dump .= '<strong>~</strong> ';
 				else $dump .= '&nbsp; ';
 				
+				// Field name and content
+				$value = var_export($this->_data[$field->name], true);
 				if ($field->required)
-					$dump .= "<strong>{$field->name}</strong> = \"{$this->_data[$field->name]}\"<br />";
+					$dump .= "<strong>{$field->name}</strong> = {$value}";
 				else
-					$dump .= "<strong>[{$field->name}]</strong> = \"{$this->_data[$field->name]}\"<br />";
+					$dump .= "<strong>[{$field->name}]</strong> = {$value}";
+				
+				// Validation
+				if (!$isValid)
+				{
+					//debug::dump($field->name, array_key_exists($field->name, $this->invalidFields));
+					if (array_key_exists($field->name, $this->invalidFields))
+					{
+						$dump .= ' <strong style="color: #f00;">!</strong>';
+						foreach ($this->invalidFields[$field->name] as $errorMessage)
+							$dump .= '<br /><strong style="color: #f00;">&nbsp;&nbsp;&nbsp;[ '.$errorMessage.' ]</strong>';
+					}
+				}
+				
+				$dump .= '<br />';
 			}
 			
 			if ($dump_relationships)
@@ -346,6 +365,11 @@
 				}
 			
 			$dump .= '</pre></div><div style="clear: both;"></div>';
+			
+			// Return validation variables to their original values
+			$this->errors = $errorsCache;
+			$this->invaliFields = $invalidFieldsCache;
+			
 			if ($return) return $dump;
 			else print $dump;
 		}
