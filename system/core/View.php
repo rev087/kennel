@@ -21,7 +21,7 @@
 		function __get($var)
 		{
 			if(isset($this->vars[$var])) return $this->vars[$var];
-			else Debug::error("'{$var}' is not defined");
+			else debug::error("'{$var}' is not defined");
 		}
 		
 		function __set($var, $value)
@@ -46,7 +46,7 @@
 					$$var = $val; // TODO: Check extract() for an alternative method
 			
 			$path = Kennel::cascade("{$this->view}", 'views');
-			if (!$path) return Debug::error("View <strong>{$this->view}</strong> not found.");
+			if (!$path) return debug::error("View <strong>{$this->view}</strong> not found.");
 			
 			//begin intercepting the output buffer
 			ob_start();
