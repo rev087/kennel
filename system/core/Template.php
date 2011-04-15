@@ -53,7 +53,7 @@
 		function getInstance()
 		{
 			if (self::$INSTANCE) return self::$INSTANCE;
-			else return Debug::error('Template::getInstance() error: there is no instance created yet');
+			else return debug::error('Template::getInstance() error: there is no instance created yet');
 		}
 		
 		// Ovewriting normal View behavior

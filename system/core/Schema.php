@@ -13,10 +13,10 @@
 		
 		function __construct($model_name)
 		{
-			if (!$model_name) Debug::error("Schema::__construct - undefined model name.");
+			if (!$model_name) debug::error("Schema::__construct - undefined model name.");
 			
 			$path = Kennel::cascade($model_name, 'schemas');
-			if (!$path) Debug::error("Schema::__construct - model schema for \"{$model_name}\" not found.");
+			if (!$path) debug::error("Schema::__construct - model schema for \"{$model_name}\" not found.");
 			
 			$doc = new DOMDocument;
 			$doc->load(realpath($path));

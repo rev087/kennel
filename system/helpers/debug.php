@@ -27,7 +27,7 @@
 		}
 		
 		/*
-		* Debug::backtrace();
+		* debug::backtrace();
 		*/
 		static function backtrace($depth=0, $limit = null, $return=false)
 		{
