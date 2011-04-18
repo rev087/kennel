@@ -166,10 +166,21 @@
 		
 		//misc functions
 		////////////////
-		static function escape_string($string)
+		static function escape_string($input)
 		{
 			self::connect();
-			return mysql_real_escape_string($string, self::$CONN);
+			
+			if (!is_array($input))
+			{
+				return mysql_real_escape_string($input, self::$CONN);
+			}
+			else
+			{
+				$arr = array();
+				foreach ($input as $key=>$element)
+					$arr[$key] = self::escape_string($element, self::$CONN);
+				return $arr;
+			}
 		}
 		
 		function dateToUs($str) {

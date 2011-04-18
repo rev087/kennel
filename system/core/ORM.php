@@ -271,9 +271,11 @@
 			$where_groups = array();
 			foreach($criteria->criterion_groups as $group_key=>$criterion_group)
 			{
+				
 				foreach ($criterion_group as $criterion)
 				{
 					$column = self::formatColumnReference($criterion->column, $criteria);
+					
 					// Criteria::NOW
 					if ($criterion->value === Criteria::NOW)
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' NOW()';
@@ -283,6 +285,9 @@
 					// Criteria::IS_NOT_NULL
 					elseif ($criterion->value === Criteria::IS_NOT_NULL)
 						$where_groups[$group_key][] = $column . ' IS NOT NULL';
+					// IN operator
+					elseif ($criterion->operator == Criteria::IN && is_array($criterion->value))
+						$where_groups[$group_key][] = $column . ' IN (' . implode(', ', MySQL::escape_string($criterion->value)) .  ')';
 					// X = Y
 					else
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
