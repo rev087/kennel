@@ -1,7 +1,7 @@
 <?php
 	error_reporting(E_ALL);
 	require_once('system/core/Core.php');
-	require_once('system/core/Debug.php');
+	require_once('system/helpers/debug.php');
 	require_once('system/core/Request.php');
 	
 	Request::hook(function($args) {
