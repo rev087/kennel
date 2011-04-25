@@ -13,10 +13,10 @@
 		);
 		const MODERNIZR = 'modermozr-1.5.min.js';
 		const PNGFIX = 'dd_belatedpng-0.0.8a.min.js';
-		const MOOTOOLS = 'mootools-core-1.3-full-nocompat-yc.js';
+		const MOOTOOLS = 'mootools-core-1.3.1-core-yc.js';
 		const MOOTOOLS_MORE = 'mootools-1.3-full-nocompat-yc.js';
 		const RAPHAEL = 'raphael-min.js';
-		const JQUERY = 'jquery-1.5.1.min.js';
+		const JQUERY = 'jquery-1.5.2.min.js';
 		
 		static $INSTANCE = null;
 		
