@@ -348,9 +348,9 @@
 					//debug::dump($field->name, array_key_exists($field->name, $this->invalidFields));
 					if (array_key_exists($field->name, $this->invalidFields))
 					{
-						$dump .= ' <strong style="color: #f00;">!</strong>';
+						$dump .= ' <strong style="color: #f00;">(!)</strong>';
 						foreach ($this->invalidFields[$field->name] as $errorMessage)
-							$dump .= '<br /><strong style="color: #f00;">&nbsp;&nbsp;&nbsp;[ '.$errorMessage.' ]</strong>';
+							$dump .= '<br /><strong style="color: #f00; font-size: 80%; font-weight: normal;">&nbsp;&nbsp;&nbsp;'.$errorMessage.'</strong>';
 					}
 				}
 				
