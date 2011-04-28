@@ -804,7 +804,7 @@ class Services_JSON
     }
 }
 
-if (class_exists('PEAR_Error')) {
+if (class_exists('PEAR_Error', false)) {
 
     class Services_JSON_Error extends PEAR_Error
     {
