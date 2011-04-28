@@ -23,7 +23,7 @@
 		*/
 		static function getDump($variable)
 		{
-			return '<pre>'.var_export($variable, true).'</pre>';
+			return '<pre>'.print_r($variable, true).'</pre>';
 		}
 		
 		/*
