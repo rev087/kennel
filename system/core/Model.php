@@ -47,6 +47,10 @@
 				return $value;
 			}
 			
+			$set_method = 'set' . ucfirst(strtolower($name));
+			if (method_exists($this, $set_method))
+				$value = $this->$set_method($value);
+			
 			if ($this->schema->isField($name) && $this->_data[$name] != $value)
 				$this->is_synced = false;
 			
@@ -55,10 +59,19 @@
 		
 		function __get($name)
 		{
+			$get_method = 'get' . ucfirst(strtolower($name));
+			
 			if (isset($this->_data[$name]))
-				return $this->_data[$name];
+			{
+				if (method_exists($this, $get_method))
+					return $this->$get_method($this->_data[$name]);
+				else
+					return $this->_data[$name];
+			}
 			else
+			{
 				return null;
+			}
 		}
 		
 		function __toString()
