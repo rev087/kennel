@@ -28,7 +28,7 @@
 			{
 				$c = new Criteria($model_name);
 				$c->add($username_field, $username);
-				$c->add($password_field, $password);
+				$c->add($password_field, md5($password));
 			
 				$user = ORM::retrieveFirst($c);
 			}
