@@ -23,6 +23,7 @@
 			{
 				$user = new Model('user');
 				$user->fullname = "El Perro Volador";
+				$user->level = 0;
 			}
 			else
 			{
