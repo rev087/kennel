@@ -33,6 +33,6 @@
 	$settings['auth']['model_name'] = 'user';
 	$settings['auth']['username_field'] = 'username';
 	$settings['auth']['password_field'] = 'password';
-	$settings['auth']['userlevel_field'] = null;
+	$settings['auth']['userlevel_field'] = 'level';
 	$settings['auth']['lifetime'] = 1209600;
 ?>
