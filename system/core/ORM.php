@@ -143,9 +143,6 @@
 			return self::$SCHEMA_CACHE[$model_name];
 		}
 		
-		// PRIVATE METHODS
-		//////////////////
-		
 		static function hydrateModel($model, $data)
 		{
 			foreach ($data as $key=>$value)

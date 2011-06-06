@@ -81,6 +81,7 @@
 		
 		function hydrate($field, $value)
 		{
+			$value = $this->schema->$field->cast($value);
 			$this->_data[$field] = $value !== null? stripslashes($value) : null;
 			$this->_synced_data[$field] = $value;
 		}

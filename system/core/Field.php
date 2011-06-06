@@ -109,6 +109,29 @@
 			return $createString;
 		}
 		
+		function cast($value)
+		{
+			switch (strtolower($this->type))
+			{
+				case 'varchar':
+				case 'datetime':
+				case 'text':
+				case 'date':
+				case 'time':
+					return (string) $value;
+				case 'int':
+				case 'tinyint':
+					return (int) $value;
+				case 'float':
+				case 'double':
+				case 'decimal':
+					return (float) $value;
+				default:
+					debug::error("Field::cast - Unsuported field type \"{$this->type}\" for field \"{$this->name}\" on table \"{$this->table}\"");
+					return NULL;
+			}
+		}
+		
 		function hydrateFromDOMElement($element)
 		{
 			// Basics
