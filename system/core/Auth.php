@@ -78,10 +78,9 @@
 			if(count($args) > 0)
 			{
 				$user = self::getUser();
-				$app_id = Kennel::getSetting('application', 'id');
-				$userlevel_field = Kennel::getSetting("{$app_id}_auth", 'userlevel_field');
+				$userlevel_field = Kennel::getSetting('auth', 'userlevel_field');
 				foreach($args as $arg) {
-					if($arg == $user->$userlevel_field) return true;
+					if($arg === $user->$userlevel_field) return true;
 				}
 			} else {
 				return true;
