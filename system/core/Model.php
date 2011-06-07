@@ -4,7 +4,7 @@
 		
 		private static $_DB;
 		private $_synced_data;
-		private $_data;
+		var $_data;
 		private $_i18n = array();
 		var $is_synced;
 		var $schema;
@@ -58,7 +58,7 @@
 		}
 		
 		function __get($name)
-		{
+		{	
 			$get_method = 'get' . ucfirst(strtolower($name));
 			
 			if (isset($this->_data[$name]))
@@ -82,7 +82,7 @@
 		function hydrate($field, $value)
 		{
 			$value = $this->schema->$field->cast($value);
-			$this->_data[$field] = $value !== null? stripslashes($value) : null;
+			$this->_data[$field] = $value !== null ? $value : null;
 			$this->_synced_data[$field] = $value;
 		}
 		
@@ -124,7 +124,16 @@
 			foreach ($this->schema as $field)
 			{
 				// Simple required field validation
-				if (!$this->_data[$field->name] && $field->required && !$field->primaryKey)
+				$numeric_fields = array('int', 'tinyint', 'float', 'double', 'decimal');
+				$field_is_numeric = array_search($field->type, $numeric_fields) !== false;
+				
+				if (
+					(
+						(!$field_is_numeric && $this->_data[$field->name] === NULL)
+						|| ($field_is_numeric && !is_numeric($this->_data[$field->name]))
+					)
+					&& $field->required && !$field->primaryKey
+				)
 				{
 					$this->invalidFields[$field->name][] = i18n::get('This field is required');
 					if (!in_array(self::ERR_REQUIRED, $this->errors))
@@ -350,6 +359,7 @@
 				else $dump .= '&nbsp; ';
 				
 				// Field name and content
+				//debug::dump($field->name, $field->type, $this->_data[$field->name], '--');
 				$value = var_export($this->_data[$field->name], true);
 				if ($field->required)
 					$dump .= "<strong>{$field->name}</strong> = {$value}";

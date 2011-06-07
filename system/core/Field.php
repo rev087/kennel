@@ -111,6 +111,8 @@
 		
 		function cast($value)
 		{
+			if ($value === NULL) return NULL;
+			
 			switch (strtolower($this->type))
 			{
 				case 'varchar':
