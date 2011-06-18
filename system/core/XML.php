@@ -77,18 +77,11 @@
 			
 			$properties = $this->_propertiesToString();
 			
-			if (count($this->children) >= 1)
-			{
-				$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
-				foreach ($this->children as $child)
-					$ret .= $child->output($formatOutput, $indent . "\t");
-				$ret .= "{$nl}{$indent}</{$this->tagname}>";
-				return $ret;
-			}
-			else
-			{
-				return "{$nl}{$indent}<{$this->tagname}{$properties} />";
-			}
+			$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
+			foreach ($this->children as $child)
+				$ret .= $child->output($formatOutput, $indent . "\t");
+			$ret .= "{$nl}{$indent}</{$this->tagname}>";
+			return $ret;
 		}
 		
 		function __get($property) {
