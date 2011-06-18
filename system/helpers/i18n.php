@@ -121,6 +121,8 @@
 		{
 			if (!self::$_TRANSLATION_DATA) self::loadTranslationData();
 			
+			if (!is_array($vars)) $vars = array($vars);
+			
 			if (isset(self::$_TRANSLATION_DATA[$string]))
 				return self::expandVars(self::$_TRANSLATION_DATA[$string], $vars);
 			else
