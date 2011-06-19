@@ -271,6 +271,13 @@
 				
 				foreach ($criterion_group as $criterion)
 				{
+					// Custom Criterion (simple strings)
+					if (is_string($criterion))
+					{
+						$where_groups[$group_key][] = $criterion;
+						continue;
+					}
+					
 					$column = self::formatColumnReference($criterion->column, $criteria);
 					
 					// Criteria::NOW

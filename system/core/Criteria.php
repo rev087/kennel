@@ -42,6 +42,11 @@
 			$this->criterion_groups[0][] = new Criterion($column, $value, $operator);
 		}
 		
+		function addCustom($custom_criterion)
+		{
+			$this->criterion_groups[0][] = $custom_criterion;
+		}
+		
 		function setLimit($limit)
 		{
 			$this->limit = $limit;
@@ -107,6 +112,11 @@
 		function getNewCriterion($field, $value, $operator=Criteria::EQUAL)
 		{
 			return new Criterion($field, $value, $operator);
+		}
+		
+		function get($field, $value, $operator=Criteria::EQUAL) // Alias to getNewCriterion
+		{
+			return $this->getNewCriterion($field, $value, $operator);
 		}
 		
 	}
