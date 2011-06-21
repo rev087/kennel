@@ -167,7 +167,8 @@
 		
 		function save()
 		{
-			if (!$this->validate()) {
+			
+			if (!$this->validate() && substr($this->schema->table, -5) !== '_i18n') {
 				trigger_error(i18n::get('Trying to save invalid content for model <strong>%0</strong>', array($this)), E_USER_WARNING);
 				return false;
 			}
@@ -206,13 +207,18 @@
 			$this->is_synced = true;
 		}
 		
+		function hasI18n()
+		{
+			$path = Kennel::cascade("{$this->model_name}_i18n", 'schemas');
+			return !!$path;
+		}
+		
 		private function _fetchI18n()
 		{
 			$primaryKey = $this->schema->getPrimaryKey()->name;
 			
 			// Grab the localized versions if present
-			$path = Kennel::cascade("{$this->model_name}_i18n", 'schemas');
-			if ($path && !$this->_i18n) {
+			if ($this->hasI18n() && !$this->_i18n) {
 				$c = new Criteria("{$this->model_name}_i18n");
 				$c->add("{$this->model_name}_{$primaryKey}", $this->$primaryKey);
 				$i18n = ORM::retrieve($c);

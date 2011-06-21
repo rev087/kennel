@@ -147,9 +147,12 @@
 		{
 			foreach ($data as $key=>$value)
 			{
-				if (substr($key, 0, strlen($model->schema->table)) == $model->schema->table)
+				if (
+					(substr($key, 0, strlen($model->schema->table)) == $model->schema->table) // Reference begins with the table name...
+					&& (substr($key, strlen($model->schema->table), 2) === '__')// ...imediatelly followed by double underscores
+				)
 				{
-					$field_name = substr($key, strlen($model->schema->table . '_'));
+					$field_name = substr($key, strlen($model->schema->table . '__'));
 					$model->hydrate($field_name, $value);
 				}
 			}
@@ -219,11 +222,11 @@
 			$schema = self::getSchema($criteria->from_model_name);
 			foreach ($schema as $field)
 			{
-				$select_array[] = "\n `{$schema->table}`.`{$field->name}` AS `{$schema->table}_{$field->name}`";
+				$select_array[] = "\n `{$schema->table}`.`{$field->name}` AS `{$schema->table}__{$field->name}`";
 			}
 			foreach ($criteria->custom_select_columns as $custom_field)
 			{
-				$select_array[] = "\n {$custom_field['definition']} AS `{$schema->table}_{$custom_field['alias']}`";
+				$select_array[] = "\n {$custom_field['definition']} AS `{$schema->table}__{$custom_field['alias']}`";
 			}
 			
 			foreach ($criteria->joins as $join)
@@ -231,7 +234,7 @@
 				$schema = self::getSchema($join['model_name']);
 				foreach ($schema as $field)
 				{
-					$select_array[] = "\n `{$schema->table}`.`{$field->name}` AS `{$schema->table}_{$field->name}`";
+					$select_array[] = "\n `{$schema->table}`.`{$field->name}` AS `{$schema->table}__{$field->name}`";
 				}
 			}
 			
@@ -357,7 +360,7 @@
 			elseif (self::isCustomSelectColumn($column_reference, $criteria))
 			{
 				$schema = self::getSchema($criteria->from_model_name);
-				return "`{$schema->table}_{$column_reference}`";
+				return "`{$schema->table}__{$column_reference}`";
 			}
 			// Standard reference (just the column name)
 			else
