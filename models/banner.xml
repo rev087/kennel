@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<model table="banners">
+	<field name="id" type="int" size="12" required="true" primaryKey="true" unique="true" />
+	<field name="position_id" type="int" size="12" required="true" foreignKey="id" foreignModel="banner_position" />
+	<field name="title" type="varchar" size="128" required="true" />
+	<field name="description" type="text" required="true" />
+	<field name="image_id" type="int" size="12" required="true" foreignKey="id" foreignModel="image"  />
+	<field name="url" type="text" />
+	<field name="status" type="tinyint" size="1" required="true" />
+	<field name="publish_date" type="datetime" />
+	<field name="unpublish_date" type="datetime" />
+</model>
