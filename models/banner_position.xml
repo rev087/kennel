@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<model table="banner_positions">
-	<field name="id" type="int" size="12" required="true" primaryKey="true" unique="true" />
-	<field name="title" type="varchar" size="64" required="true" />
-	<field name="keyword" type="varchar" size="64" required="true" />
-	<field name="rotation" type="tinyint" size="1" />
-	<field name="width" type="int" size="6" />
-	<field name="height" type="int" size="6" />
-</model>
