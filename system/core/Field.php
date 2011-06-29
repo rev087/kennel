@@ -60,6 +60,9 @@
 			// TYPE
 			switch (strtolower($this->type))
 			{
+				case 'char':
+					$createString .= " CHAR({$this->size})";
+					break;
 				case 'varchar':
 					$createString .= " VARCHAR({$this->size})";
 					break;
@@ -116,6 +119,7 @@
 			switch (strtolower($this->type))
 			{
 				case 'varchar':
+				case 'char':
 				case 'datetime':
 				case 'text':
 				case 'date':

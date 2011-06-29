@@ -74,7 +74,8 @@
 				$fields[] = $field->getCreateString();
 			}
 			
-			$sql .= " (\n" . implode(", \n", $fields) . "\n);";
+			$sql .= " (\n" . implode(", \n", $fields) . "\n)";
+			$sql .= ' CHARSET=utf8;';
 			
 			return $sql;
 		}
