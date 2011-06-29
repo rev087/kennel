@@ -265,6 +265,7 @@
 				switch (strtolower($field->type))
 				{
 					case 'varchar':
+					case 'char':
 					case 'text':
 					case 'datetime':
 					case 'date':
