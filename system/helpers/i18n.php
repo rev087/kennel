@@ -117,11 +117,12 @@
 			else return $code;
 		}
 		
-		function get($string, $vars=array())
+		function get() // String $string, [String $var1, String $var2…]
 		{
 			if (!self::$_TRANSLATION_DATA) self::loadTranslationData();
 			
-			if (!is_array($vars)) $vars = array($vars);
+			$vars = func_get_args();
+			$string = array_shift($vars);
 			
 			if (isset(self::$_TRANSLATION_DATA[$string]))
 				return self::expandVars(self::$_TRANSLATION_DATA[$string], $vars);
