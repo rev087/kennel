@@ -47,14 +47,24 @@
 			$this->criterion_groups[0][] = $custom_criterion;
 		}
 		
-		function setLimit($limit)
+		function limit($limit)
 		{
 			$this->limit = $limit;
 		}
 		
-		function setOffset($offset)
+		function setLimit($limit) // alias to Criteria::limit(), deprecated
+		{
+			$this->limit($limit);
+		}
+		
+		function offset($offset)
 		{
 			$this->offset = $offset;
+		}
+		
+		function setOffset($offset) // alias to Criteria::offset(), deprecated
+		{
+			$this->offset($offset);
 		}
 		
 		function addAscendingOrder($column)
