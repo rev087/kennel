@@ -124,7 +124,7 @@
 			foreach ($this->schema as $field)
 			{
 				// Simple required field validation
-				$numeric_fields = array('int', 'tinyint', 'float', 'double', 'decimal');
+				$numeric_fields = array('int', 'tinyint', 'bigint', 'float', 'double', 'decimal');
 				$field_is_numeric = array_search($field->type, $numeric_fields) !== false;
 				
 				if (
@@ -169,7 +169,8 @@
 		{
 			
 			if (!$this->validate() && substr($this->schema->table, -5) !== '_i18n') {
-				trigger_error(i18n::get('Trying to save invalid content for model <strong>%0</strong>', array($this)), E_USER_WARNING);
+				$msg = i18n::get('Trying to save invalid content for model <strong>%0</strong>', $this);
+				debug::error($msg, 1);
 				return false;
 			}
 			
@@ -285,6 +286,7 @@
 						
 					case 'int':
 					case 'tinyint':
+					case 'bigint':
 					case 'float':
 					case 'double':
 					case 'decimal':

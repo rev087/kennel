@@ -9,6 +9,7 @@
 		var $primaryKey;
 		var $size;
 		var $defaultValue;
+		var $unsigned;
 		
 		// Presentation
 		var $label;
@@ -81,6 +82,9 @@
 				case 'tinyint':
 					$createString .= " TINYINT({$this->size})";
 					break;
+				case 'bigint':
+					$createString .= " BIGINT($this->size)";
+					break;
 				case 'text':
 					$createString .= " TEXT";
 					break;
@@ -96,6 +100,9 @@
 				default:
 					debug::error("Field::getCreateString - Unsuported field type \"{$this->type}\" for field \"{$this->name}\" on table \"{$this->table}\"");
 			}
+			
+			// UNSIGNED
+			if ($this->unsigned) $createString .= ' UNSIGNED';
 			
 			// PRIMARY KEY
 			if ($this->primaryKey) $createString .= ' PRIMARY KEY AUTO_INCREMENT';
@@ -127,6 +134,7 @@
 					return (string) $value;
 				case 'int':
 				case 'tinyint':
+				case 'bigint':
 					return (int) $value;
 				case 'float':
 				case 'double':
@@ -147,6 +155,7 @@
 			$this->primaryKey = $element->getAttribute('primaryKey') == 'true' ? true : false;
 			$this->size = intval($element->getAttribute('size'));
 			$this->defaultValue = $element->getAttribute('default');
+			$this->unsigned = $element->getAttribute('unsigned') == 'true' ? true : false;
 			
 			// Presentation
 			$this->label = $element->getAttribute('label');
