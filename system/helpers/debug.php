@@ -2,9 +2,9 @@
 	
 	class debug
 	{
-		static $notice = E_USER_NOTICE;
-		static $warning = E_USER_WARNING;
-		static $error = E_USER_ERROR;
+		const NOTICE = E_USER_NOTICE;
+		const WARNING = E_USER_WARNING;
+		const ERROR = E_USER_ERROR;
 		
 		/*
 		* debug::dump($variable, [$variable, ...])
@@ -70,19 +70,19 @@
 		/*
 		* debug::dumpError($error)
 		*/
-		static function dumpError($error, $backtrace_depth=0)
+		static function dumpError($error, $backtrace_depth=1)
 		{
-			$table = XML::element('table', null, array('border'=>'1'));
+			$backtrace = debug_backtrace();
+			$file = $backtrace[$backtrace_depth+1]['file'];
+			$line = $backtrace[$backtrace_depth+1]['line'];
+			$message = "{$error} in <strong>{$file}</strong> at line <strong>{$line}</strong>";
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, array('colspan'=>'2'), "Error");
+			$p = XML::element('p', null, array('class'=>'msg_error'), $message);
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, null, 'error');
-			$td = XML::element('td', $tr, null, $error);
+			echo $p;
 			
-			print $table;
-			if(Kennel::getSetting('application', 'debug_mode')) self::backtrace(3 + $backtrace_depth);
+			if(Kennel::getSetting('application', 'debug_mode'))
+				self::backtrace($backtrace_depth+1);
 		}
 		
 		static function error_handler($errno = E_USER_WARNING, $errstr)
