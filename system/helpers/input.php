@@ -3,21 +3,11 @@
 	{
 		private static $_get;
 		private static $_post;
-		
-		function __construct()
-		{
-			self::prepare();
-		}
-		
-		static function prepare()
-		{
-			self::$_get = $_GET;
-			self::$_post = $_POST;
-		}
+		private static $_files;
 		
 		static function get($var)
-		{
-			if(!self::$_get) self::prepare();
+		{	
+			if (!self::$_get) self::$_get = self::clean($_GET);
 			
 			if(isset(Request::$NAMED_ARGS[$var]))
 				return self::clean(Request::$NAMED_ARGS[$var]);
@@ -29,7 +19,7 @@
 		
 		static function post($var=null)
 		{
-			if(!self::$_post) self::prepare();
+			if (!self::$_post) self::$_post = self::clean($_POST);
 			
 			if ($var)
 			{
@@ -40,8 +30,24 @@
 			}
 			else
 			{
-				if (isset(self::$_post)) return self::$_post;
-				return self::$_post = self::clean($_POST);
+				return self::$_post;
+			}
+		}
+		
+		static function files($var=null)
+		{
+			if (!self::$_files) self::$_files = self::clean($_FILES);
+			
+			if ($var)
+			{
+				if (isset(self::$_files[$var]))
+					return self::clean(self::$_files[$var]);
+				else
+					return null;
+			}
+			else
+			{
+				return self::$_files;
 			}
 		}
 		
