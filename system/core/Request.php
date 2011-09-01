@@ -185,6 +185,10 @@
 			));
 			
 			$tr = XML::element('tr', $table);
+			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Resource');
+			$td = XML::element('td', $tr, null, self::$RESOURCE);
+			
+			$tr = XML::element('tr', $table);
 			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Controller');
 			$td = XML::element('td', $tr, null, self::$CONTROLLER);
 			
