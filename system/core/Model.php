@@ -82,7 +82,7 @@
 		function hydrate($field, $value)
 		{
 			$value = $this->schema->$field->cast($value);
-			$this->_data[$field] = $value !== null ? $value : null;
+			$this->_data[$field] = ($value !== null) ? $value : null;
 			$this->_synced_data[$field] = $value;
 		}
 		
@@ -243,10 +243,18 @@
 				if ($i18n->lang == $lang) return $i18n;
 			
 			// If no localized version was found, create one now
-			$primaryKey = $this->schema->getPrimaryKey();
+			$primaryKey = $this->schema->getPrimaryKey()->name;
 			$i18n = new Model("{$this->model_name}_i18n");
 			$i18n->__set("{$this->model_name}_{$primaryKey}", $this->$primaryKey);
 			$i18n->lang = $lang;
+			
+			// … and populate it with default values, if any.
+			// Useful as base data for internationalization of existing, populated models 
+			foreach ($i18n->_data as $key=>$value)
+			{
+				if ($key != 'id' && isset($this->_data[$key]))
+					$i18n->$key = $this->$key;
+			}
 			
 			return $this->_i18n[] = $i18n;
 		}
