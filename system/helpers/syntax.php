@@ -44,10 +44,10 @@ class syntax {
 	
     private static function addStyle($sql, $string, $color, $escape=true)
     {
-    	$styled = '<span style="font-family: sans-serif; font-weight:bold; color:'.$color.';">'.$string.' </span>';
+    	$styled = '<span style="font-family: sans-serif; font-weight:bold; color:'.$color.';">'.$string.'</span>';
     	if ($escape) $string = preg_quote($string);
     	
-        return preg_replace("/{$string}/", $styled, $sql);
+      return preg_replace("/{$string}/", $styled, $sql);
     }
 
     public function mysql($sql)
@@ -62,5 +62,5 @@ class syntax {
         return '<pre style="font:weight:bold; color:black; font-size: 11px;">'.$sql.'</pre>';
     }
 
-} /*** end of class ***/
+}
 ?>
