@@ -20,7 +20,9 @@
 		// Values
 		const NOW = 'NOW()';
 		const IS_NULL = 'IS NULL';
+		const NULL = 'IS NULL'; //alias
 		const IS_NOT_NULL = 'IS NOT NULL';
+		const NOT_NULL = 'IS NOT NULL'; //alias
 		
 		// Query variables
 		var $criterion_groups = array();
