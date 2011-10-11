@@ -12,7 +12,7 @@
 		  if (strpos($string,' ') === FALSE)
 		  	return "{$return}{$append}";
 		  	
-		  return preg_replace('/\w+$/', '', $return) . $append;
+		  return preg_replace('/[^\s]+$/', '', $return) . $append;
 		}
 		
 		static function link($string)
