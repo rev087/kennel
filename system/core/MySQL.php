@@ -101,8 +101,8 @@
 		}
 		
 		function queryFetch($sql) {
-			$rs = $this->query($sql);
-			return $this->fetch($rs);
+			$rs = self::query($sql);
+			return self::fetch($rs);
 		}
 		
 		//result functions
