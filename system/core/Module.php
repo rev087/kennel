@@ -62,9 +62,10 @@
 			if (count($arguments) === 1)
 			{
 				// Instanced call
-				foreach ($this->settings->childNodes as $node)
-					if ($node->nodeType == 1 && $node->getAttribute('name') == $arguments[0])
-						return $node->getAttribute('value');
+				if ($this->settings)
+  				foreach ($this->settings->childNodes as $node)
+  					if ($node->nodeType == 1 && $node->getAttribute('name') == $arguments[0])
+  						return $node->getAttribute('value');
 				return null;
 			}
 			elseif (count($arguments) === 2)
