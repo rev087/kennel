@@ -141,8 +141,10 @@
 				}
 				
 				// Gather unique fields
-				if ($field->unique)
+				if ($field->unique && !$field->primaryKey)
+				{
 					$uniques[] = $field->name;
+				}
 			}
 			
 			// Unique field validation only for new model instances
