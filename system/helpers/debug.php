@@ -113,5 +113,11 @@
 			}
 		}
 		
+		static function log($message)
+		{
+		  $path = Kennel::$ROOT_PATH . '/application/assets/files/log.txt';
+		  file_put_contents($path, $message, FILE_APPEND);
+		}
+		
 	}
 ?>

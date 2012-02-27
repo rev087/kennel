@@ -33,5 +33,12 @@
 			
 			return $xmldoc;
 		}
+		
+		function json($url)
+		{
+		  $json = self::get($url);
+		  
+		  return json::decode($json);
+		}
 	}
 ?>
