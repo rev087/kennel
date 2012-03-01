@@ -27,9 +27,12 @@
 		}
 		
 		private function parseVars($query_string) {
+		  if ($query_string === '') return NULL;
+		  
 			$ret = array();
 			$vars = explode('&', $query_string);
-			foreach($vars as $var) {
+			foreach ($vars as $var)
+			{
 				$key_value = explode('=', $var);
 				$ret[$key_value[0]] = $key_value[1];
 			}
