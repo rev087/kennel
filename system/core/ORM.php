@@ -293,8 +293,8 @@
 					elseif ($criterion->value === Criteria::IS_NOT_NULL)
 						$where_groups[$group_key][] = $column . ' IS NOT NULL';
 					// IN operator
-					elseif ($criterion->operator == Criteria::IN && is_array($criterion->value))
-						$where_groups[$group_key][] = $column . ' IN (' . implode(', ', MySQL::escape_string($criterion->value)) .  ')';
+					elseif (($criterion->operator == Criteria::IN || $criterion->operator == Criteria::NOT_IN) && is_array($criterion->value))
+						$where_groups[$group_key][] = $column . " {$criterion->operator} (" . implode(', ', MySQL::escape_string($criterion->value)) .  ')';
 					// X = Y
 					else
 						$where_groups[$group_key][] = $column . ' ' . $criterion->operator . ' "' . MySQL::escape_string($criterion->value) . '"';
