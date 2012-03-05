@@ -360,7 +360,7 @@
 		{
 			// Cache current validation vars
 			$errorsCache = $this->errors;
-			$invalidFieldsCache = $this->invaliFields;
+			$invalidFieldsCache = $this->invalidFields;
 			
 			$isValid = $this->validate();
 			

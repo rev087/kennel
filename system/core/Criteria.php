@@ -7,6 +7,7 @@
 		const NOT_EQUAL = '!=';
 		const LIKE = 'LIKE';
 		const IN = 'IN';
+		const NOT_IN = 'NOT IN';
 		const GREATER_THAN = '>';
 		const LESS_THAN = '<';
 		const GREATER_EQUAL = '>=';
