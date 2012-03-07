@@ -80,7 +80,7 @@
 				$user = self::getUser();
 				$userlevel_field = Kennel::getSetting('auth', 'userlevel_field');
 				foreach($args as $arg) {
-					if($arg === $user->$userlevel_field) return true;
+					if($arg === (int)$user->$userlevel_field) return true;
 				}
 			} else {
 				return true;
