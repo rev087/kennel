@@ -16,10 +16,12 @@
 		var $children = array();
 		var $tagname;
 		var $properties = array();
+		var $self_closing = false;
 		
-		function __construct($tagname, XMLElement $parent=null, $properties=null, $text=null) {
+		function __construct($tagname, XMLElement $parent=null, $properties=null, $text=null, $self_closing=false) {
 			$this->tagname = $tagname;
 			$this->properties = $properties;
+			$this->self_closing = $self_closing;
 			
 			if($parent) {
 				$this->parent = $parent;
@@ -77,10 +79,17 @@
 			
 			$properties = $this->_propertiesToString();
 			
-			$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
-			foreach ($this->children as $child)
-				$ret .= $child->output($formatOutput, $indent . "\t");
-			$ret .= "{$nl}{$indent}</{$this->tagname}>";
+			if (count($this->children) > 0 || !$this->self_closing)
+			{
+  			$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
+  			foreach ($this->children as $child)
+  				$ret .= $child->output($formatOutput, $indent . "\t");
+  			$ret .= "{$nl}{$indent}</{$this->tagname}>";
+			}
+			else
+			{
+  			$ret = "{$nl}{$indent}<{$this->tagname}{$properties} />";
+			}
 			return $ret;
 		}
 		
