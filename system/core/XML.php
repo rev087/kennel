@@ -1,6 +1,9 @@
 <?php
 	
 	class XML {
+		const SELF_CLOSING_XML = 'SELF_CLOSING_XML';
+		const SELF_CLOSING_HTML = 'SELF_CLOSING_HTML';
+	  
 		static function element($tagname, $parent=null, $properties=null, $text=null) {
 			return new XMLElement($tagname, $parent, $properties, $text);
 		}
@@ -16,12 +19,12 @@
 		var $children = array();
 		var $tagname;
 		var $properties = array();
-		var $self_closing = false;
 		
-		function __construct($tagname, XMLElement $parent=null, $properties=null, $text=null, $self_closing=false) {
+		var $self_closing = null;
+		
+		function __construct($tagname, XMLElement $parent=null, $properties=null, $text=null) {
 			$this->tagname = $tagname;
 			$this->properties = $properties;
-			$this->self_closing = $self_closing;
 			
 			if($parent) {
 				$this->parent = $parent;
@@ -88,7 +91,10 @@
 			}
 			else
 			{
-  			$ret = "{$nl}{$indent}<{$this->tagname}{$properties} />";
+			  if ($this->self_closing == XML::SELF_CLOSING_HTML)
+    			$ret = "{$nl}{$indent}<{$this->tagname}{$properties}>";
+    		else
+    		  $ret = "{$nl}{$indent}<{$this->tagname}{$properties} />";
 			}
 			return $ret;
 		}

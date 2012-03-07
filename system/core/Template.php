@@ -89,9 +89,10 @@
 				$this->_head->adopt(html::favicon($this->favicon));
 			
 			// content type
-			XML::element('meta', $this->_head, array(
+			$content_type = XML::element('meta', $this->_head, array(
 				'charset'=>'utf-8'
 			));
+			$content_type->self_closing = XML::SELF_CLOSING_HTML;
 			
 			// <meta>
 			foreach ($this->_meta as $meta)
