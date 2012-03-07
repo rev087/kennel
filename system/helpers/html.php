@@ -16,22 +16,24 @@
 			$meta = XML::element('meta');
 			$meta->name = $name;
 			$meta->content = $content;
+			$meta->self_closing = true;
 			return $meta;
 		}
 		
-		static function favicon($img)
-		{
-			return self::link('shortcut icon', assets::img($img));
-		}
-		
-		static function link($rel, $href, $type=null, $title=null)
+		static function link($rel, $type, $href, $title=null)
 		{
 			$link = XML::element('link');
 			$link->rel = $rel;
 			$link->href = $href;
-			if ($type) $link->type = $type;
+			$link->self_closing = true;
+			if ($link) $link->type = $type;
 			if ($title) $link->title = $title;
 			return $link;
+		}
+		
+		static function favicon($img)
+		{
+			return self::link('shortcut icon', assets::img($img), 'image/png');
 		}
 		
 		static function css()

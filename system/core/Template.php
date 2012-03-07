@@ -37,6 +37,9 @@
 		// Meta
 		private $_meta = array();
 		
+		// Links
+		private $_links = array();
+		
 		// Resources
 		private $_stylesheets = array();
 		private $_scripts = array();
@@ -94,6 +97,10 @@
 			foreach ($this->_meta as $meta)
 				$this->_head->adopt(html::meta($meta['name'], $meta['content']));
 			
+			// <link>
+			foreach ($this->_links as $link)
+				$this->_head->adopt(html::link($link['rel'], $link['href'], $link['type'], $link['title']));
+			
 			// <style>
 			$this->_head->adopt(html::css($this->_stylesheets));
 			
@@ -138,6 +145,11 @@
 		function meta($name, $content)
 		{
 			$this->_meta[] = array('name'=>$name, 'content'=>$content);
+		}
+		
+		function link($rel, $type, $href, $title=null)
+		{
+			$this->_links[] = array('rel'=>$rel, 'type'=>$type, 'href'=>$href, 'title'=>$title);
 		}
 		
 		function css()
