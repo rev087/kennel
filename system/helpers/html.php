@@ -16,16 +16,16 @@
 			$meta = XML::element('meta');
 			$meta->name = $name;
 			$meta->content = $content;
-			$meta->self_closing = true;
+			$meta->self_closing = XML::SELF_CLOSING_HTML;
 			return $meta;
 		}
 		
-		static function link($rel, $type, $href, $title=null)
+		static function link($rel, $href, $type, $title=null)
 		{
 			$link = XML::element('link');
 			$link->rel = $rel;
 			$link->href = $href;
-			$link->self_closing = true;
+			$link->self_closing = XML::SELF_CLOSING_HTML;
 			if ($link) $link->type = $type;
 			if ($title) $link->title = $title;
 			return $link;
