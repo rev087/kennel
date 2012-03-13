@@ -119,6 +119,7 @@
 			// Get the application path and root uri
 			self::$ROOT_PATH = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME']));
 			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
+			self::$ROOT_URL = trim(self::$ROOT_URL, '/');
 			
 			// Get the application settings
 			if (file_exists('settings.php'))
