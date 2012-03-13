@@ -145,7 +145,7 @@
 		
 		function meta($name, $content)
 		{
-			$this->_meta[] = array('name'=>$name, 'content'=>$content);
+			$this->_meta[] = array('name'=>$name, 'content'=>esc::attr($content));
 		}
 		
 		function link($rel, $type, $href, $title=null)
