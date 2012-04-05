@@ -77,6 +77,19 @@
 		
 		function thumb($width, $height)
 		{
+		  // If one of the dimensions is null or zero, assume a proportional value,
+		  // not allowing it to be more than 3x greater than the other
+		  if (!$height) {
+        $reduction = $width / $this->width;
+        $height = $this->height * $reduction;
+        if ($height > 3*$width) $height = 3*$width;
+		  }
+		  if (!$width) {
+        $reduction = $height / $this->height;
+        $width = $this->width * $reduction;
+        if ($width > 3*$height) $width = 3*$height;
+		  }
+		  
 			// Picks the best fit from the original to the destination image, cropping when necessary
 			if (!$this->image) return;
 			$ratio = $this->width / $this->height;
@@ -162,6 +175,6 @@
 			if (!$this->image) return;
 			imagejpeg($this->image, $filename, 95);
 		}
-
+    
 	}
 ?>
