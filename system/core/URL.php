@@ -1,32 +1,38 @@
 <?php
 	
-	class URL {
+	class URL
+	{
 		var $host;
 		var $resource;
-		var $vars = array();
+		var $params = array();
 		var $fragment;
 		
-		function __construct($base_url=null, $vars=array()) {
-			if(!$base_url) $this->fetchCurrent();
-			else $this->set($base_url);
-			if($vars) $this->addVars($vars);
+		function __construct($base_url=null, $vars=array())
+		{
+			if (!$base_url) $this->fetchCurrent();
+			else {
+  			$parsed = parse_url($base_url);
+  			$this->host = $parsed['host'];
+  			$this->resource = $parsed['path'];
+  			$this->params = $this->parseVars($parsed['query']);
+			}
+			if ($vars) $this->setVars($vars);
 		}
 		
-		private function set($url) {
-			$parsed = parse_url($url);
-			$this->host = $parsed['host'];
-			$this->resource = $parsed['path'];
-			$this->vars = $this->parseVars($parsed['query']);
+		private function setBaseURL($url)
+		{
 			return $this;
 		}
 		
-		function fetchCurrent() {
+		function fetchCurrent()
+		{
 			$this->host = $_SERVER['HTTP_HOST'];
 			$this->resource = str_replace("?{$_SERVER['QUERY_STRING']}", '', $_SERVER['REQUEST_URI']);
-			$this->vars = $this->parseVars($_SERVER['QUERY_STRING']);
+			$this->params = $this->parseVars($_SERVER['QUERY_STRING']);
 		}
 		
-		private function parseVars($query_string) {
+		private function parseVars($query_string)
+		{
 		  if ($query_string === '') return NULL;
 		  
 			$ret = array();
@@ -34,51 +40,66 @@
 			foreach ($vars as $var)
 			{
 				$key_value = explode('=', $var);
-				$ret[$key_value[0]] = $key_value[1];
+				if (array_key_exists(1, $key_value))
+  				$ret[$key_value[0]] = $key_value[1];
+  			else
+  			  $ret[$key_value[0]] = null;
 			}
 			return $ret;
 		}
 		
-		function addVars($vars) {
-			foreach($vars as $key=>$value) {
-				$this->addVar($key, $value);
+		function setVars($vars)
+		{
+			foreach ($vars as $key=>$value)
+			{
+				$this->set($key, $value);
 			}
 		}
 		
-		function addVar($key, $value) {
-			$this->vars[$key] = $value;
+		function set($key, $value)
+		{
+			$this->params[$key] = $value;
 		}
 		
-		function anchor($text, $properties=array()) {
+		function anchor($text, $properties=array())
+		{
 			$a = HTML::anchor($this, $text, array('href'=>$this));
-			foreach($properties as $property=>$value) {
+			foreach ($properties as $property=>$value) {
 				$a->set($property, $value);
 			}
 			return $a;
 		}
 		
-		function output() {
+		function output()
+		{
 			$url = "";
 			if($this->host) $url = "http://{$this->host}";
 			if($this->resource) $url .= $this->resource;
-			if(count($this->vars) > 0) $url .= "?".$this->getQueryString();
+			if(count($this->params) > 0) $url .= "?".$this->queryString();
 			
 			return $url;
 		}
 		
-		private function getQuerystring() {
+		private function queryString()
+		{
 			$ret = array();
-			foreach($this->vars as $key=>$value) {
-				if($value) $ret[] = "{$key}={$value}";
+			foreach($this->params as $key=>$value) {
+				if ($value) $ret[] = "{$key}={$value}";
 				else $ret[] = $key;
 			}
 			return join('&', $ret);
 		}
 		
+		function __set($prop, $value) {
+      $this->set($prop, $value);
+		}
+		
 		function __get($prop) {
-			if(array_search(strtolower($prop), array('query_string', 'querystring', 'query')) !== false) {
-				return $this->getQueryString();
-			}
+			if (array_search(strtolower($prop), array('query_string', 'querystring', 'query')) !== false)
+				return $this->queryString();
+			else if (array_search($prop, $this->params) !== false)
+			  return $this->params[$prop];
+			return null;
 		}
 		
 		function __toString() {
