@@ -1,6 +1,9 @@
 <?php
 	error_reporting(E_ALL);
 	require_once('system/core/Core.php');
+	
+	// Example request hook:
+	/*
 	require_once('system/helpers/debug.php');
 	require_once('system/core/Request.php');
 	
@@ -17,6 +20,7 @@
 			
 		return $args;
 	});
+	*/
 	
 	Kennel::init();
 ?>
