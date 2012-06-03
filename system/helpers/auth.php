@@ -1,5 +1,5 @@
 <?php
-	class Auth
+	class auth
 	{
 		static $user;
 		static $error;
