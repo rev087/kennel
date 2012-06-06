@@ -52,51 +52,74 @@
 		}
 		
 		function dumpError($sql) {
-			$table = XML::element('table', null, array('border'=>'1'));
+		  if ( array_key_exists('HTTP_HOST', $_SERVER) )
+		  {
+		    // HTTP Request
+  			$table = XML::element('table', null, array('border'=>'1'));
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, array('colspan'=>'2'), "SQL query returned an error");
+  			$tr = XML::element('tr', $table);
+  			$th = XML::element('th', $tr, array('colspan'=>'2'), "SQL query returned an error");
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, null, 'query');
-			$td = XML::element('td', $tr, null, syntax::mysql($sql));
+  			$tr = XML::element('tr', $table);
+  			$th = XML::element('th', $tr, null, 'query');
+  			$td = XML::element('td', $tr, null, syntax::mysql($sql));
 			
-			$tr = XML::element('tr', $table);
-			$th = XML::element('th', $tr, null, 'error');
-			$td = XML::element('td', $tr, null, mysql_error(self::$CONN));
+  			$tr = XML::element('tr', $table);
+  			$th = XML::element('th', $tr, null, 'error');
+  			$td = XML::element('td', $tr, null, mysql_error(self::$CONN));
 			
-			$full_backtrace = debug_backtrace();
-			$backtrace = $full_backtrace[2];
+  			$full_backtrace = debug_backtrace();
+  			$backtrace = $full_backtrace[2];
 			
 			
-			if (isset($backtrace['file']))
-			{
-				$tr = XML::element('tr', $table);
-				$th = XML::element('th', $tr, null, 'file');
-				$td = XML::element('td', $tr, null, $backtrace['file']);
-			}
+  			if (isset($backtrace['file']))
+  			{
+  				$tr = XML::element('tr', $table);
+  				$th = XML::element('th', $tr, null, 'file');
+  				$td = XML::element('td', $tr, null, $backtrace['file']);
+  			}
 			
-			if (isset($backtrace['line']))
-			{
+  			if (isset($backtrace['line']))
+  			{
 				
-				$tr = XML::element('tr', $table);
-				$th = XML::element('th', $tr, null, 'line');
-				$td = XML::element('td', $tr, null, $backtrace['line']);
-			}
+  				$tr = XML::element('tr', $table);
+  				$th = XML::element('th', $tr, null, 'line');
+  				$td = XML::element('td', $tr, null, $backtrace['line']);
+  			}
 			
-			if($backtrace['class']) {
-				$tr = XML::element('tr', $table);
-				$th = XML::element('th', $tr, null, 'class');
-				$td = XML::element('td', $tr, null, $backtrace['class']);
-			}
+  			if($backtrace['class']) {
+  				$tr = XML::element('tr', $table);
+  				$th = XML::element('th', $tr, null, 'class');
+  				$td = XML::element('td', $tr, null, $backtrace['class']);
+  			}
 			
-			if($backtrace['function']) {
-				$tr = XML::element('tr', $table);
-				$th = XML::element('th', $tr, null, 'function');
-				$td = XML::element('td', $tr, null, $backtrace['function']);
-			}
+  			if($backtrace['function']) {
+  				$tr = XML::element('tr', $table);
+  				$th = XML::element('th', $tr, null, 'function');
+  				$td = XML::element('td', $tr, null, $backtrace['function']);
+  			}
+  			echo $table;
+		  }
+		  else
+		  {
+		    // Command line
+		    
+		    $default = "\033[0m";
+		    
+		    echo "\n\033[1;30;41m"; // red background, bold
+		    echo "SQL query returned an error:{$default}\n";
+		    
+		    $lines = explode("\n", $sql);
+		    foreach ( $lines as $line )
+		    {
+  		    echo "  {$line}\n";
+		    }
+		    
+		    $error = mysql_error(self::$CONN);
+		    echo "\033[31m"; // red
+		    echo "{$error}{$default}\n\n";
+		  }
 			
-			print $table;
 			die();
 		}
 		
