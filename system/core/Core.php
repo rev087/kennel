@@ -116,10 +116,22 @@
 			self::$time_init = microtime(true);
 			register_shutdown_function(array('Kennel', 'onShutdown'));
 			
-			// Get the application path and root uri
-			self::$ROOT_PATH = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME']));
-			self::$ROOT_URL = trim("http://{$_SERVER['HTTP_HOST']}", '\\/') . '/' . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
-			self::$ROOT_URL = trim(self::$ROOT_URL, '/');
+			if ( array_key_exists('HTTP_HOST', $_SERVER) )
+			{			
+			  // Running from a HTTP request
+  			self::$ROOT_PATH = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+			  
+  			self::$ROOT_URL =
+  			  trim("http://{$_SERVER['HTTP_HOST']}", '\\/')
+  			  . '/'
+  			  . trim(substr(self::$ROOT_PATH, strlen($_SERVER['DOCUMENT_ROOT'])), '\\/');
+  			self::$ROOT_URL = trim(self::$ROOT_URL, '/');
+			}
+			else
+			{
+			  // Runing from the command line
+  			self::$ROOT_PATH = str_replace('\\', '/', $_SERVER['PWD']);
+			}
 			
 			// Get the application settings
 			if (file_exists('settings.php'))
@@ -142,8 +154,9 @@
 			// Set the default timezone
 			date_default_timezone_set(self::getSetting('application', 'timezone'));
 			
-			//process the request
-			Request::process();
+			// Process the HTTP request (skipped when running from the command line)
+			if ( array_key_exists('HTTP_HOST', $_SERVER) )
+  			Request::process();
 		}
 		
 		/*
