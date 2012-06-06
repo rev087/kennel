@@ -364,54 +364,108 @@
 			
 			$isValid = $this->validate();
 			
-			$dump = '';
-			$dump .= '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
-			$dump .= '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
-			$class = get_class($this);
-			$dump .= "{$this->model_name}: {$class}";
-			$dump .= '</h2>';
-			foreach ($this->schema as $field)
+			if ( Kennel::$ROOT_URL )
 			{
-				// Signs
-				if ($field->primaryKey) $dump .= '<strong>*</strong> ';
-				elseif ($field->foreignKey && $field->foreignModel) $dump .= '<strong>~</strong> ';
-				else $dump .= '&nbsp; ';
+  			// Running from an HTTP request
+  						
+  			$dump = '';
+  			$dump .= '<div><pre style="padding: 5px; border: 1px solid #1E9C6D; background: #FFF; color: #1E9C6D; float: left; text-align: left;">';
+  			$dump .= '<h2 style="margin: 0px 0px 5px 0px; padding: 0px 5px; background: #1E9C6D; color: #FFF;">';
+  			$class = get_class($this);
+  			$dump .= "{$this->model_name}: {$class}";
+  			$dump .= '</h2>';
+  			foreach ($this->schema as $field)
+  			{
+  				// Signs
+  				if ($field->primaryKey) $dump .= '<strong>*</strong> ';
+  				elseif ($field->foreignKey && $field->foreignModel) $dump .= '<strong>~</strong> ';
+  				else $dump .= '&nbsp; ';
 				
-				// Field name and content
-				//debug::dump($field->name, $field->type, $this->_data[$field->name], '--');
-				$value = var_export($this->_data[$field->name], true);
-				if ($field->required)
-					$dump .= "<strong>{$field->name}</strong> = {$value}";
-				else
-					$dump .= "<strong>[{$field->name}]</strong> = {$value}";
+  				// Field name and content
+  				//debug::dump($field->name, $field->type, $this->_data[$field->name], '--');
+  				$value = var_export($this->_data[$field->name], true);
+  				if ($field->required)
+  					$dump .= "<strong>{$field->name}</strong> = {$value}";
+  				else
+  					$dump .= "<strong>[{$field->name}]</strong> = {$value}";
 				
-				// Validation
-				if (!$isValid)
-				{
-					//debug::dump($field->name, array_key_exists($field->name, $this->invalidFields));
-					if (array_key_exists($field->name, $this->invalidFields))
-					{
-						$dump .= ' <strong style="color: #f00;">(!)</strong>';
-						foreach ($this->invalidFields[$field->name] as $errorMessage)
-							$dump .= '<br /><strong style="color: #f00; font-size: 80%; font-weight: normal;">&nbsp;&nbsp;&nbsp;'.$errorMessage.'</strong>';
-					}
-				}
+  				// Validation
+  				if (!$isValid)
+  				{
+  					//debug::dump($field->name, array_key_exists($field->name, $this->invalidFields));
+  					if (array_key_exists($field->name, $this->invalidFields))
+  					{
+  						$dump .= ' <strong style="color: #f00;">(!)</strong>';
+  						foreach ($this->invalidFields[$field->name] as $errorMessage)
+  							$dump .= '<br /><strong style="color: #f00; font-size: 80%; font-weight: normal;">&nbsp;&nbsp;&nbsp;'.$errorMessage.'</strong>';
+  					}
+  				}
 				
-				$dump .= '<br />';
+  				$dump .= '<br />';
+  			}
+			
+  			if ($dump_relationships)
+  				foreach ($this->schema->getRelationships() as $relationship)
+  				{
+  					$foreignModel = $relationship->foreignModel;
+  					if ($this->$foreignModel) $dump .= $this->$foreignModel->dump(true, true);
+  				}
+			
+  			$dump .= '</pre></div><div style="clear: both;"></div>';
+			
+  			// Return validation variables to their original values
+  			$this->errors = $errorsCache;
+  			$this->invaliFields = $invalidFieldsCache;
+  		}
+  		else
+  		{
+  			// Running from the command line
+  			
+  			$class = get_class($this);
+  			$dump = "\033[1;30;42m {$this->model_name}: {$class} \033[0m\n";
+  			foreach ($this->schema as $field)
+  			{
+  				// Signs
+  				if ($field->primaryKey) $dump .= '* ';
+  				elseif ($field->foreignKey && $field->foreignModel) $dump .= '~ ';
+  				else $dump .= '  ';
+				
+  				// Field name and content
+  				//debug::dump($field->name, $field->type, $this->_data[$field->name], '--');
+  				$value = var_export($this->_data[$field->name], true);
+  				if ($field->required)
+  					$dump .= "\033[2;32;40m{$field->name}:\033[0m {$value}";
+  				else
+  					$dump .= "[{$field->name}]: {$value}";
+				
+  				// Validation
+  				if (!$isValid)
+  				{
+  					//debug::dump($field->name, array_key_exists($field->name, $this->invalidFields));
+  					if (array_key_exists($field->name, $this->invalidFields))
+  					{
+  						$dump .= " \033[31m! ";
+  						$dump .= implode('; ', $this->invalidFields[$field->name]);
+  						$dump .= "\033[0m";
+  					}
+  				}
+				
+  				$dump .= "\n";
+  			}
+			
+  			if ($dump_relationships)
+  				foreach ($this->schema->getRelationships() as $relationship)
+  				{
+  					$foreignModel = $relationship->foreignModel;
+  					if ($this->$foreignModel) $dump .= $this->$foreignModel->dump(true, true);
+  				}
+			
+  			$dump .= "\033[0m\n";
+			
+  			// Return validation variables to their original values
+  			$this->errors = $errorsCache;
+  			$this->invaliFields = $invalidFieldsCache;
 			}
-			
-			if ($dump_relationships)
-				foreach ($this->schema->getRelationships() as $relationship)
-				{
-					$foreignModel = $relationship->foreignModel;
-					if ($this->$foreignModel) $dump .= $this->$foreignModel->dump(true, true);
-				}
-			
-			$dump .= '</pre></div><div style="clear: both;"></div>';
-			
-			// Return validation variables to their original values
-			$this->errors = $errorsCache;
-			$this->invaliFields = $invalidFieldsCache;
 			
 			if ($return) return $dump;
 			else print $dump;
