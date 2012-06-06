@@ -17,7 +17,7 @@
 		public function login()
 		{
 			if (input::post('username') && input::post('password') &&
-			Auth::login(input::post('username'), input::post('password')))
+			auth::login(input::post('username'), input::post('password')))
 			{
 				$this->index();
 			}
@@ -49,7 +49,7 @@
 		
 		public function modules()
 		{
-			if (!Auth::check()) $this->access_denied();
+			if (!auth::check()) $this->access_denied();
 			
 			$this->template->action = 'modules';
 			$this->template->content = new View('ksetup_modules');
@@ -59,7 +59,7 @@
 		
 		public function createmodels()
 		{
-			if (!Auth::check()) $this->access_denied();
+			if (!auth::check()) $this->access_denied();
 			
 			$created = 0;
 			$models = $this->getModels();
@@ -80,7 +80,7 @@
 		
 		public function database()
 		{
-			if (!Auth::check()) $this->access_denied();
+			if (!auth::check()) $this->access_denied();
 			
 			$models = self::getModels();
 			
@@ -93,7 +93,7 @@
 		
 		public function settings()
 		{
-			if (!Auth::check()) $this->access_denied();
+			if (!auth::check()) $this->access_denied();
 			
 			require Kennel::$ROOT_PATH . '/settings.php';
 			$this->template->action = 'settings';
@@ -191,7 +191,7 @@
 		
 		public function backup()
 		{
-			if (!Auth::check()) $this->access_denied();
+			if (!auth::check()) $this->access_denied();
 			
 			$dump = "";
 			
