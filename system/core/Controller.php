@@ -23,7 +23,7 @@
 			 $view->render();
 		}
 		
-		private function redirect($location, $status=303)
+		function redirect($location, $status=303)
 		{
 		  switch ($status)
 		  {
