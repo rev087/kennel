@@ -56,14 +56,19 @@
     }
     
     /**
-     * Renders a message from a given slot with boilerplate HTML
+     * Renders a message from a given slot to HTML. To overwite the default
+     * markup, create a view named flash_message in your application
+     * or modules
      * 
      * <code>
      *  <?php
-     *    flash::set('login-error', 'Invalid username or password');
-     *    echo flash::render('login-error', 'error-message');
-     *    // prints:
-     *    // <div class="error-message">Invalid username or password</div>
+     *    flash::set('error', 'Invalid username and password');
+     *    flash::render('error', 'alert-error');
+     *    // Outputs:
+     *    //  <div class="alert alert-error">
+     *    //    <button class="close" data-dismiss="alert">×</button>
+     *    //    Invalid username and password.
+     *    //  </div>
      *  ?>
      * </code>
      * 
@@ -75,9 +80,10 @@
     static function render($slot, $class="")
     {
       if ( self::has($slot) ) {
-        $div = XML::element('div', null, null, self::get($slot));
-        if ( $class ) $div->set('class', $class);
-        return $div;
+        $view = new View('flash_message');
+        $view->flash_class = $class;
+        $view->flash_message = 
+        $view->render();
       }
       return null;
     }
