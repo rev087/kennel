@@ -5,14 +5,15 @@
 		static $error;
 		static $message;
 		
-		/*
-		* boolean auth::login(string $username, string $password, string $realm)
+		/**
 		* Attempt to login the user, returning a boolean representing
 		* authentication success
 		* 
-		* $username - the username
-		* $password - the password, not cryptographed
-		* $realm - the authentication realm (default "admin")
+		* @param string $username the username
+		* @param string $password - the password, not cryptographed
+		* @param string $realm - the authentication realm (default "admin")
+		* 
+		* @return boolean 
 		*/
 		static function login($username, $password, $realm='admin')
 		{
@@ -50,8 +51,9 @@
 			}
 		}
 		
-		/*
-		* auth::logout()
+		/**
+		* @returns boolean
+		* @param string $realm
 		*/
 		static function logout($realm='admin')
 		{
@@ -115,6 +117,10 @@
 			return false;
 		}
 		
+		/**
+		 * @param string $realm
+		 * @return boolean
+		 */
 		static function getUser($realm='admin')
 		{
 			$app_id = Kennel::getSetting('application', 'id');
@@ -134,6 +140,10 @@
 				return false;
 		}
 		
+		/**
+		 * @param Model $user
+		 * @param string $realm
+		 */
 		static function updateUser($user, $realm='admin')
 		{
 			if(!session_id()) session_start();
