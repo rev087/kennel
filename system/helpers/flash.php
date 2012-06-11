@@ -82,7 +82,7 @@
       if ( self::has($slot) ) {
         $view = new View('flash_message');
         $view->flash_class = $class;
-        $view->flash_message = 
+        $view->flash_message = self::get($slot);
         $view->render();
       }
       return null;
