@@ -8,7 +8,7 @@
 		var $unique;
 		var $primaryKey;
 		var $size;
-		var $defaultValue;
+		var $default;
 		var $unsigned;
 		
 		// Presentation
@@ -111,7 +111,7 @@
 			if ($this->required) $createString .= ' NOT NULL';
 			
 			// DEFAULT
-			if ($this->defaultValue) $createString .= ' DEFAULT "' . $this->defaultValue . '"';
+			if ( isset($this->default) ) $createString .= ' DEFAULT "' . $this->default . '"';
 			
 			// UNIQUE
 			if ($this->unique && !$this->primaryKey) $createString .= ' UNIQUE';
@@ -154,7 +154,7 @@
 			$this->unique = $element->getAttribute('unique') == 'true' ? true : false;
 			$this->primaryKey = $element->getAttribute('primaryKey') == 'true' ? true : false;
 			$this->size = intval($element->getAttribute('size'));
-			$this->defaultValue = $element->getAttribute('default');
+			if ($element->hasAttribute('default')) $this->default = $element->getAttribute('default');
 			$this->unsigned = $element->getAttribute('unsigned') == 'true' ? true : false;
 			
 			// Presentation
