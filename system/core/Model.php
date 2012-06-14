@@ -34,7 +34,9 @@
 		
 		function __set($name, $value)
 		{
-			if (Kennel::getSetting('i18n', 'enabled') && is_array($value))
+			if ( Kennel::getSetting('i18n', 'enabled')
+				&& is_array($value)
+				&& isset($value[Kennel::getSetting('i18n', 'default')]) )
 			{
 				$default_lang = Kennel::getSetting('i18n', 'default');
 				$this->__set($name, $value[$default_lang]);
