@@ -9,6 +9,8 @@
 		public static $CONTROLLER;
 		public static $ACTION;
 		
+		public static $METHOD;
+
 		private static $HOOKS;
 		
 		static function isAjax()
@@ -55,6 +57,9 @@
 		*/
 		static function process()
 		{
+			// Set the method
+			self::$METHOD = $_SERVER['REQUEST_METHOD'];
+
 			// Get the request parts
 			$request_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			if(Kennel::getSetting('application', 'use_mod_rewrite'))
@@ -184,6 +189,10 @@
 				'border'=>'1', 'style'=>'background-color: #FFF; color: #000;'
 			));
 			
+			$tr = XML::element('tr', $table);
+			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Method');
+			$td = XML::element('td', $tr, null, self::$METHOD);
+
 			$tr = XML::element('tr', $table);
 			$td = XML::element('td', $tr, array('style'=>'font-weight: bold;'), 'Resource');
 			$td = XML::element('td', $tr, null, self::$RESOURCE);
