@@ -52,9 +52,9 @@
 		}
 		
 		function dumpError($sql) {
-		  if ( array_key_exists('HTTP_HOST', $_SERVER) )
+		  if ( Kennel::$ROOT_URL && !Request::isAjax() )
 		  {
-		    // HTTP Request
+		    // Non-ajax HTTP Request
   			$table = XML::element('table', null, array('border'=>'1'));
 			
   			$tr = XML::element('tr', $table);
@@ -102,7 +102,7 @@
 		  }
 		  else
 		  {
-		    // Command line
+		    // Ajax or cli
 		    
 		    $default = "\033[0m";
 		    
