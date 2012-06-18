@@ -56,6 +56,11 @@
 	* @action - the controller and actions. Eg. "blog/post"
 	*/
 	function url($action=null, $lang=null) {
+		// If an absolute URL is provided, simply return it
+		if ( preg_match('/^https?:\/\//', $action) ) {
+			return $action;
+		}
+
 		// Trim slashes
 		$action = trim($action, '/');
 		
