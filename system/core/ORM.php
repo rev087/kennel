@@ -82,7 +82,11 @@
 			}
 			
 			$sql = self::getSelectString($criteria);
-			echo syntax::mysql($sql);
+
+			if ( Kennel::$ROOT_URL )
+				echo syntax::mysql($sql); // Running from HTTP request
+			else
+				echo $sql; // Running from the cli
 			return;
 		}
 		
