@@ -89,15 +89,12 @@
 			if ($this->favicon)
 				$this->_head->adopt(html::favicon($this->favicon));
 			
-			// content type
-			$content_type = XML::element('meta', $this->_head, array(
-				'charset'=>'utf-8'
-			));
-			$content_type->self_closing = XML::SELF_CLOSING_HTML;
+			// Content Type
+			$this->_head->adopt(html::meta(array( 'charset'=>'utf-8' )));
 			
 			// <meta>
 			foreach ($this->_meta as $meta)
-				$this->_head->adopt(html::meta($meta['name'], $meta['content']));
+				$this->_head->adopt(html::meta($meta));
 			
 			// <link>
 			foreach ($this->_links as $link)
@@ -144,9 +141,13 @@
 				return 'Untitled';
 		}
 		
-		function meta($name, $content)
+		function meta($name_or_properties, $content=null)
 		{
-			$this->_meta[] = array('name'=>$name, 'content'=>esc::attr($content));
+			if ( is_array($name_or_properties) ) {
+				$this->_meta[] = $name_or_properties;
+			} else {
+				$this->_meta[] = array('name'=>$name_or_properties, 'content'=>esc::attr($content));
+			}
 		}
 		
 		function link($rel, $type, $href, $title=null)

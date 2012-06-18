@@ -11,11 +11,9 @@
 			return $a = XML::element('a', null, $properties, $text);
 		}
 		
-		static function meta($name, $content)
+		static function meta($properties)
 		{
-			$meta = XML::element('meta');
-			$meta->name = $name;
-			$meta->content = $content;
+			$meta = XML::element('meta', null, $properties);
 			$meta->self_closing = XML::SELF_CLOSING_HTML;
 			return $meta;
 		}
