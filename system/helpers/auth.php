@@ -70,7 +70,7 @@
       header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden'); die();
 		}
 		
-		/*
+		/**
 		* boolean check( [string $realm, [ $level, $level2 ... ]] )
 		*
 		* Checks for an authenticated user and whether that user's access_level
@@ -79,6 +79,7 @@
 		* Realm is optional, and defaults to 'admin' if ommited. If the first
 		* argument is a non-numeric string, that string is used as the realm.
 		* 
+		* TODO: $realm should be the last argument to maintain consistency
 		*/
 		static function check()
 		{
