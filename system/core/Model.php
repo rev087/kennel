@@ -173,8 +173,9 @@
 		{
 			
 			if (!$this->validate() && substr($this->schema->table, -5) !== '_i18n') {
-				$msg = i18n::get('Trying to save invalid content for model <strong>%0</strong>', $this);
+				$msg = i18n::get('Trying to save invalid content for model "%0"', $this);
 				debug::error($msg, 1);
+				$this->dump();
 				return false;
 			}
 			
@@ -210,6 +211,8 @@
 			$this->_synced_data = $this->_data;
 			
 			$this->is_synced = true;
+
+			return true;
 		}
 		
 		function hasI18n()
