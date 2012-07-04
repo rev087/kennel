@@ -202,7 +202,7 @@
 				$this->setText($value);
 			else
 				$this->properties[$property] = $value;
-			return $this;
+			return $value;
 		}
 		
 		/**
@@ -226,7 +226,8 @@
 		 * @param string $value the value to set
 		 */
 		function set($property, $value) {
-			return $this->__set($property, $value);
+			$this->__set($property, $value);
+			return $this;
 		}
 		
 		private function _propertiesToString() {
