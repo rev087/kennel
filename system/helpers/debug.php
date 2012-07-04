@@ -72,17 +72,26 @@
 		*/
 		static function dumpError($error, $backtrace_depth=1)
 		{
-			$backtrace = debug_backtrace();
-			$file = $backtrace[$backtrace_depth+1]['file'];
-			$line = $backtrace[$backtrace_depth+1]['line'];
-			$message = "{$error} in <strong>{$file}</strong> at line <strong>{$line}</strong>";
-			
-			$p = XML::element('p', null, array('class'=>'msg_error'), $message);
-			
-			echo $p;
-			
-			if(Kennel::getSetting('application', 'debug_mode'))
-				self::backtrace($backtrace_depth+1);
+			if ( Kennel::$ROOT_URL ) // Web
+			{
+				$backtrace = debug_backtrace();
+				$file = $backtrace[$backtrace_depth+1]['file'];
+				$line = $backtrace[$backtrace_depth+1]['line'];
+				$message = "{$error} in <strong>{$file}</strong> at line <strong>{$line}</strong>";
+				
+				$p = XML::element('p', null, array('class'=>'msg_error'), $message);
+				
+				echo $p;
+				
+				if(Kennel::getSetting('application', 'debug_mode'))
+					self::backtrace($backtrace_depth+1);
+			} else { // Ajax or Cli
+				$backtrace = debug_backtrace();
+				$file = $backtrace[$backtrace_depth+1]['file'];
+				$line = $backtrace[$backtrace_depth+1]['line'];
+				$message = "Kennel error: {$error} in {$file} at line {$line}\n";
+				echo $message;
+			}
 		}
 		
 		static function error_handler($errno = E_USER_WARNING, $errstr)
